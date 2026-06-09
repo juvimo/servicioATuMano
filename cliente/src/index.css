@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Variables de color del diseño original ── */
+:root {
+  --verde:    #198754;
+  --verde-cl: #d1e7dd;
+  --gris-bg:  #f8f9fa;
+}
+
+body {
+  background-color: var(--gris-bg);
+  color: #212529;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ── Navbar ── */
+.navbar-brand { font-weight: 700; }
+
+/* ── Hero ── */
+.hero {
+  min-height: 100vh;
+  padding-top: 80px;
+  background: linear-gradient(135deg, #f8f9fa 60%, #d1e7dd 100%);
+}
+
+/* ── Tarjetas de servicio ── */
+.service-card {
+  border: none;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  transition: transform .2s;
+}
+.service-card:hover { transform: translateY(-4px); }
+.service-card .icon { font-size: 2.5rem; margin-bottom: .75rem; }
+
+/* ── Dashboard sidebar ── */
+.sidebar {
+  width: 230px;
+  min-height: 100vh;
+  background: #1a1a2e;
+  color: #fff;
+}
+.sidebar .nav-item {
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: background .15s;
+}
+.sidebar .nav-item:hover,
+.sidebar .nav-item.active { background: var(--verde); }
+.sidebar .logout { color: #aaa; font-size: .9rem; }
+
+/* ── Stat cards del dashboard ── */
+.stat-card {
+  border: none;
+  border-radius: 14px;
+  padding: 1.2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+}
+.stat-card .icon {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: .6rem;
+}
+.avatar {
+  width: 40px; height: 40px;
+  background: var(--verde);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: #fff;
+}
+
+/* ── Login ── */
+.login-body  { background: linear-gradient(135deg,#e8f5e9,#c8e6c9); min-height: 100vh; display:flex; }
+.login-card  { background:#fff; border-radius:20px; padding:2.5rem; width:420px; box-shadow:0 8px 32px rgba(0,0,0,.12); }
+.login-logo  { width: 80px; }
+.demo-box    { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:.75rem; font-size:.85rem; color:#166534; }
+
+/* ── Formulario cotización ── */
+.form-card { border:none; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,.08); }
+
+/* ── Footer ── */
+.footer { background:#212529; color:#adb5bd; padding:2.5rem 0; }
+.footer h5 { color:#fff; }
+.footer ul  { list-style:none; padding:0; }
+
+/* ── Responsive content ── */
+.content { background: #f8f9fa; min-height: 100vh; }
