@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from router.servicios import router
+from router.auth import router as auth_router 
 
 app = FastAPI(title="Servicio a tu Mano API")
 
@@ -17,3 +18,4 @@ def welcome():
     return {"message": "Bienvenido a la API de Servicio a tu Mano"}
 
 app.include_router(router)
+app.include_router(auth_router)

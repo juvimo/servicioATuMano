@@ -41,3 +41,22 @@ class Cotizacion(BaseModel):
         "populate_by_name": True,
         "json_encoders": {object: str},
     }
+
+# ── Modelo: Usuario ──
+class UsuarioRegistro(BaseModel):
+    nombre: str
+    correo: str
+    password: str
+
+class Usuario(BaseModel):
+    id: Optional[str] = Field(default=None, alias="_id")
+    nombre: str
+    correo: str
+    password_hash: str
+    is_verified: bool = False
+
+    model_config = {
+        "from_attributes": True,
+        "populate_by_name": True,
+        "json_encoders": {object: str},
+    }

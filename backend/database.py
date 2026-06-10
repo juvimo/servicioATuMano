@@ -62,3 +62,26 @@ async def create_cotizacion(data: dict):
     if created:
         created["_id"] = str(created["_id"])
     return created
+
+from models import Servicio, UpdateServicio, Cotizacion, Usuario  # agrega Usuario al import
+
+col_usuarios = database.usuarios  # nueva colección
+
+# ─────────────────────────────────────────
+#  USUARIOS
+# ─────────────────────────────────────────
+async def get_usuario_por_correo(correo: str):
+    return await col_usuarios.find_one({"correo": correo})
+
+async def create_usuario(data: dict):
+    result = await col_usuarios.insert_one(data)
+    created = await col_usuarios.find_one({"_id": result.inserted_id})
+    if created:
+        created["_id"] = str(created["_id"])
+    return created
+
+async def verificar_usuario(correo: str):
+    await col_usuarios.update_one(
+        {"correo": correo},
+        {"$set": {"is_verified": True}}
+    )
