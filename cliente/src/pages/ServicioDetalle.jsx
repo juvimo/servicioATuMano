@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { SERVICIOS_DATA, SERVICIOS_LIST } from "../data/servicios";
+import { SERVICIOS_DATA, SERVICIOS_LIST } from "../api/servicios";
 
 function ServicioDetalle() {
   const { slug } = useParams();
