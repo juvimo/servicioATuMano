@@ -115,6 +115,14 @@ function Login() {
             {loading ? "Verificando…" : "Iniciar Sesión"}
           </button>
         </form>
+        
+          {/* Registrarse */}
+        <div className="text-center mt-3">
+          <span style={{ color: "#64748b", fontSize: ".85rem" }}>¿No tienes cuenta? </span>
+          <Link to="/registro" style={{ color: "var(--primary)", fontWeight: 600, textDecoration: "none", fontSize: ".85rem" }}>
+            Regístrate aquí
+          </Link>
+        </div>
 
         {/* Demo notice */}
         <div className="demo-box mt-4 text-center">
