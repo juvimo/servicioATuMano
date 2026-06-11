@@ -13,7 +13,7 @@ function Landing() {
         <div className="container">
           <div className="row align-items-center">
             <div className="col-md-6">
-              <h1 className="fw-bold display-5">Servicio a tu Mano</h1>
+              <h1 className="fw-bold display-5">Limpieza Profesional para tu Hogar y Negocio</h1>
               <p className="lead">Tu hogar impecable con la calidad, confianza y eficiencia que mereces.</p>
               <Link to="/cotizacion" className="btn btn-success btn-lg">Solicitar Cotización</Link>
             </div>
