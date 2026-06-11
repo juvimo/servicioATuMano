@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import logo2 from "../assets/logo2.jpg";
 import logo3 from "../assets/logo3.jpg";
 import { Link } from "react-router-dom";
+import CarruselAntesDepues from "../components/CarruselAntesDepues";  // ← nuevo
 
 function Landing() {
   return (
@@ -23,6 +24,9 @@ function Landing() {
           </div>
         </div>
       </section>
+
+      {/* ✅ CARRUSEL ANTES & DESPUÉS — justo debajo del hero */}
+      <CarruselAntesDepues />
 
       {/* SERVICIOS */}
       <section id="servicios" className="py-5 bg-white">
