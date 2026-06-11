@@ -60,3 +60,7 @@ class Usuario(BaseModel):
         "populate_by_name": True,
         "json_encoders": {object: str},
     }
+
+class UsuarioLogin(BaseModel):
+    correo: str
+    password: str
