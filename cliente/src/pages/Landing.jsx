@@ -32,9 +32,9 @@ function Landing() {
           <div className="row g-4">
             {[
               { icon: "🏠", title: "Limpieza Residencial", desc: "Servicio completo para tu hogar." },
-              { icon: "🏢", title: "Limpieza Comercial",  desc: "Mantenimiento profesional." },
-              { icon: "💧", title: "Limpieza Profunda",   desc: "Para espacios difíciles." },
-              { icon: "✨", title: "Limpieza Post-Obra",  desc: "Eliminación de residuos." },
+              { icon: "🏢", title: "Limpieza Comercial",   desc: "Mantenimiento profesional." },
+              { icon: "💧", title: "Limpieza Profunda",    desc: "Para espacios difíciles." },
+              { icon: "✨", title: "Limpieza Post-Obra",   desc: "Eliminación de residuos." },
             ].map(s => (
               <div className="col-md-3" key={s.title}>
                 <div className="service-card card">
@@ -90,8 +90,10 @@ function Landing() {
             <div className="col-md-4"><h5>Servicio a tu Mano</h5><p>Tu socio confiable en limpieza.</p></div>
             <div className="col-md-4">
               <h5>Enlaces</h5>
-              <ul><li><Link to="/" className="text-muted text-decoration-none">Inicio</Link></li>
-                  <li><Link to="/cotizacion" className="text-muted text-decoration-none">Cotización</Link></li></ul>
+              <ul>
+                <li><Link to="/" className="text-muted text-decoration-none">Inicio</Link></li>
+                <li><Link to="/cotizacion" className="text-muted text-decoration-none">Cotización</Link></li>
+              </ul>
             </div>
             <div className="col-md-4">
               <h5>Horario</h5>
