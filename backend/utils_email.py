@@ -1,8 +1,11 @@
 import smtplib
 import os
+from dotenv import load_dotenv
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from itsdangerous import URLSafeTimedSerializer
+
+load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "cambia-esto-por-algo-seguro")
 serializer = URLSafeTimedSerializer(SECRET_KEY)

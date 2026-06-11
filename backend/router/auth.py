@@ -1,12 +1,17 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse
-from passlib.context import CryptContext
+import bcrypt
 from models import UsuarioRegistro
 from database import get_usuario_por_correo, create_usuario, verificar_usuario
 from utils_email import generar_token, verificar_token, enviar_correo_verificacion
 
 router = APIRouter()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+def verify_password(password: str, hashed: str) -> bool:
+    return bcrypt.checkpw(password.encode(), hashed.encode())
 
 @router.post("/api/auth/registro")
 async def registro(data: UsuarioRegistro):
@@ -14,7 +19,7 @@ async def registro(data: UsuarioRegistro):
     if existente:
         raise HTTPException(400, "Ya existe una cuenta con ese correo.")
 
-    password_hash = pwd_context.hash(data.password)
+    password_hash = hash_password(data.password)
     usuario = {
         "nombre": data.nombre,
         "correo": data.correo,
