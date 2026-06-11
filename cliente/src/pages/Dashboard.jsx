@@ -43,7 +43,7 @@ function Dashboard() {
   const usuario  = JSON.parse(sessionStorage.getItem("usuario") || "{}");
 
   useEffect(() => {
-    if (!usuario.email) navigate("/login");
+    if (!usuario.correo && !usuario.email) navigate("/login");
   }, []);
 
   useEffect(() => {
@@ -101,7 +101,7 @@ function Dashboard() {
     navigate("/");
   };
 
-  const emailInicial = (usuario.email || "A")[0].toUpperCase();
+  const emailInicial = (usuario.correo || usuario.email || "A")[0].toUpperCase();
 
   /* ── STAT CARDS DATA ── */
   const completados = servicios.filter(s => s.completada).length;
@@ -158,7 +158,7 @@ function Dashboard() {
           <div className="d-flex align-items-center gap-3">
             <div className="topbar-user">
               <strong>Administrador</strong>
-              <small>{usuario.email || "admin@servicioatumano.com"}</small>
+              <small>{usuario.correo || usuario.email || "admin@servicioatumano.com"}</small>
             </div>
             <div className="avatar">{emailInicial}</div>
           </div>

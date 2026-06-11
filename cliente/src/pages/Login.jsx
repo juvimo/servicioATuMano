@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { ping } from "../api/servicios";
+import { loginUsuario } from "../api/auth";
 
 function Login() {
   const [email,    setEmail]    = useState("");
@@ -23,14 +23,18 @@ function Login() {
 
     setLoading(true);
     try {
-      await ping();
-    } catch {
-      // modo demo
-    } finally {
-      sessionStorage.setItem("usuario", JSON.stringify({ email, rol: "admin" }));
+      const data = await loginUsuario(email, password);
+      sessionStorage.setItem("usuario", JSON.stringify(data));
       setOk(true);
+      setTimeout(() => {
+        console.log("DATA:", data);
+        if (data.rol === "admin") navigate("/dashboard");
+        else navigate("/");
+      }, 800);
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setLoading(false);
-      setTimeout(() => navigate("/dashboard"), 800);
     }
   };
 
@@ -38,7 +42,6 @@ function Login() {
     <div className="login-bg">
       <div className="login-card">
 
-        {/* Logo + encabezado */}
         <div className="text-center mb-4">
           <img src={logo} className="login-logo mb-3" alt="logo" />
           <h2 className="mb-1">Bienvenido</h2>
@@ -47,7 +50,6 @@ function Login() {
           </p>
         </div>
 
-        {/* Alertas */}
         {error && (
           <div className="alert alert-danger d-flex align-items-center gap-2 py-2 mb-3"
             style={{ fontSize: ".875rem", borderRadius: 10 }}>
@@ -62,44 +64,28 @@ function Login() {
         )}
 
         <form onSubmit={handleLogin}>
-          {/* Email */}
           <div className="mb-3">
             <label className="form-label">Correo Electrónico</label>
             <div className="input-group login-input">
               <span className="input-group-text">📧</span>
-              <input
-                type="email"
-                className="form-control"
-                placeholder="correo@ejemplo.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
+              <input type="email" className="form-control" placeholder="correo@ejemplo.com"
+                value={email} onChange={e => setEmail(e.target.value)} />
             </div>
           </div>
 
-          {/* Contraseña */}
           <div className="mb-3">
             <label className="form-label">Contraseña</label>
             <div className="input-group login-input">
               <span className="input-group-text">🔒</span>
-              <input
-                type={verPass ? "text" : "password"}
-                className="form-control"
-                placeholder="••••••••"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-              <span
-                className="input-group-text clickable"
-                style={{ cursor: "pointer", borderLeft: "none" }}
-                onClick={() => setVerPass(v => !v)}
-              >
+              <input type={verPass ? "text" : "password"} className="form-control" placeholder="••••••••"
+                value={password} onChange={e => setPassword(e.target.value)} />
+              <span className="input-group-text" style={{ cursor: "pointer", borderLeft: "none" }}
+                onClick={() => setVerPass(v => !v)}>
                 {verPass ? "🙈" : "👁"}
               </span>
             </div>
           </div>
 
-          {/* Recordarme / Olvidé contraseña */}
           <div className="d-flex justify-content-between align-items-center mb-4"
             style={{ fontSize: ".85rem" }}>
             <label style={{ cursor: "pointer", color: "#475569" }}>
@@ -115,8 +101,7 @@ function Login() {
             {loading ? "Verificando…" : "Iniciar Sesión"}
           </button>
         </form>
-        
-          {/* Registrarse */}
+
         <div className="text-center mt-3">
           <span style={{ color: "#64748b", fontSize: ".85rem" }}>¿No tienes cuenta? </span>
           <Link to="/registro" style={{ color: "var(--primary)", fontWeight: 600, textDecoration: "none", fontSize: ".85rem" }}>
@@ -124,12 +109,6 @@ function Login() {
           </Link>
         </div>
 
-        {/* Demo notice */}
-        <div className="demo-box mt-4 text-center">
-          Modo demo: usa cualquier email y contraseña para acceder
-        </div>
-
-        {/* Volver */}
         <div className="text-center mt-3">
           <Link to="/" style={{ color: "#94a3b8", textDecoration: "none", fontSize: ".85rem" }}>
             ← Volver al inicio
