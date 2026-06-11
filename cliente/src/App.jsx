@@ -8,6 +8,7 @@ import FAQ             from './pages/FAQ'
 import Servicios       from './pages/Servicios'
 import ServicioDetalle from './pages/ServicioDetalle'
 import Registro        from './pages/Registro'
+import Chatbot    from './components/Chatbot'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/servicios"         element={<Servicios />} />
         <Route path="/servicios/:slug"   element={<ServicioDetalle />} />
       </Routes>
+      <Chatbot />
     </BrowserRouter>
   )
 }
