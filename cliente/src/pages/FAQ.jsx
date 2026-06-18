@@ -69,8 +69,8 @@ const PREGUNTAS = [
 ];
 
 function FAQ() {
-  const [catActiva, setCatActiva]   = useState("Todas");
-  const [abierta,   setAbierta]     = useState(null);
+  const [catActiva, setCatActiva] = useState("Todas");
+  const [abierta,   setAbierta]  = useState(null);
 
   const filtradas = catActiva === "Todas"
     ? PREGUNTAS
@@ -84,7 +84,16 @@ function FAQ() {
 
       {/* ── HERO ── */}
       <section className="page-hero">
-        <div className="container" style={{ position: "relative", zIndex: 1 }}>
+        <div className="steam-mist" />
+        <div className="steam-wrap">
+          <div className="steam-puff sp1" /><div className="steam-puff sp2" />
+          <div className="steam-puff sp3" /><div className="steam-puff sp4" />
+          <div className="steam-puff sp5" /><div className="steam-puff sp6" />
+          <div className="steam-puff sp7" />
+          <div className="steam-drop sd1" /><div className="steam-drop sd3" />
+          <div className="steam-drop sd5" /><div className="steam-drop sd7" />
+        </div>
+        <div className="container" style={{ position: "relative", zIndex: 3 }}>
           <span className="section-badge">Ayuda</span>
           <h1>Preguntas Frecuentes</h1>
           <p>
@@ -94,13 +103,13 @@ function FAQ() {
         </div>
       </section>
 
-      {/* ── CONTENIDO ── */}
-      <section className="py-5" style={{ background: "var(--gray-bg)" }}>
+      {/* ── ACORDEÓN ── */}
+      <section className="py-5" style={{ background: "#f0f9ff" }}>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8">
 
-              {/* Categorías */}
+              {/* Filtros de categoría */}
               <div className="faq-category">
                 {CATEGORIAS.map(c => (
                   <button
@@ -113,7 +122,7 @@ function FAQ() {
                 ))}
               </div>
 
-              {/* Acordeón */}
+              {/* Preguntas */}
               {filtradas.map((p, i) => (
                 <div key={i} className={`faq-item${abierta === i ? " open" : ""}`}>
                   <button className="faq-question" onClick={() => toggle(i)}>
@@ -127,10 +136,11 @@ function FAQ() {
               ))}
 
               {filtradas.length === 0 && (
-                <p className="text-center py-4" style={{ color: "#94a3b8" }}>
+                <p className="text-center py-4" style={{ color: "#64748b" }}>
                   No hay preguntas en esta categoría.
                 </p>
               )}
+
             </div>
           </div>
         </div>
@@ -142,16 +152,22 @@ function FAQ() {
           <div className="row justify-content-center">
             <div className="col-lg-7 text-center">
               <div style={{
-                background: "var(--primary-light)",
-                border: "1.5px solid var(--primary-muted)",
+                background: "#fff",
+                border: "1.5px solid #dbeafe",
                 borderRadius: 24,
-                padding: "2.5rem",
+                padding: "2.75rem",
+                boxShadow: "0 8px 40px rgba(14,165,233,.08)",
               }}>
-                <span style={{ fontSize: "2.5rem", display: "block", marginBottom: "1rem" }}>🤝</span>
-                <h3 style={{ fontWeight: 800, color: "#0f172a", marginBottom: ".75rem" }}>
+                <div style={{
+                  width: 64, height: 64, borderRadius: "50%",
+                  background: "#e0f2fe", border: "1.5px solid #bae6fd",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  margin: "0 auto 1.25rem", fontSize: "1.75rem",
+                }}>🤝</div>
+                <h3 style={{ fontWeight: 800, color: "#0c1a2e", marginBottom: ".75rem" }}>
                   ¿No encontraste tu respuesta?
                 </h3>
-                <p style={{ color: "#64748b", marginBottom: "1.75rem", lineHeight: 1.7 }}>
+                <p style={{ color: "#64748b", marginBottom: "1.75rem", lineHeight: 1.75 }}>
                   Nuestro equipo está disponible para resolver cualquier duda personalizada.
                   Escríbenos o llámanos directamente.
                 </p>
@@ -173,6 +189,8 @@ function FAQ() {
 
       {/* ── CTA ── */}
       <section className="cta-section">
+        <div className="cta-glow-1" />
+        <div className="cta-glow-2" />
         <div className="container" style={{ position: "relative", zIndex: 1 }}>
           <h2>Comienza hoy mismo</h2>
           <p>Solicita tu cotización gratuita. Sin compromisos, sin letra pequeña.</p>

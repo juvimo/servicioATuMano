@@ -8,11 +8,16 @@ import FAQ             from './pages/FAQ'
 import Servicios       from './pages/Servicios'
 import ServicioDetalle from './pages/ServicioDetalle'
 import Registro        from './pages/Registro'
+<<<<<<< HEAD
 import Chatbot    from './components/Chatbot'
+=======
+import ScrollToTop     from './components/ScrollToTop'
+>>>>>>> 89e2850 (Juana)
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/"                  element={<Landing />} />
         <Route path="/login"             element={<Login />} />

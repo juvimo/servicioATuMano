@@ -24,7 +24,6 @@ function Navbar() {
             <Link className="nav-link" to="/">Inicio</Link>
             <a className="nav-link" href="#servicios">Servicios</a>
             <Link className="nav-link" to="/nosotros">Nosotros</Link>
-            <Link className="nav-link" to="/faq">FAQ</Link>
             <a className="nav-link" href="#contacto">Contacto</a>
           </nav>
           <div className="navbar-ctas d-none d-lg-flex">
@@ -40,7 +39,6 @@ function Navbar() {
             <Link className="mobile-link" to="/"           onClick={() => setMenuOpen(false)}>Inicio</Link>
             <a    className="mobile-link" href="#servicios" onClick={() => setMenuOpen(false)}>Servicios</a>
             <Link className="mobile-link" to="/nosotros"   onClick={() => setMenuOpen(false)}>Nosotros</Link>
-            <Link className="mobile-link" to="/faq"        onClick={() => setMenuOpen(false)}>FAQ</Link>
             <a    className="mobile-link" href="#contacto"  onClick={() => setMenuOpen(false)}>Contacto</a>
             <div className="mobile-ctas">
               <Link to="/login"      className="btn-nav-outline text-center" onClick={() => setMenuOpen(false)}>Acceso</Link>

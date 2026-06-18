@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { fetchServicios, createServicio, updateServicio, deleteServicio } from "../api/servicios";
+import { generarInformeExcel } from "../utils/reportes";
 
 /* ─── Iconos SVG ─── */
 const Icon = {
@@ -201,6 +202,13 @@ function Dashboard() {
   const [modalIngreso,setModalIngreso]= useState(null);
   const [formIngreso, setFormIngreso] = useState({ concepto:"",categoria:"Residencial",monto:"",fecha:"",nota:"" });
 
+  /* Informe Excel */
+  const [modalInforme, setModalInforme] = useState(false);
+  const [seccionesInforme, setSeccionesInforme] = useState({
+    resumen: true, ingresos: true, gastos: true,
+    cotizaciones: true, clientes: true, servicios: true,
+  });
+
   const navigate = useNavigate();
   const usuario  = JSON.parse(sessionStorage.getItem("usuario") || "{}");
 
@@ -386,6 +394,19 @@ function Dashboard() {
         <div className="topbar">
           <p className="topbar-title">{seccion}</p>
           <div className="d-flex align-items-center gap-3">
+            <button
+              onClick={() => setModalInforme(true)}
+              style={{
+                display: "flex", alignItems: "center", gap: 7,
+                padding: "7px 16px", borderRadius: 10,
+                border: "1.5px solid #0ea5e9",
+                background: "linear-gradient(135deg,#0ea5e9,#0369a1)",
+                color: "#fff", fontWeight: 700, fontSize: ".82rem",
+                cursor: "pointer", whiteSpace: "nowrap", boxShadow: "0 2px 10px rgba(14,165,233,.3)",
+              }}
+            >
+              {Icon.excel} Informe Excel
+            </button>
             <div className="topbar-user">
               <strong>Administrador</strong>
               <small>{usuario.correo || usuario.email || "admin@servicioatumano.com"}</small>
@@ -893,6 +914,89 @@ function Dashboard() {
             </div>
           </div>
         </Modal>
+      )}
+
+      {/* Modal Informe Excel */}
+      {modalInforme && (
+        <div style={{ position:"fixed",inset:0,zIndex:1000,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem" }}>
+          <div style={{ background:"#fff",borderRadius:20,padding:"2rem",width:"100%",maxWidth:480,boxShadow:"0 24px 70px rgba(0,0,0,.2)" }}>
+            {/* Header */}
+            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1.25rem" }}>
+              <div>
+                <h5 style={{ fontWeight:800,color:"#0f172a",margin:0,fontSize:"1.1rem" }}>Generar Informe Excel</h5>
+                <p style={{ color:"#64748b",fontSize:".8rem",margin:"4px 0 0" }}>Selecciona las secciones a incluir</p>
+              </div>
+              <button onClick={() => setModalInforme(false)} style={{ border:"none",background:"none",fontSize:"1.4rem",cursor:"pointer",color:"#94a3b8",lineHeight:1 }}>×</button>
+            </div>
+
+            {/* Secciones */}
+            <div style={{ display:"flex",flexDirection:"column",gap:"0.6rem",marginBottom:"1.5rem" }}>
+              {[
+                { key:"resumen",      label:"Resumen Ejecutivo",  desc:"KPIs y totales por categoría",   icon:"📊" },
+                { key:"ingresos",     label:"Ingresos",           desc:"Detalle de todos los ingresos",  icon:"💰" },
+                { key:"gastos",       label:"Gastos",             desc:"Detalle de todos los gastos",    icon:"📉" },
+                { key:"cotizaciones", label:"Cotizaciones",       desc:"Solicitudes de clientes",        icon:"📋" },
+                { key:"clientes",     label:"Clientes",           desc:"Base de datos de clientes",      icon:"👥" },
+                { key:"servicios",    label:"Servicios",          desc:"Lista de servicios y su estado", icon:"🧹" },
+              ].map(({ key, label, desc, icon }) => (
+                <label
+                  key={key}
+                  style={{
+                    display:"flex", alignItems:"center", gap:"0.75rem",
+                    padding:"10px 14px", borderRadius:12, cursor:"pointer",
+                    border: `1.5px solid ${seccionesInforme[key] ? "#0ea5e9" : "#e2e8f0"}`,
+                    background: seccionesInforme[key] ? "#f0f9ff" : "#fafafa",
+                    transition:"all .2s",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={seccionesInforme[key]}
+                    onChange={e => setSeccionesInforme(p => ({ ...p, [key]: e.target.checked }))}
+                    style={{ accentColor:"#0ea5e9", width:17, height:17, cursor:"pointer", flexShrink:0 }}
+                  />
+                  <span style={{ fontSize:"1.1rem" }}>{icon}</span>
+                  <div style={{ flex:1 }}>
+                    <span style={{ fontWeight:700, color: seccionesInforme[key] ? "#0369a1" : "#374151", fontSize:".88rem" }}>{label}</span>
+                    <br />
+                    <span style={{ color:"#94a3b8", fontSize:".75rem" }}>{desc}</span>
+                  </div>
+                  {seccionesInforme[key] && (
+                    <span style={{ color:"#0ea5e9", fontSize:".75rem", fontWeight:700 }}>✓</span>
+                  )}
+                </label>
+              ))}
+            </div>
+
+            {/* Acciones */}
+            <div style={{ display:"flex",gap:"0.5rem" }}>
+              <button
+                className="btn w-100"
+                disabled={!Object.values(seccionesInforme).some(Boolean)}
+                onClick={() => {
+                  generarInformeExcel({ ingresos, gastos, cotizaciones, clientes, servicios, secciones: seccionesInforme });
+                  setModalInforme(false);
+                  mostrarAlerta("Informe Excel generado correctamente.", "success");
+                }}
+                style={{
+                  borderRadius:12, background:"linear-gradient(135deg,#0ea5e9,#0369a1)",
+                  color:"#fff", fontWeight:700, fontSize:".9rem", padding:"10px",
+                  border:"none", cursor:"pointer",
+                  opacity: Object.values(seccionesInforme).some(Boolean) ? 1 : .5,
+                }}
+              >
+                {Icon.excel} Generar y Descargar
+              </button>
+              <button
+                className="btn btn-outline-secondary w-50"
+                style={{ borderRadius:12, fontWeight:600 }}
+                onClick={() => setModalInforme(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

@@ -5,12 +5,12 @@ import Footer from "../components/Footer";
 import { createServicio } from "../api/servicios";
 
 const SERVICIOS_LISTA = [
-  { icon: "💨", title: "Limpieza a Vapor",      desc: "Elimina suciedad y bacterias en profundidad." },
-  { icon: "🛋️", title: "Limpieza de Muebles",  desc: "Sofás y tapizados en perfecto estado." },
-  { icon: "💧", title: "Limpieza de Tapicería", desc: "Manchas y olores eliminados." },
-  { icon: "🛏️", title: "Limpieza de Colchones", desc: "Libre de ácaros y bacterias." },
-  { icon: "🧼", title: "Limpieza de Tapetes",   desc: "Lavado profundo y restauración." },
-  { icon: "✨", title: "Limpieza de Pisos",      desc: "Para todo tipo de superficies." },
+  { img: "https://images.unsplash.com/photo-1527515545081-5db817172677?w=400&q=80", title: "Limpieza a Vapor",      desc: "Elimina suciedad y bacterias en profundidad." },
+  { img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80",   title: "Limpieza de Muebles",  desc: "Sofás y tapizados en perfecto estado." },
+  { img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80", title: "Limpieza de Tapicería", desc: "Manchas y olores eliminados." },
+  { img: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=400&q=80", title: "Limpieza de Colchones", desc: "Libre de ácaros y bacterias." },
+  { img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",   title: "Limpieza de Tapetes",  desc: "Lavado profundo y restauración." },
+  { img: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80", title: "Limpieza de Pisos",    desc: "Para todo tipo de superficies." },
 ];
 
 function Cotizacion() {
@@ -74,7 +74,7 @@ function Cotizacion() {
             </p>
           </div>
 
-          {/* Cards clicables */}
+          {/* Cards clicables con imagen */}
           <div className="row g-3 mb-5">
             {SERVICIOS_LISTA.map(s => (
               <div className="col-6 col-md-4 col-lg-2" key={s.title}>
@@ -83,9 +83,13 @@ function Cotizacion() {
                   onClick={() => seleccionar(s.title)}
                 >
                   {servicio === s.title && <div className="selected-badge">✓</div>}
-                  <div className="icon-wrap">{s.icon}</div>
-                  <h6>{s.title}</h6>
-                  <p>{s.desc}</p>
+                  <div className="cot-img-wrap">
+                    <img src={s.img} alt={s.title} className="cot-service-img" />
+                  </div>
+                  <div className="cot-card-body">
+                    <h6>{s.title}</h6>
+                    <p>{s.desc}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -136,7 +140,7 @@ function Cotizacion() {
                         onChange={e => setServicio(e.target.value)}>
                         <option value="">— Selecciona un servicio —</option>
                         {SERVICIOS_LISTA.map(s => (
-                          <option key={s.title} value={s.title}>{s.icon} {s.title}</option>
+                          <option key={s.title} value={s.title}>{s.title}</option>
                         ))}
                       </select>
                     </div>
