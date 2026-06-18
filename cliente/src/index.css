@@ -171,6 +171,13 @@ body {
   box-shadow: 0 0 30px rgba(56,189,248,.2);
   animation: logoPulse 1.5s ease-in-out infinite;
 }
+.intro-logo-img {
+  width: 100px; height: 100px;
+  border-radius: 24px; object-fit: cover;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 0 0 3px rgba(56,189,248,.45), 0 12px 40px rgba(14,165,233,.45);
+  animation: logoPulse 1.5s ease-in-out infinite;
+}
 @keyframes logoPulse {
   0%, 100% { box-shadow: 0 0 20px rgba(56,189,248,.2); }
   50%       { box-shadow: 0 0 40px rgba(56,189,248,.45); }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import logo  from "../assets/logo.png";
 import logo3 from "../assets/logo3.jpg";
 import { Link } from "react-router-dom";
 import CarruselAntesDepues from "../components/CarruselAntesDepues";
@@ -108,27 +109,16 @@ function Landing() {
 
   return (
     <>
-      {/* ══ INTRO VIDEO ══ */}
+      {/* ══ INTRO ══ */}
       {showIntro && (
         <div className="intro-wrap">
-          <video
-            src="/videos/intro-servicio.mp4"
-            autoPlay
-            muted
-            playsInline
-            style={{
-              position: "absolute", inset: 0,
-              width: "100%", height: "100%",
-              objectFit: "cover", zIndex: 0,
-            }}
-          />
-          <div className="intro-brand" style={{ background: "rgba(0,0,0,.35)" }}>
-            <div className="intro-logo-circle">💧</div>
+          <div className="intro-brand">
+            <img src={logo} className="intro-logo-img" alt="logo" />
             <h2 className="intro-title">Servicio a tu Mano</h2>
             <p className="intro-sub">Limpieza profesional a vapor</p>
           </div>
 
-          {/* Aspiradora animada deslizándose bajo el texto */}
+          {/* Aspiradora animada */}
           <div className="intro-vac-row">
             <div className="intro-trail" />
             <div className="intro-glow" />
