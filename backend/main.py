@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from router.servicios import router
-from router.auth import router as auth_router 
+from router.auth import router as auth_router
+from router.chatbot import router as chatbot_router
 
 app = FastAPI(title="Servicio a tu Mano API")
 
@@ -19,3 +20,4 @@ def welcome():
 
 app.include_router(router)
 app.include_router(auth_router)
+app.include_router(chatbot_router)
