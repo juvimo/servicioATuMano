@@ -69,15 +69,15 @@ const IconStar = () => (
   </svg>
 );
 
-/* ── Imágenes Unsplash: solo relacionadas a limpieza a vapor ─ */
+/* ── Imágenes del proyecto ─ */
 const IMG = {
-  residencial: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=700&q=80",
+  residencial: "/img/3.jpeg",
   comercial:   "https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80",
   profunda:    "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=700&q=80",
   postObra:    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=700&q=80",
   paso1:       "https://images.unsplash.com/photo-1527515545081-5db817172677?w=600&q=80",
-  paso2:       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
-  paso3:       "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80",
+  paso2:       "/img/3.jpeg",
+  paso3:       "/img/1.jpeg",
 };
 
 function Landing() {
@@ -105,26 +105,24 @@ function Landing() {
 
   return (
     <>
-      {/* ══ INTRO ASPIRADORA ══ */}
+      {/* ══ INTRO VIDEO ══ */}
       {showIntro && (
         <div className="intro-wrap">
-          {/* Marca centrada */}
-          <div className="intro-brand">
+          <video
+            src="/videos/intro-servicio.mp4"
+            autoPlay
+            muted
+            playsInline
+            style={{
+              position: "absolute", inset: 0,
+              width: "100%", height: "100%",
+              objectFit: "cover", zIndex: 0,
+            }}
+          />
+          <div className="intro-brand" style={{ background: "rgba(0,0,0,.35)" }}>
             <div className="intro-logo-circle">💧</div>
             <h2 className="intro-title">Servicio a tu Mano</h2>
             <p className="intro-sub">Limpieza profesional a vapor</p>
-          </div>
-
-          {/* Aspiradora que barre la pantalla */}
-          <div className="intro-vac-row">
-            <div className="intro-trail" />
-            <div className="intro-glow" />
-            <div className="intro-vac">
-              <div className="intro-bubble ib1" />
-              <div className="intro-bubble ib2" />
-              <div className="intro-bubble ib3" />
-              <RobotVacuum />
-            </div>
           </div>
         </div>
       )}
