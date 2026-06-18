@@ -1232,3 +1232,144 @@ body {
   0%   { transform: translateX(calc(100vw + 130px)); }
   100% { transform: translateX(-130px); }
 }
+
+/* ══════════════════════════════════════════
+   NAVBAR — LOGO RESPONSIVE (clase CSS)
+══════════════════════════════════════════ */
+.navbar-logo-img {
+  width: 58px; height: 58px;
+  border-radius: 14px; object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(14,165,233,.35), 0 6px 24px rgba(14,165,233,.3);
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — TABLET  ≤ 991px
+══════════════════════════════════════════ */
+@media (max-width: 991px) {
+  /* Hero: sin min-height fijo, video más corto */
+  .hero { min-height: auto; padding-bottom: 1rem; }
+  .hero-container { padding-top: 1.5rem; padding-bottom: 3rem; }
+  .hero-img { max-height: 360px; }
+
+  /* Ocultar aspiradora (no hay espacio horizontal útil) */
+  .hero-vac-slide { display: none; }
+
+  /* Intro vacuum no bloqueante en tablet */
+  .intro-vac-row { bottom: 14%; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — MÓVIL  ≤ 767px
+══════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* ── Hero ── */
+  .hero-title    { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: .9rem; }
+  .hero-subtitle { font-size: .93rem; max-width: 100%; margin-bottom: 1.5rem; }
+  .hero-actions  { gap: .65rem; margin-bottom: 1.5rem; }
+  .btn-hero-primary,
+  .btn-hero-ghost { font-size: .88rem; padding: .7rem 1.35rem; border-radius: 12px; }
+  .hero-chips    { gap: 1.1rem; }
+  .hero-badge    { font-size: .75rem; }
+  .hero-img      { max-height: 240px; }
+
+  /* ── How ── */
+  .how-section { padding: 3rem 0; }
+  .how-card { padding: 1.4rem 1.1rem; border-radius: 18px; }
+  .how-card-img-wrap { height: 150px; }
+
+  /* ── Services ── */
+  .service-card-img-wrap { height: 175px; }
+  .services-section { padding: 3rem 0 !important; }
+
+  /* ── Why ── */
+  .why-section { padding: 3rem 0; }
+  .why-img { margin-bottom: 2rem; }
+
+  /* ── Contact ── */
+  .contact-section { padding: 3rem 0 !important; }
+  .contact-card { padding: 1.6rem 1.1rem; border-radius: 18px; }
+
+  /* ── CTA ── */
+  .cta-section { padding: 3rem 0; }
+  .cta-section h2 { font-size: clamp(1.5rem, 5vw, 2.2rem); }
+  .cta-section p  { font-size: .93rem; margin-bottom: 1.75rem; }
+  .btn-cta-white,
+  .btn-cta-outline-white { padding: .75rem 1.75rem; font-size: .93rem; }
+
+  /* ── Footer ── */
+  .footer { padding: 2.5rem 0 1.25rem; }
+  .footer h5 { font-size: .9rem; margin-bottom: .75rem; }
+
+  /* ── Section helpers ── */
+  .section-title { font-size: clamp(1.45rem, 5vw, 2rem); }
+  .section-sub   { font-size: .92rem; }
+
+  /* ── Page-hero (Nosotros, FAQ) ── */
+  .page-hero { padding: 4.5rem 0 3rem; }
+  .page-hero h1 { font-size: clamp(1.65rem, 6vw, 2.5rem); }
+  .page-hero p  { font-size: .95rem; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — TELÉFONO  ≤ 576px
+══════════════════════════════════════════ */
+@media (max-width: 576px) {
+  /* ── Navbar ── */
+  .navbar-logo-img {
+    width: 38px; height: 38px; border-radius: 10px;
+    box-shadow: 0 0 0 2px rgba(14,165,233,.3), 0 3px 12px rgba(14,165,233,.2);
+  }
+  .navbar-brand-custom { font-size: .82rem; gap: .4rem; }
+  .navbar-inner { height: 60px; }
+  :root { --navbar-h: 60px; }
+
+  /* ── Hero ── */
+  .hero { padding-top: 60px; }
+  .hero-title { font-size: clamp(1.85rem, 9vw, 2.6rem); }
+  .hero-badge { font-size: .68rem; padding: .33rem .8rem .33rem .56rem; gap: .5rem; margin-bottom: 1.2rem; }
+  .hero-chip strong { font-size: 1.2rem; }
+  .hero-chip span   { font-size: .65rem; letter-spacing: .05em; }
+  .hero-img { max-height: 200px; border-radius: 18px; }
+  .hero-img-wrap { margin-top: 1.5rem; }
+
+  /* ── How ── */
+  .how-card { padding: 1.1rem .9rem; border-radius: 16px; }
+  .how-card-img-wrap { height: 130px; }
+  .how-card h5 { font-size: 1rem; }
+  .how-card-step { font-size: .85rem; padding: .28rem .65rem; }
+
+  /* ── Services ── */
+  .service-card-img-wrap { height: 155px; }
+  .service-card-body { padding: 1.35rem; }
+
+  /* ── Why features ── */
+  .why-feature { padding: .85rem; }
+
+  /* ── Contact ── */
+  .contact-icon { width: 52px; height: 52px; border-radius: 13px; }
+
+  /* ── Carrusel ── */
+  .carrusel-section { padding: 2.5rem 0 !important; }
+
+  /* ── Login / Registro ── */
+  .login-page { padding: .75rem; }
+  .login-card-light {
+    padding: 1.6rem 1.2rem 1.2rem;
+    border-radius: 18px;
+  }
+  .login-outer { max-width: 100%; }
+  .login-logo-light { width: 56px; height: 56px; border-radius: 13px; }
+  .login-title-light { font-size: 1.15rem; }
+  .login-mascot { width: 78px; height: 78px; }
+  .login-mascot-float { margin-bottom: -14px; }
+  .login-mascot.covering .mascot-hand-l,
+  .login-mascot.covering .mascot-hand-r { top: 17px; }
+  .login-field { padding: .55rem .4rem; font-size: .85rem; }
+  .login-label { font-size: .78rem; }
+  .btn-login-light { padding: .68rem; font-size: .9rem; }
+
+  /* ── Cotización ── */
+  .cot-page { padding-top: 75px; }
+  .form-card { padding: 1.5rem; border-radius: 16px; }
+}
