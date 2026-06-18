@@ -64,3 +64,7 @@ class Usuario(BaseModel):
 class UsuarioLogin(BaseModel):
     correo: str
     password: str
+
+class VerificacionCodigo(BaseModel):
+    correo: str
+    codigo: str

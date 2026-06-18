@@ -85,3 +85,21 @@ async def verificar_usuario(correo: str):
         {"correo": correo},
         {"$set": {"is_verified": True}}
     )
+
+async def guardar_codigo_verificacion(correo: str, codigo: str):
+    await col_usuarios.update_one(
+        {"correo": correo},
+        {"$set": {"codigo_verificacion": codigo, "intentos_verificacion": 0}}
+    )
+
+async def incrementar_intento_verificacion(correo: str):
+    await col_usuarios.update_one(
+        {"correo": correo},
+        {"$inc": {"intentos_verificacion": 1}}
+    )
+
+async def limpiar_codigo_verificacion(correo: str):
+    await col_usuarios.update_one(
+        {"correo": correo},
+        {"$unset": {"codigo_verificacion": "", "intentos_verificacion": ""}}
+    )

@@ -7,7 +7,8 @@ import Nosotros        from './pages/Nosotros'
 import FAQ             from './pages/FAQ'
 import Servicios       from './pages/Servicios'
 import ServicioDetalle from './pages/ServicioDetalle'
-import Registro        from './pages/Registro'
+import Registro           from './pages/Registro'
+import VerificacionCodigo from './pages/VerificacionCodigo'
 import Chatbot from './components/Chatbot'
 import ScrollToTop from './components/ScrollToTop'
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/"                  element={<Landing />} />
         <Route path="/login"             element={<Login />} />
         <Route path="/registro"          element={<Registro />} />
+        <Route path="/verificar-codigo"  element={<VerificacionCodigo />} />
         <Route path="/dashboard"         element={<Dashboard />} />
         <Route path="/cotizacion"        element={<Cotizacion />} />
         <Route path="/nosotros"          element={<Nosotros />} />
