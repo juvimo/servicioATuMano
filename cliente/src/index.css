@@ -1373,3 +1373,123 @@ body {
   .cot-page { padding-top: 75px; }
   .form-card { padding: 1.5rem; border-radius: 16px; }
 }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — MÓVIL  ≤ 768px
+   Cubre: Dashboard, Nosotros, FAQ, Servicios,
+   ServicioDetalle, VerificacionCodigo
+══════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Dashboard sidebar ── */
+  .sidebar { width: 190px; }
+  .dash-content { padding: 1.1rem; }
+  .topbar { padding: .85rem 1.1rem; flex-wrap: wrap; gap: .5rem; }
+  .topbar-title { font-size: 1rem; }
+  .stat-card { padding: 1.1rem; }
+  .stat-value { font-size: 1.6rem; }
+  .dash-content .table { font-size: .82rem; }
+  .table thead th,
+  .table tbody td { padding: .7rem 1rem; }
+
+  /* ── Nosotros ── */
+  .value-card { padding: 1.65rem; }
+  .value-icon { width: 50px; height: 50px; font-size: 1.45rem; border-radius: 12px; margin-bottom: 1rem; }
+  .value-card h5 { font-size: 1rem; }
+  .mission-card { padding: 2rem; }
+  .mission-card h4 { font-size: 1.15rem; }
+  .team-card { padding: 1.75rem 1.4rem; }
+  .team-avatar { width: 72px; height: 72px; font-size: 1.6rem; }
+
+  /* ── FAQ ── */
+  .faq-question { padding: 1.1rem 1.25rem; font-size: .9rem; }
+  .faq-icon { width: 28px; height: 28px; border-radius: 8px; font-size: .85rem; }
+  .faq-answer { padding: 0 1.25rem 1.1rem; font-size: .875rem; }
+  .faq-cat-btn { padding: .42rem 1rem; font-size: .82rem; }
+
+  /* ── Cotizacion (complementa el 576px) ── */
+  .form-card h2 { font-size: 1.3rem; }
+  .cot-page { padding-bottom: 2.5rem; }
+
+  /* ── VerificacionCodigo (.login-bg / .login-card) ── */
+  .login-bg { padding: 1.25rem; }
+  .login-card { padding: 2rem 1.6rem; border-radius: 20px; }
+  .login-logo { width: 52px; }
+  .login-card h2 { font-size: 1.5rem; }
+
+  /* ── Servicios grid (imágenes responsivas) ── */
+  .service-card-img-wrap { height: 185px; }
+  .service-card-body { padding: 1.4rem; }
+
+  /* ── ServicioDetalle — stats row ── */
+  .col-md-4 + .col-md-4 { margin-top: 0; }
+
+  /* ── Imágenes con tamaño fijo → responsivas ── */
+  .why-img { max-width: 100%; height: auto; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — TELÉFONO PEQUEÑO  ≤ 480px
+══════════════════════════════════════════ */
+@media (max-width: 480px) {
+
+  /* ── Dashboard sidebar compacto ── */
+  .sidebar { width: 56px; overflow: hidden; }
+  .sidebar-logo-area { padding: .7rem; justify-content: center; display: flex; }
+  .sidebar-logo-area > div { justify-content: center; }
+  .nav-section-label { display: none; }
+  .sidebar .nav-item { padding: .65rem; justify-content: center; gap: 0; margin: .05rem .3rem; }
+  .sidebar .logout { padding: .55rem; justify-content: center; gap: 0; }
+  .dash-content { padding: .75rem; }
+  .topbar { padding: .65rem .85rem; margin-bottom: 1rem; border-radius: 10px; }
+  .topbar-title { font-size: .88rem; }
+  .topbar-user strong { font-size: .82rem; }
+  .stat-card { padding: .9rem; border-radius: 13px; }
+  .stat-value { font-size: 1.35rem; }
+  .stat-label { font-size: .75rem; }
+  .stat-icon { width: 40px; height: 40px; font-size: 1rem; margin-bottom: .75rem; }
+  .add-form-card { padding: 1.1rem; }
+  .table thead th,
+  .table tbody td { padding: .6rem .75rem; font-size: .78rem; }
+
+  /* ── Nosotros ── */
+  .value-card { padding: 1.25rem; border-radius: 18px; }
+  .value-card h5 { font-size: .95rem; }
+  .value-card p  { font-size: .84rem; }
+  .value-icon { width: 44px; height: 44px; font-size: 1.3rem; border-radius: 11px; }
+  .mission-card { padding: 1.5rem; border-radius: 18px; }
+  .mission-card .mc-icon { font-size: 1.75rem; margin-bottom: .85rem; }
+  .mission-card h4 { font-size: 1.05rem; }
+  .mission-card p  { font-size: .85rem; }
+  .team-card { padding: 1.35rem 1rem; border-radius: 18px; }
+  .team-avatar { width: 62px; height: 62px; font-size: 1.35rem; margin-bottom: 1rem; }
+  .team-card h5 { font-size: .9rem; }
+
+  /* ── FAQ ── */
+  .faq-question { padding: .9rem 1rem; font-size: .84rem; }
+  .faq-icon { width: 24px; height: 24px; font-size: .78rem; border-radius: 7px; }
+  .faq-answer { padding: 0 1rem 1rem; font-size: .83rem; line-height: 1.7; }
+  .faq-cat-btn { padding: .38rem .85rem; font-size: .78rem; }
+  .faq-item { border-radius: 12px; }
+
+  /* ── Cotizacion service cards ── */
+  .cot-img-wrap { height: 80px; }
+  .cot-card-body { padding: .65rem .55rem .7rem; }
+  .cot-service-card h6 { font-size: .77rem; }
+  .cot-service-card p  { font-size: .69rem; }
+  .form-card { padding: 1.25rem; border-radius: 14px; }
+  .form-card h2 { font-size: 1.15rem; }
+
+  /* ── VerificacionCodigo ── */
+  .login-bg { padding: 1rem; }
+  .login-card { padding: 1.6rem 1.2rem; border-radius: 18px; }
+  .login-logo { width: 46px; }
+  .login-card h2 { font-size: 1.3rem; }
+
+  /* ── CTA section para móvil pequeño ── */
+  .cta-section { padding: 2.75rem 0; }
+
+  /* ── Imágenes fijas → responsivas ── */
+  .why-img,
+  .hero-img { max-width: 100%; height: auto; }
+}
