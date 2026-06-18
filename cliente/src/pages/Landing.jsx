@@ -81,9 +81,25 @@ const IMG = {
 };
 
 function Landing() {
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => {
+    if (sessionStorage.getItem("introShown")) return false;
+    sessionStorage.setItem("introShown", "1");
+    return true;
+  });
   useEffect(() => {
+    if (!showIntro) return;
     const t = setTimeout(() => setShowIntro(false), 2750);
+    return () => clearTimeout(t);
+  }, [showIntro]);
+
+  /* Scroll a sección pendiente al volver desde otra página */
+  useEffect(() => {
+    const target = sessionStorage.getItem("pendingScroll");
+    if (!target) return;
+    sessionStorage.removeItem("pendingScroll");
+    const t = setTimeout(() => {
+      document.getElementById(target)?.scrollIntoView({ behavior: "smooth" });
+    }, 120);
     return () => clearTimeout(t);
   }, []);
 

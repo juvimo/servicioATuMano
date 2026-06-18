@@ -8,11 +8,9 @@ import FAQ             from './pages/FAQ'
 import Servicios       from './pages/Servicios'
 import ServicioDetalle from './pages/ServicioDetalle'
 import Registro        from './pages/Registro'
-<<<<<<< HEAD
-import Chatbot    from './components/Chatbot'
-=======
-import ScrollToTop     from './components/ScrollToTop'
->>>>>>> 89e2850 (Juana)
+import Chatbot from './components/Chatbot'
+import ScrollToTop from './components/ScrollToTop'
+
 
 function App() {
   return (
