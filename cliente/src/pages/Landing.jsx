@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import logo2 from "../assets/logo2.jpg";
 import logo3 from "../assets/logo3.jpg";
 import { Link } from "react-router-dom";
 import CarruselAntesDepues from "../components/CarruselAntesDepues";
@@ -128,6 +127,18 @@ function Landing() {
             <h2 className="intro-title">Servicio a tu Mano</h2>
             <p className="intro-sub">Limpieza profesional a vapor</p>
           </div>
+
+          {/* Aspiradora animada deslizándose bajo el texto */}
+          <div className="intro-vac-row">
+            <div className="intro-trail" />
+            <div className="intro-glow" />
+            <div className="intro-vac">
+              <RobotVacuum />
+              <div className="intro-bubble ib1" />
+              <div className="intro-bubble ib2" />
+              <div className="intro-bubble ib3" />
+            </div>
+          </div>
         </div>
       )}
 
@@ -156,6 +167,13 @@ function Landing() {
           <div className="steam-drop sd3" /><div className="steam-drop sd4" />
           <div className="steam-drop sd5" /><div className="steam-drop sd6" />
           <div className="steam-drop sd7" /><div className="steam-drop sd8" />
+        </div>
+
+        {/* Aspiradora deslizante permanente en el hero */}
+        <div className="hero-vac-slide" aria-hidden="true">
+          <div className="hero-vac-runner">
+            <RobotVacuum />
+          </div>
         </div>
 
         <div className="container hero-container">
@@ -202,7 +220,15 @@ function Landing() {
 
             <div className="col-lg-6">
               <div className="hero-img-wrap">
-                <img src={logo2} className="hero-img" alt="Limpieza profesional a vapor" />
+                <video
+                  src="/videos/intro-servicio.mp4"
+                  className="hero-img"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  style={{ maxHeight: "520px" }}
+                />
 
                 <div className="hero-badge-float hero-badge-float-1">
                   <div className="hbf-icon">

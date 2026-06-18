@@ -1055,3 +1055,161 @@ body {
   padding: 2.25rem; box-shadow: 0 4px 24px rgba(0,0,0,.05);
 }
 .form-card h2 { font-weight: 800; font-size: 1.5rem; color: #0f172a; letter-spacing: -.02em; }
+
+/* ══════════════════════════════════════════
+   LOGIN LIGHT — FONDO AZUL VAPOR + TARJETA BLANCA
+══════════════════════════════════════════ */
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(150deg, #0c4a6e 0%, #075985 40%, #0284c7 75%, #38bdf8 100%);
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem 1rem; position: relative; overflow: hidden;
+}
+
+.login-outer {
+  width: 100%; max-width: 460px;
+  position: relative; z-index: 10;
+}
+
+/* Mascota flotante sobre la tarjeta */
+.login-mascot-float {
+  display: flex; justify-content: center;
+  margin-bottom: -28px;
+  position: relative; z-index: 20;
+  animation: mascotFloat 3.2s ease-in-out infinite;
+}
+.login-mascot-float.no-float { animation-play-state: paused; }
+@keyframes mascotFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* Tarjeta blanca */
+.login-card-light {
+  background: #fff;
+  border-radius: 28px;
+  padding: 3.5rem 2.5rem 2.5rem;
+  box-shadow: 0 32px 80px rgba(0,0,0,.20), 0 0 0 1.5px rgba(255,255,255,.45);
+  animation: loginCardIn .55s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes loginCardIn {
+  from { opacity: 0; transform: translateY(28px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+
+/* Logo grande con brillo */
+.login-logo-light {
+  width: 86px; height: 86px;
+  border-radius: 20px; object-fit: cover;
+  display: block; margin: 0 auto;
+  box-shadow: 0 0 0 4px rgba(14,165,233,.22), 0 8px 28px rgba(14,165,233,.3);
+}
+
+.login-title-light {
+  font-size: 1.7rem; font-weight: 800;
+  color: #0c1a2e; letter-spacing: -.025em;
+}
+
+/* Inputs */
+.login-label {
+  display: block; font-size: .82rem; font-weight: 600; color: #475569; margin-bottom: .4rem;
+}
+.login-input-wrap {
+  display: flex; align-items: center;
+  border: 1.5px solid #dbeafe; border-radius: 12px;
+  background: #f8fbff;
+  transition: border-color .2s, box-shadow .2s;
+  overflow: hidden;
+}
+.login-input-wrap:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(14,165,233,.12);
+  background: #fff;
+}
+.login-input-icon {
+  display: flex; align-items: center; padding: 0 .85rem; flex-shrink: 0;
+}
+.login-field {
+  flex: 1; border: none; background: transparent;
+  padding: .72rem .5rem; font-size: .9rem; color: #1e293b;
+  outline: none; min-width: 0;
+}
+.login-field::placeholder { color: #94a3b8; }
+.login-eye-btn {
+  background: transparent; border: none; padding: 0 .85rem;
+  cursor: pointer; display: flex; align-items: center;
+  flex-shrink: 0; transition: color .2s;
+}
+.login-eye-btn:hover { color: var(--primary); }
+
+/* Botón submit */
+.btn-login-light {
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff; border: none; border-radius: 14px;
+  padding: .85rem; font-weight: 700; font-size: 1rem;
+  cursor: pointer; font-family: inherit;
+  transition: opacity .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 6px 24px rgba(14,165,233,.32);
+}
+.btn-login-light:hover    { opacity: .92; transform: translateY(-2px); box-shadow: 0 10px 32px rgba(14,165,233,.42); }
+.btn-login-light:disabled { opacity: .6;  transform: none;            box-shadow: none; }
+
+/* ══════════════════════════════════════════
+   MASCOTA ANIMADA
+══════════════════════════════════════════ */
+.login-mascot {
+  position: relative;
+  width: 120px; height: 120px;
+  display: inline-block;
+}
+
+/* Ojos: se ocultan al tapar */
+.mascot-eyes { transition: opacity .3s ease; }
+.login-mascot.covering .mascot-eyes { opacity: 0; }
+
+/* Boca feliz / tímida */
+.mascot-mouth-happy { transition: opacity .3s ease; opacity: 1; }
+.mascot-mouth-shy   { transition: opacity .3s ease; opacity: 0; }
+.login-mascot.covering .mascot-mouth-happy { opacity: 0; }
+.login-mascot.covering .mascot-mouth-shy   { opacity: 1; }
+
+/* Manos */
+.mascot-hand {
+  position: absolute;
+  width: 46px; height: 55px;
+  transition: top .52s cubic-bezier(.34,1.56,.64,1), opacity .32s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+.mascot-hand-l { left:  2px; top: 100px; opacity: 0; }
+.mascot-hand-r { right: 2px; top: 100px; opacity: 0; }
+.mascot-hand-r > svg { transform: scaleX(-1); display: block; }
+
+/* Manos suben al cubrir */
+.login-mascot.covering .mascot-hand-l,
+.login-mascot.covering .mascot-hand-r { top: 32px; opacity: 1; }
+
+/* ══════════════════════════════════════════
+   HERO — ASPIRADORA DESLIZANTE
+══════════════════════════════════════════ */
+.hero-vac-slide {
+  position: absolute;
+  bottom: 50px;
+  left: 0; right: 0;
+  height: 100px;
+  pointer-events: none;
+  z-index: 4;
+  overflow: hidden;
+}
+.hero-vac-runner {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  animation: heroVacRun 20s linear infinite;
+  filter: drop-shadow(0 0 14px rgba(56,189,248,.65));
+}
+@keyframes heroVacRun {
+  0%   { transform: translateX(calc(100vw + 130px)); }
+  100% { transform: translateX(-130px); }
+}

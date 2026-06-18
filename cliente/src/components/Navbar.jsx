@@ -62,7 +62,17 @@ function Navbar() {
       <div className="container">
         <div className="navbar-inner">
           <Link to="/" className="navbar-brand-custom" onClick={goInicio}>
-            <img src={logo} style={{ width: 36 }} alt="logo" />
+            <img
+              src={logo}
+              style={{
+                width: 58, height: 58,
+                borderRadius: "14px",
+                objectFit: "cover",
+                boxShadow: "0 0 0 3px rgba(14,165,233,.35), 0 6px 24px rgba(14,165,233,.3)",
+                flexShrink: 0,
+              }}
+              alt="logo"
+            />
             Servicio a tu Mano
           </Link>
 
