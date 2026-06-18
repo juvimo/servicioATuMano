@@ -21,3 +21,14 @@ export async function loginUsuario(correo, password) {
   if (!res.ok) throw new Error(data.detail || "Correo o contraseña incorrectos");
   return data;
 }
+
+export async function verificarCodigo(correo, codigo) {
+  const res = await fetch(`${BASE_URL}/api/auth/verificar-codigo`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ correo, codigo }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.detail || "Código incorrecto");
+  return data;
+}

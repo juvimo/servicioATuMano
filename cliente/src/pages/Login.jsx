@@ -63,13 +63,13 @@ function Login() {
           </div>
         )}
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} autoComplete="off">
           <div className="mb-3">
             <label className="form-label">Correo Electrónico</label>
             <div className="input-group login-input">
               <span className="input-group-text">📧</span>
               <input type="email" className="form-control" placeholder="correo@ejemplo.com"
-                value={email} onChange={e => setEmail(e.target.value)} />
+                autoComplete="off" value={email} onChange={e => setEmail(e.target.value)} />
             </div>
           </div>
 
@@ -78,7 +78,7 @@ function Login() {
             <div className="input-group login-input">
               <span className="input-group-text">🔒</span>
               <input type={verPass ? "text" : "password"} className="form-control" placeholder="••••••••"
-                value={password} onChange={e => setPassword(e.target.value)} />
+                autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} />
               <span className="input-group-text" style={{ cursor: "pointer", borderLeft: "none" }}
                 onClick={() => setVerPass(v => !v)}>
                 {verPass ? "🙈" : "👁"}

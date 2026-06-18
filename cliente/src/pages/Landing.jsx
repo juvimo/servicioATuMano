@@ -81,6 +81,10 @@ const IMG = {
 };
 
 function Landing() {
+  const usuario = (() => {
+    try { return JSON.parse(sessionStorage.getItem("usuario")); } catch { return null; }
+  })();
+
   const [showIntro, setShowIntro] = useState(() => {
     if (sessionStorage.getItem("introShown")) return false;
     sessionStorage.setItem("introShown", "1");
@@ -432,7 +436,9 @@ function Landing() {
           <p>Solicita tu cotización gratuita hoy. Sin compromisos, sin letra pequeña.</p>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
             <Link to="/cotizacion" className="btn-cta-white">Solicitar Cotización</Link>
-            <Link to="/login"      className="btn-cta-outline-white">Acceso Clientes</Link>
+            {(!usuario || usuario.rol !== "cliente") && (
+              <Link to="/login" className="btn-cta-outline-white">Acceso Clientes</Link>
+            )}
           </div>
         </div>
       </section>

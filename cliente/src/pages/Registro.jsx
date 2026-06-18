@@ -26,6 +26,7 @@ function Registro() {
     try {
       await registrarUsuario(nombre, email, password);
       setOk(true);
+      setTimeout(() => navigate(`/verificar-codigo?correo=${encodeURIComponent(email)}`), 800);
     } catch (err) {
       setError(err.message);
     } finally {
