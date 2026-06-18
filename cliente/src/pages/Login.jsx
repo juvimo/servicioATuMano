@@ -6,7 +6,7 @@ import { loginUsuario } from "../api/auth";
 /* ─── Mascota que tapa los ojos ─── */
 const Mascot = ({ covering }) => (
   <div className={`login-mascot${covering ? " covering" : ""}`}>
-    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="96" height="96" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* sombra */}
       <ellipse cx="60" cy="117" rx="26" ry="4" fill="rgba(0,0,0,.09)"/>
       {/* cuello */}
@@ -120,10 +120,10 @@ function Login() {
 
         {/* Tarjeta blanca */}
         <div className="login-card-light">
-          <div className="text-center mb-4">
-            <img src={logo} className="login-logo-light mb-3" alt="logo" />
+          <div className="text-center mb-3">
+            <img src={logo} className="login-logo-light mb-2" alt="logo" />
             <h2 className="login-title-light mb-1">Bienvenido</h2>
-            <p style={{ color: "#64748b", fontSize: ".9rem", margin: 0 }}>
+            <p style={{ color: "#64748b", fontSize: ".85rem", margin: 0 }}>
               Inicia sesión en tu cuenta
             </p>
           </div>
@@ -142,7 +142,7 @@ function Login() {
           )}
 
           <form onSubmit={handleLogin} autoComplete="off">
-            <div className="mb-3">
+            <div className="mb-2">
               <label className="login-label">Correo Electrónico</label>
               <div className="login-input-wrap">
                 <span className="login-input-icon">
@@ -162,7 +162,7 @@ function Login() {
               </div>
             </div>
 
-            <div className="mb-3">
+            <div className="mb-2">
               <label className="login-label">Contraseña</label>
               <div className="login-input-wrap">
                 <span className="login-input-icon">
@@ -201,8 +201,8 @@ function Login() {
               </div>
             </div>
 
-            <div className="d-flex justify-content-between align-items-center mb-4"
-              style={{ fontSize: ".85rem" }}>
+            <div className="d-flex justify-content-between align-items-center mb-3"
+              style={{ fontSize: ".82rem" }}>
               <label style={{ cursor: "pointer", color: "#475569", display: "flex", alignItems: "center", gap: ".4rem" }}>
                 <input type="checkbox" className="me-1" />
                 Recordarme
@@ -217,14 +217,14 @@ function Login() {
             </button>
           </form>
 
-          <div className="text-center mt-3">
-            <span style={{ color: "#64748b", fontSize: ".85rem" }}>¿No tienes cuenta? </span>
-            <Link to="/registro" style={{ color: "var(--primary)", fontWeight: 600, textDecoration: "none", fontSize: ".85rem" }}>
+          <div className="text-center mt-2">
+            <span style={{ color: "#64748b", fontSize: ".82rem" }}>¿No tienes cuenta? </span>
+            <Link to="/registro" style={{ color: "var(--primary)", fontWeight: 600, textDecoration: "none", fontSize: ".82rem" }}>
               Regístrate aquí
             </Link>
           </div>
-          <div className="text-center mt-3">
-            <Link to="/" style={{ color: "#94a3b8", textDecoration: "none", fontSize: ".85rem" }}>
+          <div className="text-center mt-2">
+            <Link to="/" style={{ color: "#94a3b8", textDecoration: "none", fontSize: ".8rem" }}>
               ← Volver al inicio
             </Link>
           </div>

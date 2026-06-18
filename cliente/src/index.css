@@ -1063,80 +1063,80 @@ body {
   min-height: 100vh;
   background: linear-gradient(150deg, #0c4a6e 0%, #075985 40%, #0284c7 75%, #38bdf8 100%);
   display: flex; align-items: center; justify-content: center;
-  padding: 2rem 1rem; position: relative; overflow: hidden;
+  padding: 1rem; position: relative; overflow: hidden;
 }
 
 .login-outer {
-  width: 100%; max-width: 460px;
+  width: 100%; max-width: 440px;
   position: relative; z-index: 10;
 }
 
 /* Mascota flotante sobre la tarjeta */
 .login-mascot-float {
   display: flex; justify-content: center;
-  margin-bottom: -28px;
+  margin-bottom: -20px;
   position: relative; z-index: 20;
   animation: mascotFloat 3.2s ease-in-out infinite;
 }
 .login-mascot-float.no-float { animation-play-state: paused; }
 @keyframes mascotFloat {
   0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-10px); }
+  50%       { transform: translateY(-8px); }
 }
 
 /* Tarjeta blanca */
 .login-card-light {
   background: #fff;
-  border-radius: 28px;
-  padding: 3.5rem 2.5rem 2.5rem;
-  box-shadow: 0 32px 80px rgba(0,0,0,.20), 0 0 0 1.5px rgba(255,255,255,.45);
-  animation: loginCardIn .55s cubic-bezier(.22,1,.36,1) both;
+  border-radius: 24px;
+  padding: 2.2rem 2rem 1.6rem;
+  box-shadow: 0 24px 60px rgba(0,0,0,.18), 0 0 0 1.5px rgba(255,255,255,.45);
+  animation: loginCardIn .5s cubic-bezier(.22,1,.36,1) both;
 }
 @keyframes loginCardIn {
-  from { opacity: 0; transform: translateY(28px) scale(.97); }
+  from { opacity: 0; transform: translateY(24px) scale(.97); }
   to   { opacity: 1; transform: translateY(0)    scale(1);   }
 }
 
 /* Logo grande con brillo */
 .login-logo-light {
-  width: 86px; height: 86px;
-  border-radius: 20px; object-fit: cover;
+  width: 70px; height: 70px;
+  border-radius: 16px; object-fit: cover;
   display: block; margin: 0 auto;
-  box-shadow: 0 0 0 4px rgba(14,165,233,.22), 0 8px 28px rgba(14,165,233,.3);
+  box-shadow: 0 0 0 3px rgba(14,165,233,.22), 0 6px 22px rgba(14,165,233,.28);
 }
 
 .login-title-light {
-  font-size: 1.7rem; font-weight: 800;
+  font-size: 1.45rem; font-weight: 800;
   color: #0c1a2e; letter-spacing: -.025em;
 }
 
 /* Inputs */
 .login-label {
-  display: block; font-size: .82rem; font-weight: 600; color: #475569; margin-bottom: .4rem;
+  display: block; font-size: .8rem; font-weight: 600; color: #475569; margin-bottom: .3rem;
 }
 .login-input-wrap {
   display: flex; align-items: center;
-  border: 1.5px solid #dbeafe; border-radius: 12px;
+  border: 1.5px solid #dbeafe; border-radius: 11px;
   background: #f8fbff;
   transition: border-color .2s, box-shadow .2s;
   overflow: hidden;
 }
 .login-input-wrap:focus-within {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(14,165,233,.12);
+  box-shadow: 0 0 0 3px rgba(14,165,233,.11);
   background: #fff;
 }
 .login-input-icon {
-  display: flex; align-items: center; padding: 0 .85rem; flex-shrink: 0;
+  display: flex; align-items: center; padding: 0 .75rem; flex-shrink: 0;
 }
 .login-field {
   flex: 1; border: none; background: transparent;
-  padding: .72rem .5rem; font-size: .9rem; color: #1e293b;
+  padding: .6rem .4rem; font-size: .88rem; color: #1e293b;
   outline: none; min-width: 0;
 }
 .login-field::placeholder { color: #94a3b8; }
 .login-eye-btn {
-  background: transparent; border: none; padding: 0 .85rem;
+  background: transparent; border: none; padding: 0 .75rem;
   cursor: pointer; display: flex; align-items: center;
   flex-shrink: 0; transition: color .2s;
 }
@@ -1146,22 +1146,23 @@ body {
 .btn-login-light {
   width: 100%;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: #fff; border: none; border-radius: 14px;
-  padding: .85rem; font-weight: 700; font-size: 1rem;
+  color: #fff; border: none; border-radius: 12px;
+  padding: .72rem; font-weight: 700; font-size: .95rem;
   cursor: pointer; font-family: inherit;
   transition: opacity .2s, transform .15s, box-shadow .2s;
-  box-shadow: 0 6px 24px rgba(14,165,233,.32);
+  box-shadow: 0 5px 20px rgba(14,165,233,.3);
 }
-.btn-login-light:hover    { opacity: .92; transform: translateY(-2px); box-shadow: 0 10px 32px rgba(14,165,233,.42); }
-.btn-login-light:disabled { opacity: .6;  transform: none;            box-shadow: none; }
+.btn-login-light:hover    { opacity: .92; transform: translateY(-2px); box-shadow: 0 9px 28px rgba(14,165,233,.4); }
+.btn-login-light:disabled { opacity: .6;  transform: none;             box-shadow: none; }
 
 /* ══════════════════════════════════════════
    MASCOTA ANIMADA
 ══════════════════════════════════════════ */
 .login-mascot {
   position: relative;
-  width: 120px; height: 120px;
+  width: 96px; height: 96px;
   display: inline-block;
+  overflow: visible;
 }
 
 /* Ojos: se ocultan al tapar */
@@ -1177,18 +1178,29 @@ body {
 /* Manos */
 .mascot-hand {
   position: absolute;
-  width: 46px; height: 55px;
-  transition: top .52s cubic-bezier(.34,1.56,.64,1), opacity .32s ease;
+  width: 44px; height: 52px;
+  transition: top .5s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
   pointer-events: none;
   z-index: 5;
 }
-.mascot-hand-l { left:  2px; top: 100px; opacity: 0; }
-.mascot-hand-r { right: 2px; top: 100px; opacity: 0; }
+.mascot-hand-l { left:  0;   top: 80px; opacity: 0; }
+.mascot-hand-r { right: 0;   top: 80px; opacity: 0; }
 .mascot-hand-r > svg { transform: scaleX(-1); display: block; }
 
 /* Manos suben al cubrir */
 .login-mascot.covering .mascot-hand-l,
-.login-mascot.covering .mascot-hand-r { top: 32px; opacity: 1; }
+.login-mascot.covering .mascot-hand-r { top: 22px; opacity: 1; }
+
+/* Pantallas muy pequeñas */
+@media (max-height: 620px) {
+  .login-mascot-float { margin-bottom: -14px; }
+  .login-card-light   { padding: 1.6rem 1.8rem 1.2rem; }
+  .login-logo-light   { width: 54px; height: 54px; border-radius: 12px; }
+  .login-title-light  { font-size: 1.2rem; }
+  .login-mascot       { width: 78px; height: 78px; }
+  .login-mascot.covering .mascot-hand-l,
+  .login-mascot.covering .mascot-hand-r { top: 16px; }
+}
 
 /* ══════════════════════════════════════════
    HERO — ASPIRADORA DESLIZANTE
