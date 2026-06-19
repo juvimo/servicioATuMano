@@ -900,7 +900,7 @@ function Dashboard() {
           <>
             {/* Resumen gastos por categoría */}
             <div className="row g-3 mb-3">
-              {["Insumos","Operativo","Equipamiento","Marketing"].map(cat => {
+              {["Insumos/Productos Vapor","Transporte","Equipamiento/Máquinas","Marketing"].map(cat => {
                 const total = gastos.filter(g => g.categoria === cat).reduce((s,g) => s + Number(g.monto),0);
                 return (
                   <div className="col-sm-6 col-xl-3" key={cat}>
@@ -955,7 +955,7 @@ function Dashboard() {
           <>
             {/* Resumen ingresos por categoría */}
             <div className="row g-3 mb-3">
-              {["Residencial","Comercial","Tapicería"].map(cat => {
+              {["Residencial","Comercial","Tapicería/Sofás"].map(cat => {
                 const total = ingresos.filter(i => i.categoria === cat).reduce((s,i) => s + Number(i.monto),0);
                 return (
                   <div className="col-sm-6 col-xl-4" key={cat}>

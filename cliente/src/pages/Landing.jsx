@@ -497,30 +497,34 @@ function Landing() {
             </div>
 
             <div className="col-6 col-md-3">
-              <h5>Servicios</h5>
+              <h5>Servicios a Vapor</h5>
               <ul>
-                <li><Link to="/cotizacion">Limpieza Residencial</Link></li>
-                <li><Link to="/cotizacion">Limpieza Comercial</Link></li>
-                <li><Link to="/cotizacion">Limpieza Profunda</Link></li>
-                <li><Link to="/cotizacion">Tapicería y Muebles</Link></li>
-                <li><Link to="/cotizacion">Tapetes y Pisos</Link></li>
+                <li><Link to="/cotizacion">Muebles y Sofás</Link></li>
+                <li><Link to="/cotizacion">Colchones</Link></li>
+                <li><Link to="/cotizacion">Tapetes y Alfombras</Link></li>
+                <li><Link to="/cotizacion">Tapicería de Automóviles</Link></li>
+                <li><Link to="/cotizacion">Residencial y Comercial</Link></li>
+                <li><Link to="/cotizacion">Baños y Post-Obra</Link></li>
               </ul>
             </div>
 
             <div className="col-md-3">
               <h5>Contacto</h5>
               <p style={{ marginBottom: ".4rem", display: "flex", alignItems: "center", gap: ".5rem" }}>
-                <IconPhone /> +1 (555) 123-4567
+                <IconPhone /> Juan Pablo: 321 219 6255
+              </p>
+              <p style={{ marginBottom: ".4rem", display: "flex", alignItems: "center", gap: ".5rem" }}>
+                <IconPhone /> Sandra Milena: 312 527 6445
               </p>
               <p style={{ marginBottom: ".4rem", display: "flex", alignItems: "center", gap: ".5rem" }}>
                 <IconEmail /> info@servicioatumano.com
               </p>
               <p style={{ marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: ".5rem" }}>
-                <IconLocation /> Ciudad, País
+                <IconLocation /> Alrededores de Cundinamarca · A domicilio
               </p>
               <h5>Horarios</h5>
-              <p style={{ marginBottom: ".3rem" }}>Lun – Vie: 8AM – 6PM</p>
-              <p>Sábado: 9AM – 4PM</p>
+              <p style={{ marginBottom: ".3rem" }}>Lun – Sáb: 7AM – 6PM</p>
+              <p>Dom: Previa cita</p>
             </div>
 
           </div>
