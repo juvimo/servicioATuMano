@@ -50,11 +50,11 @@ const DEMO_SERVICIOS = [
 ];
 
 const DEMO_COTIZACIONES = [
-  { _id: "c1", nombre: "María García",    telefono: "310-555-0101", correo: "maria@email.com",  servicio: "Limpieza Residencial", info: "Casa de 3 habitaciones", fecha: "2026-05-10", estado: "Pendiente" },
-  { _id: "c2", nombre: "Juan Pérez",      telefono: "320-555-0202", correo: "juan@email.com",   servicio: "Limpieza Profunda",     info: "Apartamento 60 m²",      fecha: "2026-05-11", estado: "Confirmada" },
-  { _id: "c3", nombre: "Ana Martínez",    telefono: "300-555-0303", correo: "ana@email.com",    servicio: "Limpieza Comercial",    info: "Oficina 4 pisos",        fecha: "2026-05-12", estado: "Pendiente" },
-  { _id: "c4", nombre: "Carlos López",    telefono: "315-555-0404", correo: "carlos@email.com", servicio: "Limpieza de Tapetes",   info: "Sala y comedor",         fecha: "2026-05-13", estado: "Atendida"  },
-  { _id: "c5", nombre: "Laura Gómez",     telefono: "318-555-0505", correo: "laura@email.com",  servicio: "Limpieza a Vapor",      info: "Colchón + sofá",         fecha: "2026-05-14", estado: "Pendiente" },
+  { _id: "c1", nombre: "María García",    telefono: "310-555-0101", correo: "maria@email.com",  servicio: "Vapor de Muebles y Sofás",     info: "Sala con 2 sofás de 3 puestos",       fecha: "2026-06-10", estado: "Pendiente" },
+  { _id: "c2", nombre: "Juan Pérez",      telefono: "320-555-0202", correo: "juan@email.com",   servicio: "Limpieza de Colchones",         info: "2 colchones dobles + 1 sencillo",     fecha: "2026-06-11", estado: "Confirmada" },
+  { _id: "c3", nombre: "Ana Martínez",    telefono: "300-555-0303", correo: "ana@email.com",    servicio: "Desinfección Comercial",        info: "Restaurante, cocina + 20 sillas",     fecha: "2026-06-12", estado: "Pendiente" },
+  { _id: "c4", nombre: "Carlos López",    telefono: "315-555-0404", correo: "carlos@email.com", servicio: "Alfombras y Tapetes a Vapor",   info: "Tapete persa 3×4 m + sala",           fecha: "2026-06-13", estado: "Atendida"  },
+  { _id: "c5", nombre: "Laura Gómez",     telefono: "318-555-0505", correo: "laura@email.com",  servicio: "Vapor Residencial Integral",    info: "Casa 3 hab + sala + comedor",         fecha: "2026-06-14", estado: "Pendiente" },
 ];
 
 const DEMO_CLIENTES = [
@@ -67,24 +67,24 @@ const DEMO_CLIENTES = [
 ];
 
 const DEMO_GASTOS = [
-  { _id: "g1", concepto: "Productos de limpieza",  categoria: "Insumos",      monto: 85000,  fecha: "2026-05-01", nota: "Jabón, cloro, desinfectante" },
-  { _id: "g2", concepto: "Transporte empleados",   categoria: "Operativo",    monto: 45000,  fecha: "2026-05-03", nota: "" },
-  { _id: "g3", concepto: "Uniformes",              categoria: "Equipamiento", monto: 120000, fecha: "2026-05-05", nota: "4 uniformes nuevos" },
-  { _id: "g4", concepto: "Publicidad redes",       categoria: "Marketing",    monto: 60000,  fecha: "2026-05-08", nota: "Pauta Instagram" },
-  { _id: "g5", concepto: "Herramientas",           categoria: "Equipamiento", monto: 95000,  fecha: "2026-05-10", nota: "Aspiradora y trapero" },
+  { _id: "g1", concepto: "Detergente y productos vapor",  categoria: "Insumos/Productos Vapor",  monto: 85000,  fecha: "2026-06-01", nota: "Desengrasante, antihongos, aromatizante" },
+  { _id: "g2", concepto: "Transporte al domicilio",       categoria: "Transporte",               monto: 45000,  fecha: "2026-06-03", nota: "Varios servicios en Cundinamarca" },
+  { _id: "g3", concepto: "Uniformes y EPP",               categoria: "Equipamiento/Máquinas",    monto: 120000, fecha: "2026-06-05", nota: "4 uniformes + guantes + tapabocas" },
+  { _id: "g4", concepto: "Publicidad redes sociales",     categoria: "Marketing",                monto: 60000,  fecha: "2026-06-08", nota: "Pauta Instagram — antes/después vapor" },
+  { _id: "g5", concepto: "Mantenimiento máquina vapor",   categoria: "Equipamiento/Máquinas",    monto: 95000,  fecha: "2026-06-10", nota: "Revisión caldera + filtros" },
 ];
 
 const DEMO_INGRESOS = [
-  { _id: "i1", concepto: "Limpieza casa García",   categoria: "Residencial", monto: 150000, fecha: "2026-05-02", nota: "Pago efectivo" },
-  { _id: "i2", concepto: "Limpieza oficina TechCo",categoria: "Comercial",   monto: 320000, fecha: "2026-05-04", nota: "Transferencia" },
-  { _id: "i3", concepto: "Tapetes López",          categoria: "Tapicería",   monto: 80000,  fecha: "2026-05-06", nota: "" },
-  { _id: "i4", concepto: "Limpieza profunda Apt",  categoria: "Residencial", monto: 200000, fecha: "2026-05-09", nota: "Pago app" },
-  { _id: "i5", concepto: "Colchones Gómez",        categoria: "Tapicería",   monto: 130000, fecha: "2026-05-11", nota: "Efectivo" },
-  { _id: "i6", concepto: "Limpieza mensual Pérez", categoria: "Residencial", monto: 240000, fecha: "2026-05-13", nota: "Contrato" },
+  { _id: "i1", concepto: "Sofás a Vapor — García",          categoria: "Tapicería/Sofás",   monto: 150000, fecha: "2026-06-02", nota: "Pago efectivo" },
+  { _id: "i2", concepto: "Desinfección Comercial — TechCo", categoria: "Comercial",          monto: 320000, fecha: "2026-06-04", nota: "Transferencia" },
+  { _id: "i3", concepto: "Tapetes a Vapor — López",         categoria: "Tapicería/Tapetes",  monto: 80000,  fecha: "2026-06-06", nota: "" },
+  { _id: "i4", concepto: "Vapor Residencial — Apt Ruiz",    categoria: "Residencial",        monto: 200000, fecha: "2026-06-09", nota: "Pago app" },
+  { _id: "i5", concepto: "Colchones a Vapor — Gómez",       categoria: "Tapicería/Sofás",    monto: 130000, fecha: "2026-06-11", nota: "Efectivo" },
+  { _id: "i6", concepto: "Vapor Mensual — Familia Pérez",   categoria: "Residencial",        monto: 240000, fecha: "2026-06-13", nota: "Contrato mensual" },
 ];
 
-const CATEGORIAS_GASTO   = ["Insumos", "Operativo", "Equipamiento", "Marketing", "Nómina", "Otro"];
-const CATEGORIAS_INGRESO = ["Residencial", "Comercial", "Tapicería", "Vapor", "Otro"];
+const CATEGORIAS_GASTO   = ["Insumos/Productos Vapor", "Transporte", "Equipamiento/Máquinas", "Marketing", "Nómina", "Otro"];
+const CATEGORIAS_INGRESO = ["Residencial", "Comercial", "Tapicería/Sofás", "Tapicería/Tapetes", "Automóviles", "Post-Obra", "Baños", "Otro"];
 const CATEGORIAS_CLIENTE_SERVICIO = ["Vapor de Muebles y Sofás","Limpieza de Colchones","Alfombras y Tapetes a Vapor","Tapicería de Automóviles","Limpieza Residencial a Vapor","Limpieza Comercial a Vapor","Limpieza Post-Obra","Desinfección de Baños a Vapor","Vapor Residencial Integral","Desinfección Comercial"];
 
 /* ─── Helpers ─── */
@@ -317,6 +317,7 @@ function Dashboard() {
   const [loadingT,   setLoadingT]  = useState(true);
   const [demoMode,   setDemoMode]  = useState(false);
   const [alerta,     setAlerta]    = useState({ msg: "", tipo: "" });
+  const [hora,       setHora]      = useState(() => new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
 
   /* Servicios form */
   const [fTitulo,     setFTitulo]     = useState("");
@@ -356,6 +357,11 @@ function Dashboard() {
 
   useEffect(() => {
     if (!usuario.correo && !usuario.email) navigate("/login");
+  }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => setHora(new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", second: "2-digit" })), 1000);
+    return () => clearInterval(t);
   }, []);
 
   useEffect(() => {
@@ -558,7 +564,12 @@ function Dashboard() {
 
         {/* TOP BAR */}
         <div className="topbar">
-          <p className="topbar-title">{seccion}</p>
+          <div>
+            <p className="topbar-title" style={{ margin: 0, textTransform: "capitalize" }}>{seccion}</p>
+            <p style={{ margin: 0, fontSize: ".75rem", color: "#94a3b8", fontVariantNumeric: "tabular-nums" }}>
+              {new Date().toLocaleDateString("es-CO", { weekday:"long", day:"2-digit", month:"long", year:"numeric" })} · {hora}
+            </p>
+          </div>
           <div className="d-flex align-items-center gap-3">
             <button
               onClick={() => setModalInforme(true)}

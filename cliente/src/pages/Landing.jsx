@@ -400,9 +400,9 @@ function Landing() {
           </div>
           <div className="row g-4 mb-5">
             {[
-              { Icon: IconPhone,    t: "Teléfono",  v: "+1 (555) 123-4567",       sub: "Lun–Vie 8AM–6PM" },
+              { Icon: IconPhone,    t: "Teléfono",  v: "321 2196255 / 312 5276445",       sub: "Lun–Vie 8AM–6PM" },
               { Icon: IconEmail,    t: "Email",      v: "info@servicioatumano.com", sub: "Respuesta en 24 h" },
-              { Icon: IconLocation, t: "Ubicación", v: "Ciudad, País",             sub: "Servicio a domicilio" },
+              { Icon: IconLocation, t: "Ubicación", v: "Domicilio-Alrededores de Cundinamarcar",             sub: "Servicio a domicilio" },
             ].map(c => (
               <div className="col-md-4" key={c.t}>
                 <div className="contact-card">
