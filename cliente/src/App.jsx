@@ -9,9 +9,8 @@ import Servicios       from './pages/Servicios'
 import ServicioDetalle from './pages/ServicioDetalle'
 import Registro           from './pages/Registro'
 import VerificacionCodigo from './pages/VerificacionCodigo'
-import Chatbot           from './components/Chatbot'
-import CotizadorFlotante from './components/CotizadorFlotante'
-import ScrollToTop        from './components/ScrollToTop'
+import Chatbot    from './components/Chatbot'
+import ScrollToTop from './components/ScrollToTop'
 
 
 function App() {
@@ -31,7 +30,6 @@ function App() {
         <Route path="/servicios/:slug"   element={<ServicioDetalle />} />
       </Routes>
       <Chatbot />
-      <CotizadorFlotante />
     </BrowserRouter>
   )
 }

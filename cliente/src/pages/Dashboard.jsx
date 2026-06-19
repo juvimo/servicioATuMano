@@ -609,129 +609,228 @@ function Dashboard() {
         ══════════════════════════════════ */}
         {seccion === "dashboard" && (
           <>
-            {/* Stat cards */}
+            {/* ── Banner bienvenida con reloj ── */}
+            <div style={{
+              background: "linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#0369a1 100%)",
+              borderRadius: 22, padding: "1.5rem 2rem", marginBottom: "1.5rem",
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              boxShadow: "0 8px 32px rgba(15,23,42,.25)", flexWrap: "wrap", gap: "1rem",
+            }}>
+              <div>
+                <p style={{ color:"rgba(255,255,255,.55)", fontSize:".78rem", fontWeight:600, margin:0, letterSpacing:".06em", textTransform:"uppercase" }}>Panel de Control</p>
+                <h4 style={{ color:"#fff", margin:"4px 0 2px", fontWeight:900, fontSize:"1.25rem" }}>Servicio a tu Mano 🧹</h4>
+                <p style={{ color:"rgba(255,255,255,.55)", fontSize:".8rem", margin:0 }}>
+                  {new Date().toLocaleDateString("es-CO", { weekday:"long", day:"numeric", month:"long", year:"numeric" })}
+                </p>
+              </div>
+              <div style={{ display:"flex", gap:"1.25rem", flexWrap:"wrap" }}>
+                <div style={{ textAlign:"center", background:"rgba(255,255,255,.08)", borderRadius:16, padding:"0.75rem 1.25rem", border:"1px solid rgba(255,255,255,.12)" }}>
+                  <div style={{ color:"#38bdf8", fontWeight:900, fontSize:"1.6rem", fontVariantNumeric:"tabular-nums", lineHeight:1 }}>{hora}</div>
+                  <div style={{ color:"rgba(255,255,255,.45)", fontSize:".7rem", marginTop:3 }}>Hora actual</div>
+                </div>
+                <div style={{ textAlign:"center", background:"rgba(255,255,255,.08)", borderRadius:16, padding:"0.75rem 1.25rem", border:"1px solid rgba(255,255,255,.12)" }}>
+                  <div style={{ color:"#4ade80", fontWeight:900, fontSize:"1.6rem", lineHeight:1 }}>{completados}</div>
+                  <div style={{ color:"rgba(255,255,255,.45)", fontSize:".7rem", marginTop:3 }}>Completados hoy</div>
+                </div>
+                <div style={{ textAlign:"center", background:"rgba(255,255,255,.08)", borderRadius:16, padding:"0.75rem 1.25rem", border:"1px solid rgba(255,255,255,.12)" }}>
+                  <div style={{ color:"#fbbf24", fontWeight:900, fontSize:"1.6rem", lineHeight:1 }}>{cotPendientes}</div>
+                  <div style={{ color:"rgba(255,255,255,.45)", fontSize:".7rem", marginTop:3 }}>Cot. pendientes</div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── KPI Cards con gradientes ── */}
             <div className="row g-3 mb-4">
-              {statCards.map(c => (
+              {[
+                { label:"Ingresos del Mes",        valor:fmtCOP(totalIngresos), icon:"💰", g:"linear-gradient(135deg,#16a34a,#15803d)", sh:"rgba(22,163,74,.3)"  },
+                { label:"Gastos del Mes",          valor:fmtCOP(totalGastos),   icon:"📉", g:"linear-gradient(135deg,#dc2626,#b91c1c)", sh:"rgba(220,38,38,.3)"  },
+                { label:"Utilidad Neta",           valor:(utilidad>=0?"+":"")+fmtCOP(utilidad), icon:"📊", g: utilidad>=0?"linear-gradient(135deg,#0ea5e9,#0369a1)":"linear-gradient(135deg,#f59e0b,#d97706)", sh:"rgba(14,165,233,.3)" },
+                { label:"Servicios Completados",   valor:completados,           icon:"✅", g:"linear-gradient(135deg,#7c3aed,#6d28d9)", sh:"rgba(124,58,237,.3)" },
+                { label:"Cotizaciones Pendientes", valor:cotPendientes,         icon:"📋", g:"linear-gradient(135deg,#f59e0b,#d97706)", sh:"rgba(245,158,11,.3)" },
+                { label:"Clientes Registrados",    valor:clientes.length,       icon:"👥", g:"linear-gradient(135deg,#0891b2,#0e7490)", sh:"rgba(8,145,178,.3)"  },
+              ].map(c => (
                 <div className="col-sm-6 col-xl-4" key={c.label}>
-                  <div className="stat-card">
-                    <div className="stat-icon" style={{ background: c.bg, color: c.color }}>{c.icon}</div>
-                    <p className="stat-label">{c.label}</p>
-                    <p className="stat-value">{c.valor}</p>
+                  <div style={{
+                    background: c.g, borderRadius: 20, padding:"1.4rem 1.6rem",
+                    boxShadow:`0 8px 28px ${c.sh}`, position:"relative", overflow:"hidden",
+                    cursor:"default",
+                  }}>
+                    <div style={{ position:"absolute", top:-14, right:-14, width:80, height:80, borderRadius:"50%", background:"rgba(255,255,255,.08)" }} />
+                    <div style={{ position:"absolute", bottom:-24, right:18, width:60, height:60, borderRadius:"50%", background:"rgba(255,255,255,.05)" }} />
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", position:"relative" }}>
+                      <div>
+                        <p style={{ color:"rgba(255,255,255,.72)", fontSize:".72rem", fontWeight:700, margin:0, letterSpacing:".05em", textTransform:"uppercase" }}>{c.label}</p>
+                        <p style={{ color:"#fff", fontWeight:900, fontSize:"1.65rem", margin:"6px 0 0", lineHeight:1 }}>{c.valor}</p>
+                      </div>
+                      <div style={{ background:"rgba(255,255,255,.18)", borderRadius:14, width:50, height:50, display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.4rem", flexShrink:0 }}>
+                        {c.icon}
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Dos columnas: servicios recientes + cotizaciones recientes */}
+            {/* ── Financiero + Actividad ── */}
             <div className="row g-3 mb-3">
+
+              {/* Resumen financiero visual */}
               <div className="col-lg-7">
                 <div className="dash-card" style={{ height:"100%" }}>
                   <div className="dash-card-header">
-                    <h5>Servicios Recientes</h5>
-                    <button className="btn-green btn btn-sm" onClick={() => setSeccion("servicios")} style={{ borderRadius:10,fontSize:".82rem" }}>
-                      + Nuevo
-                    </button>
+                    <h5>📊 Resumen Financiero</h5>
+                    <div style={{ display:"flex", gap:6 }}>
+                      <button onClick={() => setSeccion("ingresos")} style={{ borderRadius:10, border:"1.5px solid #e2e8f0", background:"#f8fafc", color:"#334155", fontSize:".8rem", fontWeight:600, padding:"4px 12px", cursor:"pointer" }}>Ingresos</button>
+                      <button onClick={() => setSeccion("gastos")}   style={{ borderRadius:10, border:"1.5px solid #e2e8f0", background:"#f8fafc", color:"#334155", fontSize:".8rem", fontWeight:600, padding:"4px 12px", cursor:"pointer" }}>Gastos</button>
+                    </div>
                   </div>
                   <div className="dash-card-body">
-                    <table className="table table-borderless">
-                      <thead><tr><th>Servicio</th><th>Fecha</th><th>Estado</th></tr></thead>
-                      <tbody>
-                        {servicios.slice(0, 5).map(s => (
-                          <tr key={s._id}>
-                            <td style={{ fontWeight:600 }}>{s.titulo}</td>
-                            <td style={{ color:"#64748b",fontSize:".85rem" }}>{s.descripcion || "—"}</td>
-                            <td>
-                              <span className={`badge ${s.completada ? "bg-success" : "bg-warning text-dark"}`} style={{ borderRadius:8,fontWeight:600,fontSize:".73rem" }}>
-                                {s.completada ? "✓ Completado" : "⏳ Pendiente"}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    {/* Banner utilidad */}
+                    <div style={{
+                      background: utilidad>=0 ? "linear-gradient(135deg,#f0fdf4,#dcfce7)" : "linear-gradient(135deg,#fef2f2,#fee2e2)",
+                      border: `1.5px solid ${utilidad>=0?"#86efac":"#fca5a5"}`,
+                      borderRadius:16, padding:"1rem 1.4rem", marginBottom:"1.25rem",
+                      display:"flex", justifyContent:"space-between", alignItems:"center",
+                    }}>
+                      <div>
+                        <p style={{ margin:0, fontSize:".72rem", fontWeight:700, color:"#64748b", textTransform:"uppercase", letterSpacing:".05em" }}>Utilidad Neta del Mes</p>
+                        <p style={{ margin:"5px 0 0", fontWeight:900, fontSize:"1.9rem", color: utilidad>=0?"#15803d":"#dc2626", lineHeight:1 }}>
+                          {utilidad>=0?"+":""}{fmtCOP(utilidad)}
+                        </p>
+                      </div>
+                      <span style={{ fontSize:"2.5rem" }}>{utilidad>=0?"📈":"📉"}</span>
+                    </div>
+
+                    {/* Barra Ingresos */}
+                    <div style={{ marginBottom:"1rem" }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
+                        <span style={{ fontSize:".82rem", fontWeight:700, color:"#15803d" }}>💰 Ingresos</span>
+                        <span style={{ fontSize:".82rem", fontWeight:800, color:"#15803d" }}>{fmtCOP(totalIngresos)}</span>
+                      </div>
+                      <div style={{ background:"#e2e8f0", borderRadius:10, height:12, overflow:"hidden" }}>
+                        <div style={{ width:"100%", background:"linear-gradient(90deg,#16a34a,#4ade80)", height:"100%", borderRadius:10 }} />
+                      </div>
+                    </div>
+
+                    {/* Barra Gastos */}
+                    <div style={{ marginBottom:"1rem" }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
+                        <span style={{ fontSize:".82rem", fontWeight:700, color:"#b91c1c" }}>📉 Gastos</span>
+                        <span style={{ fontSize:".82rem", fontWeight:800, color:"#b91c1c" }}>{fmtCOP(totalGastos)}</span>
+                      </div>
+                      <div style={{ background:"#e2e8f0", borderRadius:10, height:12, overflow:"hidden" }}>
+                        <div style={{
+                          width: totalIngresos>0 ? Math.min(100,(totalGastos/totalIngresos)*100)+"%" : "0%",
+                          background:"linear-gradient(90deg,#dc2626,#f87171)", height:"100%", borderRadius:10,
+                          transition:"width .8s ease",
+                        }} />
+                      </div>
+                    </div>
+
+                    {/* Desglose rápido de ingresos */}
+                    <p style={{ fontSize:".75rem", fontWeight:700, color:"#64748b", textTransform:"uppercase", letterSpacing:".05em", margin:"1rem 0 0.6rem" }}>Últimos ingresos</p>
+                    <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                      {ingresos.slice(0,4).map(i => (
+                        <div key={i._id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"6px 10px", background:"#f8fafc", borderRadius:10, border:"1px solid #f1f5f9" }}>
+                          <span style={{ fontSize:".8rem", color:"#374151", fontWeight:500 }}>
+                            <span style={{ display:"inline-block", width:8, height:8, borderRadius:"50%", background:"#16a34a", marginRight:7 }}/>
+                            {i.concepto}
+                          </span>
+                          <span style={{ fontSize:".82rem", fontWeight:800, color:"#15803d" }}>{fmtCOP(i.monto)}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Margen */}
+                    <div style={{ marginTop:"1rem", display:"flex", justifyContent:"space-between", alignItems:"center", padding:"0.75rem 1rem", background:"#f0fdf4", borderRadius:12, border:"1px solid #bbf7d0" }}>
+                      <span style={{ fontSize:".82rem", fontWeight:600, color:"#166534" }}>Margen de utilidad del mes</span>
+                      <span style={{ fontWeight:900, fontSize:"1.1rem", color: utilidad>=0?"#15803d":"#dc2626" }}>
+                        {totalIngresos>0 ? Math.round((utilidad/totalIngresos)*100) : 0}%
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
+              {/* Actividad reciente — timeline */}
               <div className="col-lg-5">
                 <div className="dash-card" style={{ height:"100%" }}>
                   <div className="dash-card-header">
-                    <h5>Últimas Cotizaciones</h5>
-                    <button className="btn btn-sm" onClick={() => setSeccion("cotizaciones")}
-                      style={{ borderRadius:10,border:"1.5px solid #e2e8f0",background:"#f8fafc",color:"#334155",fontSize:".82rem",fontWeight:600 }}>
-                      Ver todas
+                    <h5>🕐 Actividad Reciente</h5>
+                    <button onClick={() => setSeccion("servicios")} style={{ borderRadius:10, border:"1.5px solid #e2e8f0", background:"#f8fafc", color:"#334155", fontSize:".8rem", fontWeight:600, padding:"4px 12px", cursor:"pointer" }}>
+                      Ver todos
                     </button>
                   </div>
-                  <div className="dash-card-body">
-                    <table className="table table-borderless">
-                      <thead><tr><th>Cliente</th><th>Servicio</th><th>Estado</th></tr></thead>
-                      <tbody>
-                        {cotizaciones.slice(0, 5).map(c => (
-                          <tr key={c._id}>
-                            <td style={{ fontWeight:600,fontSize:".875rem" }}>{c.nombre}</td>
-                            <td style={{ color:"#64748b",fontSize:".82rem" }}>{c.servicio}</td>
-                            <td><BadgeEstado estado={c.estado} /></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="dash-card-body" style={{ padding:"0.75rem 1rem" }}>
+                    {servicios.slice(0,7).map((s, idx) => (
+                      <div key={s._id} style={{ display:"flex", gap:12, alignItems:"flex-start", paddingBottom:10, marginBottom:10, borderBottom: idx < 6 ? "1px solid #f1f5f9" : "none" }}>
+                        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", paddingTop:3 }}>
+                          <div style={{
+                            width:11, height:11, borderRadius:"50%", flexShrink:0,
+                            background: s.completada ? "#16a34a" : "#f59e0b",
+                            boxShadow: s.completada ? "0 0 0 3px #dcfce7" : "0 0 0 3px #fef9c3",
+                          }} />
+                          {idx < 6 && <div style={{ width:1, height:"100%", background:"#e2e8f0", marginTop:4, minHeight:20 }} />}
+                        </div>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <p style={{ margin:0, fontWeight:700, fontSize:".82rem", color:"#0f172a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                            {s.titulo}
+                          </p>
+                          <div style={{ marginTop:3, display:"flex", gap:6, alignItems:"center", flexWrap:"wrap" }}>
+                            <span style={{
+                              fontSize:".7rem", fontWeight:700, borderRadius:6, padding:"1px 7px",
+                              background: s.completada ? "#dcfce7" : "#fef9c3",
+                              color:      s.completada ? "#15803d" : "#b45309",
+                            }}>
+                              {s.completada ? "✅ Completado" : "⏳ Pendiente"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {servicios.length === 0 && (
+                      <div style={{ textAlign:"center", color:"#94a3b8", padding:"2rem 0", fontSize:".85rem" }}>Sin actividad registrada</div>
+                    )}
+                    <button onClick={() => setSeccion("servicios")} className="btn-green btn w-100" style={{ borderRadius:12, fontSize:".82rem", marginTop:4 }}>
+                      + Registrar servicio
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Resumen financiero */}
-            <div className="dash-card">
-              <div className="dash-card-header">
-                <h5>Resumen Financiero del Mes</h5>
-                <div style={{ display:"flex",gap:"0.5rem" }}>
-                  <button className="btn btn-sm" onClick={() => setSeccion("ingresos")} style={{ borderRadius:10,border:"1.5px solid #e2e8f0",background:"#f8fafc",color:"#334155",fontSize:".82rem",fontWeight:600 }}>Ingresos</button>
-                  <button className="btn btn-sm" onClick={() => setSeccion("gastos")} style={{ borderRadius:10,border:"1.5px solid #e2e8f0",background:"#f8fafc",color:"#334155",fontSize:".82rem",fontWeight:600 }}>Gastos</button>
+            {/* ── Cotizaciones pendientes (cards) ── */}
+            {cotizaciones.filter(c => c.estado === "Pendiente").length > 0 && (
+              <div className="dash-card">
+                <div className="dash-card-header">
+                  <h5>📋 Cotizaciones por Atender <span style={{ background:"#fef9c3",color:"#854d0e",borderRadius:8,padding:"2px 10px",fontSize:".75rem",fontWeight:700,marginLeft:8 }}>{cotizaciones.filter(c=>c.estado==="Pendiente").length} pendientes</span></h5>
+                  <button onClick={() => setSeccion("cotizaciones")} style={{ borderRadius:10, border:"1.5px solid #e2e8f0", background:"#f8fafc", color:"#334155", fontSize:".8rem", fontWeight:600, padding:"4px 12px", cursor:"pointer" }}>
+                    Ver todas
+                  </button>
+                </div>
+                <div className="dash-card-body">
+                  <div className="row g-3">
+                    {cotizaciones.filter(c => c.estado === "Pendiente").slice(0,4).map(c => (
+                      <div className="col-sm-6 col-xl-3" key={c._id}>
+                        <div style={{ border:"1.5px solid #fde68a", borderRadius:16, padding:"1rem 1.1rem", background:"#fffbeb", height:"100%", display:"flex", flexDirection:"column", gap:6 }}>
+                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                            <div style={{ fontWeight:800, fontSize:".9rem", color:"#0f172a" }}>{c.nombre}</div>
+                            <span style={{ background:"#fef3c7", color:"#92400e", fontSize:".68rem", fontWeight:700, borderRadius:6, padding:"2px 7px", flexShrink:0 }}>⏳</span>
+                          </div>
+                          <div style={{ fontSize:".78rem", color:"#0369a1", fontWeight:600 }}>{c.servicio}</div>
+                          <div style={{ fontSize:".75rem", color:"#64748b" }}>{c.telefono}</div>
+                          {c.info && <div style={{ fontSize:".73rem", color:"#94a3b8", fontStyle:"italic", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.info}</div>}
+                          <button
+                            onClick={() => aceptarCotizacion(c)}
+                            style={{ marginTop:"auto", width:"100%", borderRadius:10, border:"none", padding:"7px", background:"linear-gradient(135deg,#16a34a,#15803d)", color:"#fff", fontWeight:700, cursor:"pointer", fontSize:".8rem", boxShadow:"0 2px 8px rgba(22,163,74,.3)" }}
+                          >✅ Aceptar y asignar</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="dash-card-body">
-                <div className="row g-3">
-                  {/* Últimos ingresos */}
-                  <div className="col-md-6">
-                    <p style={{ fontWeight:700,color:"#15803d",fontSize:".9rem",marginBottom:"0.75rem" }}>💰 Últimos Ingresos</p>
-                    <table className="table table-borderless" style={{ fontSize:".85rem" }}>
-                      <tbody>
-                        {ingresos.slice(0,4).map(i => (
-                          <tr key={i._id}>
-                            <td style={{ color:"#374151",fontWeight:500 }}>{i.concepto}</td>
-                            <td style={{ color:"#15803d",fontWeight:700,textAlign:"right" }}>{fmtCOP(i.monto)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  {/* Últimos gastos */}
-                  <div className="col-md-6">
-                    <p style={{ fontWeight:700,color:"#b91c1c",fontSize:".9rem",marginBottom:"0.75rem" }}>📉 Últimos Gastos</p>
-                    <table className="table table-borderless" style={{ fontSize:".85rem" }}>
-                      <tbody>
-                        {gastos.slice(0,4).map(g => (
-                          <tr key={g._id}>
-                            <td style={{ color:"#374151",fontWeight:500 }}>{g.concepto}</td>
-                            <td style={{ color:"#b91c1c",fontWeight:700,textAlign:"right" }}>{fmtCOP(g.monto)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                {/* Barra utilidad */}
-                <div style={{ marginTop:"1rem",padding:"1rem",background:"#f0fdf4",borderRadius:12,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"0.5rem" }}>
-                  <div>
-                    <span style={{ fontWeight:600,color:"#166534",fontSize:".85rem" }}>Utilidad Neta del Mes</span>
-                    <br /><small style={{ color:"#64748b",fontSize:".78rem" }}>Ingresos − Gastos</small>
-                  </div>
-                  <span style={{ fontWeight:800,fontSize:"1.3rem",color: utilidad >= 0 ? "#15803d" : "#b91c1c" }}>
-                    {utilidad >= 0 ? "+" : ""}{fmtCOP(utilidad)}
-                  </span>
-                </div>
-              </div>
-            </div>
+            )}
           </>
         )}
 
