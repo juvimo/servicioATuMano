@@ -5,38 +5,41 @@ import Footer from "../components/Footer";
 import { createServicio } from "../api/servicios";
 
 const SERVICIOS_LISTA = [
-  { img: "https://images.unsplash.com/photo-1527515545081-5db817172677?w=400&q=80", title: "Limpieza a Vapor",      desc: "Elimina suciedad y bacterias en profundidad." },
-  { img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80",   title: "Limpieza de Muebles",  desc: "Sofás y tapizados en perfecto estado." },
-  { img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80", title: "Limpieza de Tapicería", desc: "Manchas y olores eliminados." },
-  { img: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=400&q=80", title: "Limpieza de Colchones", desc: "Libre de ácaros y bacterias." },
-  { img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",   title: "Limpieza de Tapetes",  desc: "Lavado profundo y restauración." },
-  { img: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80", title: "Limpieza de Pisos",    desc: "Para todo tipo de superficies." },
+  { img: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&q=80", title: "Limpieza a Vapor",      desc: "Elimina suciedad y bacterias en profundidad." },
+  { img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",   title: "Limpieza de Muebles",  desc: "Sofás y tapizados en perfecto estado." },
+  { img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80", title: "Limpieza de Tapicería", desc: "Manchas y olores eliminados." },
+  { img: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=600&q=80", title: "Limpieza de Colchones", desc: "Libre de ácaros y bacterias." },
+  { img: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=600&q=80", title: "Limpieza de Tapetes",  desc: "Lavado profundo y restauración." },
+  { img: "https://images.unsplash.com/photo-1758273238370-3bc08e399620?w=600&q=80", title: "Limpieza de Pisos",    desc: "Para todo tipo de superficies." },
 ];
 
 function Cotizacion() {
-  const [nombre,   setNombre]   = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [correo,   setCorreo]   = useState("");
-  const [servicio, setServicio] = useState("");
-  const [info,     setInfo]     = useState("");
-  const [ok,       setOk]       = useState(false);
-  const [error,    setError]    = useState("");
-  const [loading,  setLoading]  = useState(false);
+  const [nombre,    setNombre]   = useState("");
+  const [telefono,  setTelefono] = useState("");
+  const [correo,    setCorreo]   = useState("");
+  const [servicios, setServicios] = useState([]);
+  const [info,      setInfo]     = useState("");
+  const [ok,        setOk]       = useState(false);
+  const [error,     setError]    = useState("");
+  const [loading,   setLoading]  = useState(false);
 
-  const seleccionar = (title) => setServicio(prev => prev === title ? "" : title);
+  const seleccionar = (title) =>
+    setServicios(prev =>
+      prev.includes(title) ? prev.filter(s => s !== title) : [...prev, title]
+    );
 
   const enviar = async (e) => {
     e.preventDefault();
     setError(""); setOk(false);
 
-    if (!nombre || !telefono || !correo || !servicio) {
-      setError("Por favor completa todos los campos obligatorios.");
+    if (!nombre || !telefono || !correo || servicios.length === 0) {
+      setError("Por favor completa todos los campos y selecciona al menos un servicio.");
       return;
     }
 
     setLoading(true);
     const payload = {
-      titulo: `Cotización – ${servicio}`,
+      titulo: `Cotización – ${servicios.join(", ")}`,
       descripcion: `Cliente: ${nombre} | Tel: ${telefono} | Email: ${correo}${info ? " | " + info : ""}`,
       completada: false,
     };
@@ -48,7 +51,7 @@ function Cotizacion() {
     } finally {
       setLoading(false);
       setOk(true);
-      setNombre(""); setTelefono(""); setCorreo(""); setServicio(""); setInfo("");
+      setNombre(""); setTelefono(""); setCorreo(""); setServicios([]); setInfo("");
     }
   };
 
@@ -69,20 +72,20 @@ function Cotizacion() {
             <span className="section-badge">Cotización</span>
             <h1 className="section-title">Elige tu servicio</h1>
             <p className="section-sub">
-              Selecciona el servicio que necesitas y completa el formulario.
+              Selecciona uno o más servicios y completa el formulario.
               Te contactamos en menos de 24 horas.
             </p>
           </div>
 
-          {/* Cards clicables con imagen */}
-          <div className="row g-3 mb-5">
+          {/* Cards clicables con imagen — selección múltiple */}
+          <div className="row g-4 mb-5">
             {SERVICIOS_LISTA.map(s => (
-              <div className="col-6 col-md-4 col-lg-2" key={s.title}>
+              <div className="col-12 col-sm-6 col-md-4" key={s.title}>
                 <div
-                  className={`cot-service-card${servicio === s.title ? " selected" : ""}`}
+                  className={`cot-service-card${servicios.includes(s.title) ? " selected" : ""}`}
                   onClick={() => seleccionar(s.title)}
                 >
-                  {servicio === s.title && <div className="selected-badge">✓</div>}
+                  {servicios.includes(s.title) && <div className="selected-badge">✓</div>}
                   <div className="cot-img-wrap">
                     <img src={s.img} alt={s.title} className="cot-service-img" />
                   </div>
@@ -134,16 +137,23 @@ function Cotizacion() {
                       <input type="email" className="form-control" placeholder="correo@ejemplo.com"
                         value={correo} onChange={e => setCorreo(e.target.value)} />
                     </div>
+
+                    {/* Servicios seleccionados */}
                     <div className="col-12">
-                      <label className="form-label">Tipo de Servicio *</label>
-                      <select className="form-select" value={servicio}
-                        onChange={e => setServicio(e.target.value)}>
-                        <option value="">— Selecciona un servicio —</option>
-                        {SERVICIOS_LISTA.map(s => (
-                          <option key={s.title} value={s.title}>{s.title}</option>
-                        ))}
-                      </select>
+                      <label className="form-label">Servicios seleccionados *</label>
+                      <div className="cot-selected-summary">
+                        {servicios.length === 0
+                          ? <span className="cot-no-selection">Selecciona al menos un servicio arriba</span>
+                          : servicios.map(s => (
+                              <span key={s} className="cot-chip">
+                                {s}
+                                <button type="button" onClick={() => seleccionar(s)}>×</button>
+                              </span>
+                            ))
+                        }
+                      </div>
                     </div>
+
                     <div className="col-12">
                       <label className="form-label">Información Adicional</label>
                       <textarea className="form-control" rows="3"

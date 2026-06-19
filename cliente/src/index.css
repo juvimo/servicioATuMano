@@ -1046,16 +1046,36 @@ body {
   border-radius: 50%; width: 24px; height: 24px;
   display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700;
 }
-.cot-img-wrap { width: 100%; height: 95px; overflow: hidden; flex-shrink: 0; }
+.cot-img-wrap { width: 100%; height: 210px; overflow: hidden; flex-shrink: 0; }
 .cot-service-img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   transition: transform .4s ease; filter: brightness(.88);
 }
 .cot-service-card:hover .cot-service-img  { transform: scale(1.07); filter: brightness(1); }
 .cot-service-card.selected .cot-service-img { filter: brightness(.95); }
-.cot-card-body { padding: .85rem .75rem .9rem; flex: 1; display: flex; flex-direction: column; }
-.cot-service-card h6 { font-weight: 700; font-size: .82rem; color: #0f172a; margin: 0 0 .28rem; }
-.cot-service-card p  { font-size: .74rem; color: var(--text-muted); margin: 0; line-height: 1.4; }
+.cot-card-body { padding: 1rem 1rem 1.1rem; flex: 1; display: flex; flex-direction: column; }
+.cot-service-card h6 { font-weight: 700; font-size: .95rem; color: #0f172a; margin: 0 0 .35rem; }
+.cot-service-card p  { font-size: .83rem; color: var(--text-muted); margin: 0; line-height: 1.45; }
+
+/* Chips de servicios seleccionados */
+.cot-selected-summary {
+  min-height: 44px; padding: .5rem .75rem;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  background: #f8fafc; display: flex; flex-wrap: wrap; gap: .4rem; align-items: center;
+}
+.cot-no-selection { font-size: .85rem; color: #94a3b8; }
+.cot-chip {
+  display: inline-flex; align-items: center; gap: .3rem;
+  background: var(--primary-light); border: 1.5px solid var(--primary);
+  color: var(--primary); border-radius: 20px;
+  padding: .2rem .65rem; font-size: .8rem; font-weight: 600;
+}
+.cot-chip button {
+  background: none; border: none; cursor: pointer;
+  color: var(--primary); font-size: 1rem; line-height: 1; padding: 0;
+  opacity: .7;
+}
+.cot-chip button:hover { opacity: 1; }
 
 .form-card {
   background: #fff; border: 1px solid var(--border); border-radius: 20px;
@@ -1473,10 +1493,10 @@ body {
   .faq-item { border-radius: 12px; }
 
   /* ── Cotizacion service cards ── */
-  .cot-img-wrap { height: 80px; }
-  .cot-card-body { padding: .65rem .55rem .7rem; }
-  .cot-service-card h6 { font-size: .77rem; }
-  .cot-service-card p  { font-size: .69rem; }
+  .cot-img-wrap { height: 170px; }
+  .cot-card-body { padding: .85rem .75rem .9rem; }
+  .cot-service-card h6 { font-size: .88rem; }
+  .cot-service-card p  { font-size: .78rem; }
   .form-card { padding: 1.25rem; border-radius: 14px; }
   .form-card h2 { font-size: 1.15rem; }
 
