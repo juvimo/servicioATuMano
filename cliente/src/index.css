@@ -678,6 +678,44 @@ body {
   border: 1px solid rgba(255,255,255,.3); letter-spacing: .02em;
 }
 
+/* ── Card imagen completa (¿Cómo funciona?) ── */
+.how-card-full {
+  position: relative; overflow: hidden; border-radius: 24px;
+  height: 380px; cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0,0,0,.15);
+  transition: transform .35s, box-shadow .35s;
+}
+.how-card-full:hover { transform: translateY(-6px); box-shadow: 0 20px 56px rgba(0,0,0,.25); }
+.how-card-full-img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
+  transition: transform .5s ease; filter: brightness(1.05) saturate(1.08);
+}
+.how-card-full:hover .how-card-full-img { transform: scale(1.07); filter: brightness(1.12) saturate(1.14); }
+.how-card-full-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(4,30,60,.75) 35%, rgba(4,30,60,.1) 65%, transparent 100%);
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 1.8rem 1.6rem;
+}
+.how-card-step-badge {
+  display: inline-block;
+  background: rgba(14,165,233,.92); backdrop-filter: blur(8px);
+  color: #fff; font-weight: 900; font-size: .85rem;
+  padding: .3rem .75rem; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.3); letter-spacing: .05em;
+  margin-bottom: .6rem; width: fit-content;
+}
+.how-card-full-title {
+  color: #fff; font-size: 1.2rem; font-weight: 700; margin: 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,.5); line-height: 1.3;
+}
+@media (max-width: 767px) {
+  .how-card-full { height: 260px; border-radius: 18px; }
+  .how-card-full-title { font-size: 1rem; }
+}
+@media (max-width: 480px) {
+  .how-card-full { height: 220px; }
+}
+
 /* ══════════════════════════════════════════
    SERVICIOS — BLANCO
 ══════════════════════════════════════════ */

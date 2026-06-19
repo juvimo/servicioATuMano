@@ -75,9 +75,9 @@ const IMG = {
   comercial:   "https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80",
   profunda:    "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=700&q=80",
   postObra:    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=700&q=80",
-  paso1:       "https://images.unsplash.com/photo-1527515545081-5db817172677?w=600&q=80",
-  paso2:       "/img/3.jpeg",
-  paso3:       "/img/1.jpeg",
+  paso1:       "/img/7.png",
+  paso2:       "/img/8.png",
+  paso3:       "/img/9.png",
 };
 
 function Landing() {
@@ -285,13 +285,12 @@ function Landing() {
               },
             ].map(s => (
               <div className="col-md-4" key={s.n}>
-                <div className="how-card">
-                  <div className="how-card-img-wrap">
-                    <img src={s.img} alt={s.t} className="how-card-img" />
-                    <span className="how-card-step">Paso {s.n}</span>
+                <div className="how-card-full">
+                  <img src={s.img} alt={s.t} className="how-card-full-img" />
+                  <div className="how-card-full-overlay">
+                    <span className="how-card-step-badge">Paso {s.n}</span>
+                    <h5 className="how-card-full-title">{s.t}</h5>
                   </div>
-                  <h5>{s.t}</h5>
-                  <p>{s.d}</p>
                 </div>
               </div>
             ))}
@@ -311,26 +310,14 @@ function Landing() {
           </div>
           <div className="row g-4">
             {[
-              {
-                img: IMG.residencial, gradient: "teal",
-                title: "Limpieza Residencial",
-                desc:  "Transformamos tu hogar de punta a punta con vapor de alta temperatura.",
-              },
-              {
-                img: IMG.comercial, gradient: "blue",
-                title: "Limpieza Comercial",
-                desc:  "Oficinas y locales impecables. Servicio fuera de tu horario laboral.",
-              },
-              {
-                img: IMG.profunda, gradient: "violet",
-                title: "Limpieza Profunda",
-                desc:  "Para los espacios que acumulan años de suciedad. Vapor concentrado.",
-              },
-              {
-                img: IMG.postObra, gradient: "gold",
-                title: "Limpieza Post-Obra",
-                desc:  "Polvo, cemento y residuos eliminados. Tu obra lista para habitar.",
-              },
+              { img: IMG.residencial, gradient:"teal",   title:"Vapor de Muebles y Sofás",      desc:"Vapor a 180 °C elimina ácaros, manchas y bacterias en sofás, sillones y tapizados." },
+              { img: IMG.comercial,   gradient:"blue",   title:"Limpieza de Colchones",         desc:"Eliminamos el 99.9 % de ácaros, hongos y gérmenes. Secado en 3–5 horas." },
+              { img: IMG.profunda,    gradient:"violet", title:"Alfombras y Tapetes a Vapor",   desc:"Extracción profunda de polvo, manchas y bacterias. Colores restaurados." },
+              { img: IMG.postObra,    gradient:"gold",   title:"Tapicería de Automóviles",      desc:"Interior de vehículos libre de olores, manchas y bacterias. Asientos y moqueta." },
+              { img: IMG.residencial, gradient:"teal",   title:"Limpieza Residencial a Vapor",  desc:"Toda tu casa con vapor industrial. Sin químicos agresivos, sin residuos." },
+              { img: IMG.comercial,   gradient:"blue",   title:"Desinfección Comercial",        desc:"Restaurantes, hoteles y oficinas. Cumplimos normas sanitarias." },
+              { img: IMG.profunda,    gradient:"violet", title:"Limpieza Post-Obra",            desc:"Polvo de cemento, pintura y residuos eliminados. Tu espacio listo para habitar." },
+              { img: IMG.postObra,    gradient:"gold",   title:"Baños a Vapor Profundo",        desc:"Hongos, sarro y bacterias en juntas y azulejos. Resultado visible desde el primer día." },
             ].map(s => (
               <div className="col-sm-6 col-lg-3" key={s.title}>
                 <div className={`service-card service-card-${s.gradient}`}>
@@ -357,7 +344,14 @@ function Landing() {
           <div className="row align-items-center g-5">
 
             <div className="col-lg-5 order-lg-2">
-              <img src={logo3} className="why-img" alt="Nuestro equipo profesional" />
+              <div style={{ borderRadius:28, overflow:"hidden", boxShadow:"0 40px 80px rgba(14,165,233,.1)", border:"1.5px solid #dbeafe", maxHeight:460 }}>
+                <video
+                  src="/videos/8.mp4"
+                  autoPlay muted loop playsInline
+                  preload="auto"
+                  style={{ width:"100%", height:"100%", maxHeight:460, objectFit:"cover", display:"block" }}
+                />
+              </div>
             </div>
 
             <div className="col-lg-7 order-lg-1">
