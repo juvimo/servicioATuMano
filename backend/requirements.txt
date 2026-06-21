@@ -5,5 +5,5 @@ bcrypt
 python-dotenv
 python-multipart
 pyjwt
-anthropic
+google-genai
 pydantic
