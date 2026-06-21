@@ -35,7 +35,7 @@ def enviar_correo_codigo(correo_destino: str, nombre: str, codigo: str):
 
     msg.attach(MIMEText(html, "html"))
 
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    with smtplib.SMTP("smtp.gmail.com", 587, timeout=10) as server:
         server.starttls()
         server.login(EMAIL_USER, EMAIL_PASS)
         server.sendmail(EMAIL_USER, correo_destino, msg.as_string())

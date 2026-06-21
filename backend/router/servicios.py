@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Depends
-from bson import ObjectId
 from models import Servicio, UpdateServicio, Cotizacion
 from database import (
     get_todos_servicios, get_servicio_por_id, get_servicio_por_titulo,
@@ -28,7 +27,7 @@ async def crear_servicio(servicio: Servicio, _admin=Depends(solo_admin)):
 
 @router.get("/api/servicios/{id}", response_model=Servicio)
 async def obtener_servicio(id: str):
-    if not ObjectId.is_valid(id):
+    if not str(id).isdigit():
         raise HTTPException(404, "ID inválido")
     doc = await get_servicio_por_id(id)
     if doc:
@@ -37,7 +36,7 @@ async def obtener_servicio(id: str):
 
 @router.put("/api/servicios/{id}", response_model=Servicio)
 async def actualizar_servicio(id: str, data: UpdateServicio, _admin=Depends(solo_admin)):
-    if not ObjectId.is_valid(id):
+    if not str(id).isdigit():
         raise HTTPException(404, "ID inválido")
     doc = await update_servicio(id, data)
     if doc:
@@ -46,7 +45,7 @@ async def actualizar_servicio(id: str, data: UpdateServicio, _admin=Depends(solo
 
 @router.delete("/api/servicios/{id}")
 async def eliminar_servicio(id: str, _admin=Depends(solo_admin)):
-    if not ObjectId.is_valid(id):
+    if not str(id).isdigit():
         raise HTTPException(404, "ID inválido")
     await delete_servicio(id)
     return {"mensaje": "Servicio eliminado exitosamente"}

@@ -1,7 +1,6 @@
 fastapi
 uvicorn[standard]
-motor
-pymongo
+asyncpg
 bcrypt
 python-dotenv
 python-multipart

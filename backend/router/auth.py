@@ -2,7 +2,7 @@ import hmac
 import os
 
 import bcrypt
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from dotenv import load_dotenv
 
 from models import UsuarioRegistro, UsuarioLogin, VerificacionCodigo
@@ -38,8 +38,16 @@ def _credenciales_admin(correo: str, password: str) -> bool:
     return correo_ok and pass_ok
 
 
+def _enviar_codigo_seguro(correo: str, nombre: str, codigo: str):
+    """Envía el código por correo sin tumbar el registro si el SMTP falla."""
+    try:
+        enviar_correo_codigo(correo, nombre, codigo)
+    except Exception as e:
+        print(f"[registro] No se pudo enviar el correo a {correo}: {e}. Código de verificación: {codigo}")
+
+
 @router.post("/api/auth/registro")
-async def registro(data: UsuarioRegistro):
+async def registro(data: UsuarioRegistro, tareas: BackgroundTasks):
     existente = await get_usuario_por_correo(data.correo)
     if existente:
         raise HTTPException(400, "Ya existe una cuenta con ese correo.")
@@ -55,7 +63,7 @@ async def registro(data: UsuarioRegistro):
 
     codigo = generar_codigo()
     await guardar_codigo_verificacion(data.correo, codigo)
-    enviar_correo_codigo(data.correo, data.nombre, codigo)
+    tareas.add_task(_enviar_codigo_seguro, data.correo, data.nombre, codigo)
 
     return {"mensaje": "Registro exitoso. Revisa tu correo, te enviamos un código de 5 dígitos."}
 
