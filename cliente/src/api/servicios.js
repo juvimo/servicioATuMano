@@ -1,24 +1,22 @@
 // ─────────────────────────────────────────────
-//  API CONFIG CENTRAL
-//  Si cambia la URL del backend, solo edita aquí
+//  LLAMADAS A LA API
+//  La URL base y el token se manejan en ./config
 // ─────────────────────────────────────────────
-import axios from "axios";
-
-const BASE = "http://127.0.0.1:8000";
+import { http } from "./config";
 
 // ── Servicios (colección principal del negocio) ──
-export const fetchServicios  = ()        => axios.get(`${BASE}/api/servicios`);
-export const fetchServicio   = (id)      => axios.get(`${BASE}/api/servicios/${id}`);
-export const createServicio  = (data)    => axios.post(`${BASE}/api/servicios`, data);
-export const updateServicio  = (id,data) => axios.put(`${BASE}/api/servicios/${id}`, data);
-export const deleteServicio  = (id)      => axios.delete(`${BASE}/api/servicios/${id}`);
+export const fetchServicios  = ()        => http.get(`/api/servicios`);
+export const fetchServicio   = (id)      => http.get(`/api/servicios/${id}`);
+export const createServicio  = (data)    => http.post(`/api/servicios`, data);
+export const updateServicio  = (id,data) => http.put(`/api/servicios/${id}`, data);
+export const deleteServicio  = (id)      => http.delete(`/api/servicios/${id}`);
 
 // ── Cotizaciones ──
-export const fetchCotizaciones = ()     => axios.get(`${BASE}/api/cotizaciones`);
-export const createCotizacion  = (data) => axios.post(`${BASE}/api/cotizaciones`, data);
+export const fetchCotizaciones = ()     => http.get(`/api/cotizaciones`);
+export const createCotizacion  = (data) => http.post(`/api/cotizaciones`, data);
 
 // ── Ping general ──
-export const ping = () => axios.get(`${BASE}/`);
+export const ping = () => http.get(`/`);
 
 // ── Datos estáticos de servicios ──
 export const SERVICIOS_LIST = [

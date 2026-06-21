@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
-const API_URL = "http://localhost:8000";
+import { BASE as API_URL } from "../api/config";
 
 const SUGERENCIAS = [
   "💰 ¿Cuánto cuesta limpiar un sofá?",

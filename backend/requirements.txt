@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+asyncpg
+bcrypt
+python-dotenv
+python-multipart
+pyjwt
+google-genai
+pydantic

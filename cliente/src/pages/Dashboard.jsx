@@ -1,312 +1,16 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { fetchServicios, createServicio, updateServicio, deleteServicio, fetchCotizaciones, createCotizacion } from "../api/servicios";
+import { fetchServicios, createServicio, updateServicio, deleteServicio, fetchCotizaciones } from "../api/servicios";
 import { generarInformeExcel } from "../utils/reportes";
-
-/* ─── Iconos SVG ─── */
-const Icon = {
-  dashboard:    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
-  servicios:    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
-  clientes:     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-  cotizaciones: <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>,
-  gastos:       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
-  ingresos:     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
-  logout:       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
-  excel:        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>,
-  add:          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-  trash:        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
-  edit:         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
-  check:        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
-  search:       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-};
-
-const SECCIONES = [
-  { id: "dashboard",    label: "Dashboard",    icon: Icon.dashboard    },
-  { id: "servicios",    label: "Servicios",    icon: Icon.servicios    },
-  { id: "clientes",     label: "Clientes",     icon: Icon.clientes     },
-  { id: "cotizaciones", label: "Cotizaciones", icon: Icon.cotizaciones },
-  { id: "gastos",       label: "Gastos",       icon: Icon.gastos       },
-  { id: "ingresos",     label: "Ingresos",     icon: Icon.ingresos     },
-];
-
-/* ─── Datos demo ─── */
-const DEMO_SERVICIOS = [
-  { _id:"d1",  completada:true,  titulo:"Vapor de Muebles y Sofás — María García",        descripcion:"📞 321-219-6255 · ✉ maria@email.com · Notas: Sala con 3 sillones grandes, tela beige con manchas de café" },
-  { _id:"d2",  completada:true,  titulo:"Limpieza de Colchones — Juan Pérez",              descripcion:"📞 320-555-0202 · ✉ juan@email.com · Notas: 2 colchones dobles + 1 sencillo, 2° piso" },
-  { _id:"d3",  completada:true,  titulo:"Desinfección Comercial — Restaurante El Patio",   descripcion:"📞 314-555-0606 · ✉ patio@email.com · Notas: Cocina industrial + 40 sillas tapizadas, servicio nocturno" },
-  { _id:"d4",  completada:true,  titulo:"Limpieza de Tapetes — Carlos López",              descripcion:"📞 315-555-0404 · ✉ carlos@email.com · Notas: Tapete persa 3×4 m, manchas de mascota" },
-  { _id:"d5",  completada:true,  titulo:"Tapicería de Automóvil — Sandra Ruiz",            descripcion:"📞 318-555-0707 · ✉ sandra@email.com · Notas: Toyota Corolla 2021, olores de cigarrillo y manchas en moqueta" },
-  { _id:"d6",  completada:true,  titulo:"Vapor de Muebles y Sofás — Pedro Ramírez",        descripcion:"📞 312-444-0201 · ✉ pedro@email.com · Notas: 2 sofás de 3 puestos, tela gris manchada por uso diario" },
-  { _id:"d7",  completada:true,  titulo:"Limpieza de Colchones — Ana Moreno",              descripcion:"📞 317-333-0102 · ✉ ana.moreno@email.com · Notas: Colchón doble + 2 almohadas, cuarto principal" },
-  { _id:"d8",  completada:true,  titulo:"Alfombras y Tapetes a Vapor — Diana Castillo",    descripcion:"📞 311-222-0503 · ✉ diana@email.com · Notas: Tapete persa 4×3 m + 2 alfombras pequeñas de habitación" },
-  { _id:"d9",  completada:true,  titulo:"Tapicería de Automóvil — Luis Hernández",         descripcion:"📞 316-111-0804 · ✉ luis@email.com · Notas: Mazda CX-5 2020, manchas en asientos delanteros y moqueta" },
-  { _id:"d10", completada:true,  titulo:"Desinfección Comercial — Café Central",           descripcion:"📞 304-777-0305 · ✉ admin@cafecentral.com · Notas: Cocina 30 m² + barra y 12 sillas tapizadas, servicio lunes 7AM" },
-  { _id:"d11", completada:false, titulo:"Vapor Residencial Integral — Familia Torres",     descripcion:"📞 318-555-0505 · ✉ torres@email.com · Notas: Apartamento 60 m², 2 habitaciones y sala, visita programada" },
-  { _id:"d12", completada:false, titulo:"Limpieza Post-Obra — Constructora HG",            descripcion:"📞 301-555-0808 · ✉ hg@constructora.com · Notas: Apartamento 90 m², polvo de cemento y restos de pintura" },
-  { _id:"d13", completada:false, titulo:"Limpieza de Baños a Vapor — Hotel Camino Real",   descripcion:"📞 305-888-0607 · ✉ mant@caminoreal.com · Notas: 8 baños de huéspedes, juntas de azulejo con hongos" },
-  { _id:"d14", completada:false, titulo:"Desinfección de Baños — Ana Martínez",            descripcion:"📞 300-555-0303 · ✉ ana@email.com · Notas: 3 baños con hongos en juntas, azulejos blancos" },
-  { _id:"d15", completada:false, titulo:"Vapor Residencial — Laura Gómez",                 descripcion:"📞 318-555-0504 · ✉ laura@email.com · Notas: Casa 3 habitaciones + jardín, cliente nueva" },
-];
-
-const DEMO_COTIZACIONES = [
-  { _id: "c1", nombre: "María García",    telefono: "310-555-0101", correo: "maria@email.com",  servicio: "Vapor de Muebles y Sofás",     info: "Sala con 2 sofás de 3 puestos",       fecha: "2026-06-10", estado: "Pendiente" },
-  { _id: "c2", nombre: "Juan Pérez",      telefono: "320-555-0202", correo: "juan@email.com",   servicio: "Limpieza de Colchones",         info: "2 colchones dobles + 1 sencillo",     fecha: "2026-06-11", estado: "Confirmada" },
-  { _id: "c3", nombre: "Ana Martínez",    telefono: "300-555-0303", correo: "ana@email.com",    servicio: "Desinfección Comercial",        info: "Restaurante, cocina + 20 sillas",     fecha: "2026-06-12", estado: "Pendiente" },
-  { _id: "c4", nombre: "Carlos López",    telefono: "315-555-0404", correo: "carlos@email.com", servicio: "Alfombras y Tapetes a Vapor",   info: "Tapete persa 3×4 m + sala",           fecha: "2026-06-13", estado: "Atendida"  },
-  { _id: "c5", nombre: "Laura Gómez",     telefono: "318-555-0505", correo: "laura@email.com",  servicio: "Vapor Residencial Integral",    info: "Casa 3 hab + sala + comedor",         fecha: "2026-06-14", estado: "Pendiente" },
-];
-
-const DEMO_CLIENTES = [
-  { _id: "cl1", nombre: "María García",    telefono: "310-555-0101", correo: "maria@email.com",  servicios: 4, total: "$480.000",  ultima: "2026-05-10" },
-  { _id: "cl2", nombre: "Juan Pérez",      telefono: "320-555-0202", correo: "juan@email.com",   servicios: 2, total: "$240.000",  ultima: "2026-05-11" },
-  { _id: "cl3", nombre: "Ana Martínez",    telefono: "300-555-0303", correo: "ana@email.com",    servicios: 7, total: "$1.050.000",ultima: "2026-05-12" },
-  { _id: "cl4", nombre: "Carlos López",    telefono: "315-555-0404", correo: "carlos@email.com", servicios: 1, total: "$120.000",  ultima: "2026-05-13" },
-  { _id: "cl5", nombre: "Laura Gómez",     telefono: "318-555-0505", correo: "laura@email.com",  servicios: 3, total: "$360.000",  ultima: "2026-05-14" },
-  { _id: "cl6", nombre: "Pedro Sánchez",   telefono: "312-555-0606", correo: "pedro@email.com",  servicios: 5, total: "$600.000",  ultima: "2026-05-15" },
-];
-
-const DEMO_GASTOS = [
-  { _id: "g1", concepto: "Detergente y productos vapor",  categoria: "Insumos/Productos Vapor",  monto: 85000,  fecha: "2026-06-01", nota: "Desengrasante, antihongos, aromatizante" },
-  { _id: "g2", concepto: "Transporte al domicilio",       categoria: "Transporte",               monto: 45000,  fecha: "2026-06-03", nota: "Varios servicios en Cundinamarca" },
-  { _id: "g3", concepto: "Uniformes y EPP",               categoria: "Equipamiento/Máquinas",    monto: 120000, fecha: "2026-06-05", nota: "4 uniformes + guantes + tapabocas" },
-  { _id: "g4", concepto: "Publicidad redes sociales",     categoria: "Marketing",                monto: 60000,  fecha: "2026-06-08", nota: "Pauta Instagram — antes/después vapor" },
-  { _id: "g5", concepto: "Mantenimiento máquina vapor",   categoria: "Equipamiento/Máquinas",    monto: 95000,  fecha: "2026-06-10", nota: "Revisión caldera + filtros" },
-];
-
-const DEMO_INGRESOS = [
-  { _id: "i1", concepto: "Sofás a Vapor — García",          categoria: "Tapicería/Sofás",   monto: 150000, fecha: "2026-06-02", nota: "Pago efectivo" },
-  { _id: "i2", concepto: "Desinfección Comercial — TechCo", categoria: "Comercial",          monto: 320000, fecha: "2026-06-04", nota: "Transferencia" },
-  { _id: "i3", concepto: "Tapetes a Vapor — López",         categoria: "Tapicería/Tapetes",  monto: 80000,  fecha: "2026-06-06", nota: "" },
-  { _id: "i4", concepto: "Vapor Residencial — Apt Ruiz",    categoria: "Residencial",        monto: 200000, fecha: "2026-06-09", nota: "Pago app" },
-  { _id: "i5", concepto: "Colchones a Vapor — Gómez",       categoria: "Tapicería/Sofás",    monto: 130000, fecha: "2026-06-11", nota: "Efectivo" },
-  { _id: "i6", concepto: "Vapor Mensual — Familia Pérez",   categoria: "Residencial",        monto: 240000, fecha: "2026-06-13", nota: "Contrato mensual" },
-];
-
-const CATEGORIAS_GASTO   = ["Insumos/Productos Vapor", "Transporte", "Equipamiento/Máquinas", "Marketing", "Nómina", "Otro"];
-const CATEGORIAS_INGRESO = ["Residencial", "Comercial", "Tapicería/Sofás", "Tapicería/Tapetes", "Automóviles", "Post-Obra", "Baños", "Otro"];
-const CATEGORIAS_CLIENTE_SERVICIO = ["Vapor de Muebles y Sofás","Limpieza de Colchones","Alfombras y Tapetes a Vapor","Tapicería de Automóviles","Limpieza Residencial a Vapor","Limpieza Comercial a Vapor","Limpieza Post-Obra","Desinfección de Baños a Vapor","Vapor Residencial Integral","Desinfección Comercial"];
-
-/* ─── Helpers ─── */
-const fmtCOP = (n) => "$" + Number(n).toLocaleString("es-CO");
-
-function exportCSV(data, nombre) {
-  if (!data.length) return;
-  const headers = Object.keys(data[0]).filter(k => k !== "_id");
-  const rows = data.map(r => headers.map(h => `"${(r[h] ?? "").toString().replace(/"/g, '""')}"`).join(","));
-  const csv = [headers.join(","), ...rows].join("\n");
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a"); a.href = url; a.download = nombre + ".csv"; a.click();
-  URL.revokeObjectURL(url);
-}
-
-/* ── Badge estado cotización ── */
-function BadgeEstado({ estado }) {
-  const cfg = {
-    Pendiente:  { bg: "#fef9c3", color: "#854d0e", label: "⏳ Pendiente"  },
-    Confirmada: { bg: "#dcfce7", color: "#15803d", label: "✓ Confirmada" },
-    Atendida:   { bg: "#dbeafe", color: "#1d4ed8", label: "✔ Atendida"  },
-  };
-  const c = cfg[estado] || cfg.Pendiente;
-  return (
-    <span style={{ background: c.bg, color: c.color, borderRadius: 8, padding: "2px 10px", fontSize: ".75rem", fontWeight: 700 }}>
-      {c.label}
-    </span>
-  );
-}
-
-/* ── Modal genérico ── */
-function Modal({ titulo, onClose, children }) {
-  return (
-    <div style={{ position:"fixed",inset:0,zIndex:1000,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",padding:"1rem" }}>
-      <div style={{ background:"#fff",borderRadius:16,padding:"1.75rem",width:"100%",maxWidth:500,boxShadow:"0 20px 60px rgba(0,0,0,.2)" }}>
-        <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1.25rem" }}>
-          <h5 style={{ fontWeight:800,color:"#0f172a",margin:0 }}>{titulo}</h5>
-          <button onClick={onClose} style={{ border:"none",background:"none",fontSize:"1.4rem",cursor:"pointer",color:"#94a3b8",lineHeight:1 }}>×</button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-/* ── Tabla con búsqueda + export ── */
-function TablaBase({ titulo, datos, columnas, onExport, onAdd, addLabel, renderFila, busquedaKey }) {
-  const [busq, setBusq] = useState("");
-  const filtrados = busq
-    ? datos.filter(d => (d[busquedaKey] || "").toLowerCase().includes(busq.toLowerCase()))
-    : datos;
-
-  return (
-    <div className="dash-card">
-      <div className="dash-card-header" style={{ flexWrap:"wrap", gap:"0.5rem" }}>
-        <h5>{titulo} <span style={{ fontWeight:400,color:"#94a3b8",fontSize:".85rem" }}>({filtrados.length})</span></h5>
-        <div style={{ display:"flex",gap:"0.5rem",flexWrap:"wrap" }}>
-          <div style={{ position:"relative" }}>
-            <span style={{ position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",color:"#94a3b8" }}>{Icon.search}</span>
-            <input
-              value={busq} onChange={e => setBusq(e.target.value)}
-              placeholder="Buscar..."
-              style={{ paddingLeft:32,paddingRight:12,height:36,borderRadius:10,border:"1.5px solid #e2e8f0",fontSize:".85rem",outline:"none",width:180 }}
-            />
-          </div>
-          <button className="btn btn-sm" onClick={onExport}
-            style={{ borderRadius:10,border:"1.5px solid #e2e8f0",background:"#f8fafc",color:"#334155",display:"flex",alignItems:"center",gap:6,fontWeight:600,fontSize:".82rem" }}>
-            {Icon.excel} Exportar CSV
-          </button>
-          {onAdd && (
-            <button className="btn-green btn btn-sm" onClick={onAdd} style={{ borderRadius:10,display:"flex",alignItems:"center",gap:5,fontSize:".85rem" }}>
-              {Icon.add} {addLabel}
-            </button>
-          )}
-        </div>
-      </div>
-      <div className="dash-card-body" style={{ overflowX:"auto" }}>
-        <table className="table table-borderless" style={{ minWidth:600 }}>
-          <thead>
-            <tr>{columnas.map(c => <th key={c}>{c}</th>)}</tr>
-          </thead>
-          <tbody>
-            {filtrados.length === 0
-              ? <tr><td colSpan={columnas.length} style={{ textAlign:"center",color:"#94a3b8",padding:"2rem" }}>No hay registros.</td></tr>
-              : filtrados.map(renderFila)
-            }
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════
-   COTIZADOR DE COSTOS FLOTANTE
-═══════════════════════════════════════ */
-const SERVICIOS_VAPOR = [
-  { nombre:"Sofá 2 puestos",          precio:85000  },
-  { nombre:"Sofá 3 puestos",          precio:120000 },
-  { nombre:"Sofá esquinero / L",      precio:190000 },
-  { nombre:"Sillón / Poltrona",       precio:55000  },
-  { nombre:"Silla comedor (c/u)",     precio:28000  },
-  { nombre:"Colchón sencillo",        precio:65000  },
-  { nombre:"Colchón doble/queen",     precio:95000  },
-  { nombre:"Colchón king",            precio:120000 },
-  { nombre:"Tapete hasta 4 m²",       precio:85000  },
-  { nombre:"Tapete 4–10 m²",          precio:160000 },
-  { nombre:"Automóvil sedán",         precio:190000 },
-  { nombre:"SUV / Camioneta",         precio:270000 },
-  { nombre:"Limpieza residencial",    precio:300000 },
-  { nombre:"Limpieza comercial",      precio:450000 },
-  { nombre:"Baño individual",         precio:60000  },
-];
-const fmtCOP2 = n => "$" + Number(n).toLocaleString("es-CO");
-
-function CotizadorCostos({ onClose }) {
-  const [items,    setItems]    = useState([]);
-  const [desc,     setDesc]     = useState(0);
-  const [iva,      setIva]      = useState(false);
-  const [copiado,  setCopiado]  = useState(false);
-
-  const subtotal  = items.reduce((s, i) => s + i.precio * i.qty, 0);
-  const descuento = subtotal * (desc / 100);
-  const baseIva   = subtotal - descuento;
-  const ivaVal    = iva ? baseIva * 0.19 : 0;
-  const total     = baseIva + ivaVal;
-
-  const agregar = (srv) => {
-    setItems(prev => {
-      const ex = prev.find(i => i.nombre === srv.nombre);
-      return ex
-        ? prev.map(i => i.nombre === srv.nombre ? { ...i, qty: i.qty + 1 } : i)
-        : [...prev, { ...srv, qty: 1 }];
-    });
-  };
-
-  const copiar = () => {
-    const lineas = items.map(i => `• ${i.nombre} x${i.qty}: ${fmtCOP2(i.precio * i.qty)}`).join("\n");
-    const txt = `COTIZACIÓN - Servicio a tu Mano\n${lineas}\nSubtotal: ${fmtCOP2(subtotal)}${desc ? `\nDescuento ${desc}%: -${fmtCOP2(descuento)}` : ""}${iva ? `\nIVA 19%: ${fmtCOP2(ivaVal)}` : ""}\nTOTAL: ${fmtCOP2(total)}\n\nJuan Pablo: 321 219 6255 | Sandra: 312 527 6445`;
-    navigator.clipboard.writeText(txt).then(() => { setCopiado(true); setTimeout(() => setCopiado(false), 2000); });
-  };
-
-  return (
-    <div style={{ fontFamily:"'Inter',sans-serif", fontSize:13 }}>
-      <div style={{ background:"linear-gradient(135deg,#f59e0b,#d97706)", padding:"12px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <span style={{ color:"#fff", fontWeight:800, fontSize:14 }}>💰 Cotizador de Costos</span>
-        <button onClick={onClose} style={{ background:"rgba(255,255,255,.2)", border:"none", borderRadius:8, color:"#fff", cursor:"pointer", padding:"2px 8px", fontSize:14 }}>×</button>
-      </div>
-      <div style={{ padding:"10px 12px", maxHeight:380, overflowY:"auto" }}>
-        <p style={{ color:"#64748b", fontSize:11, margin:"0 0 8px" }}>Toca un servicio para añadirlo:</p>
-        <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:10 }}>
-          {SERVICIOS_VAPOR.map(s => (
-            <button key={s.nombre} onClick={() => agregar(s)} style={{
-              background:"#fef3c7", border:"1px solid #fde68a", borderRadius:8,
-              padding:"4px 9px", fontSize:11, cursor:"pointer", color:"#92400e", fontWeight:600,
-            }}>{s.nombre}</button>
-          ))}
-        </div>
-        {items.length > 0 && (
-          <>
-            <table style={{ width:"100%", borderCollapse:"collapse", marginBottom:8 }}>
-              <thead><tr style={{ background:"#f8fafc" }}>
-                <th style={{ padding:"4px 6px", textAlign:"left", fontSize:11, color:"#64748b" }}>Ítem</th>
-                <th style={{ padding:"4px 6px", textAlign:"center", fontSize:11, color:"#64748b" }}>Qty</th>
-                <th style={{ padding:"4px 6px", textAlign:"right", fontSize:11, color:"#64748b" }}>Valor</th>
-                <th/>
-              </tr></thead>
-              <tbody>
-                {items.map(i => (
-                  <tr key={i.nombre} style={{ borderBottom:"1px solid #f1f5f9" }}>
-                    <td style={{ padding:"5px 6px" }}>{i.nombre}</td>
-                    <td style={{ textAlign:"center", padding:"5px 6px" }}>
-                      <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4 }}>
-                        <button onClick={() => setItems(p => p.map(x => x.nombre===i.nombre ? {...x,qty:Math.max(1,x.qty-1)} : x))} style={{ width:20,height:20,borderRadius:4,border:"1px solid #e2e8f0",background:"#f1f5f9",cursor:"pointer",fontSize:13,lineHeight:1 }}>−</button>
-                        <span style={{ fontWeight:700 }}>{i.qty}</span>
-                        <button onClick={() => agregar(i)} style={{ width:20,height:20,borderRadius:4,border:"1px solid #e2e8f0",background:"#f1f5f9",cursor:"pointer",fontSize:13,lineHeight:1 }}>+</button>
-                      </div>
-                    </td>
-                    <td style={{ textAlign:"right", fontWeight:700, color:"#0f172a", padding:"5px 6px" }}>{fmtCOP2(i.precio*i.qty)}</td>
-                    <td style={{ padding:"5px 6px" }}>
-                      <button onClick={() => setItems(p => p.filter(x => x.nombre!==i.nombre))} style={{ background:"none",border:"none",color:"#ef4444",cursor:"pointer",fontSize:14,lineHeight:1 }}>×</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div style={{ display:"flex", gap:8, marginBottom:8, alignItems:"center", flexWrap:"wrap" }}>
-              <label style={{ fontSize:11, color:"#64748b", display:"flex", alignItems:"center", gap:4 }}>
-                Descuento %:
-                <input type="number" min={0} max={100} value={desc} onChange={e=>setDesc(Number(e.target.value))}
-                  style={{ width:52,borderRadius:7,border:"1.5px solid #e2e8f0",padding:"3px 6px",fontSize:12,outline:"none" }} />
-              </label>
-              <label style={{ fontSize:11, color:"#64748b", display:"flex", alignItems:"center", gap:4, cursor:"pointer" }}>
-                <input type="checkbox" checked={iva} onChange={e=>setIva(e.target.checked)} /> IVA 19%
-              </label>
-            </div>
-            <div style={{ background:"#f8fafc", borderRadius:10, padding:"8px 12px", marginBottom:8, fontSize:12 }}>
-              {desc > 0 && <div style={{ display:"flex",justifyContent:"space-between",color:"#64748b" }}><span>Subtotal</span><span>{fmtCOP2(subtotal)}</span></div>}
-              {desc > 0 && <div style={{ display:"flex",justifyContent:"space-between",color:"#dc2626" }}><span>Descuento {desc}%</span><span>-{fmtCOP2(descuento)}</span></div>}
-              {iva && <div style={{ display:"flex",justifyContent:"space-between",color:"#64748b" }}><span>IVA 19%</span><span>{fmtCOP2(ivaVal)}</span></div>}
-              <div style={{ display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:14,color:"#0f172a",borderTop:"1px solid #e2e8f0",marginTop:4,paddingTop:4 }}>
-                <span>TOTAL</span><span style={{ color:"#d97706" }}>{fmtCOP2(total)}</span>
-              </div>
-            </div>
-            <button onClick={copiar} style={{
-              width:"100%", borderRadius:10, border:"none", padding:"8px",
-              background: copiado ? "#16a34a" : "#f59e0b", color:"#fff",
-              fontWeight:700, cursor:"pointer", fontSize:13, transition:"background .2s",
-            }}>{copiado ? "✅ ¡Copiado!" : "📋 Copiar cotización"}</button>
-            <button onClick={() => setItems([])} style={{ width:"100%",marginTop:5,borderRadius:10,border:"1px solid #e2e8f0",padding:"6px",background:"#fff",color:"#94a3b8",cursor:"pointer",fontSize:12 }}>Limpiar</button>
-          </>
-        )}
-        {items.length === 0 && (
-          <div style={{ textAlign:"center",color:"#94a3b8",padding:"20px 0",fontSize:12 }}>
-            Selecciona servicios arriba para cotizar
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+import { Icon, SECCIONES } from "./dashboard/icons";
+import {
+  DEMO_SERVICIOS, DEMO_COTIZACIONES, DEMO_CLIENTES, DEMO_GASTOS, DEMO_INGRESOS,
+  CATEGORIAS_GASTO, CATEGORIAS_INGRESO, CATEGORIAS_CLIENTE_SERVICIO,
+} from "./dashboard/demoData";
+import { fmtCOP, exportCSV } from "./dashboard/helpers";
+import { BadgeEstado, Modal, TablaBase } from "./dashboard/ui";
+import { CotizadorCostos } from "./dashboard/CotizadorCostos";
 
 /* ═══════════════════════════════════════
    COMPONENTE PRINCIPAL
@@ -366,6 +70,7 @@ function Dashboard() {
 
   useEffect(() => {
     if (seccion === "dashboard" || seccion === "servicios") cargarServicios();
+    if (seccion === "dashboard" || seccion === "cotizaciones") cargarCotizaciones();
   }, [seccion]);
 
   const cargarServicios = async () => {
@@ -378,6 +83,16 @@ function Dashboard() {
       setDemoMode(true);
       setServicios(DEMO_SERVICIOS);
     } finally { setLoadingT(false); }
+  };
+
+  const cargarCotizaciones = async () => {
+    try {
+      const res = await fetchCotizaciones();
+      const data = (res.data || []).map(c => ({ estado: "Pendiente", fecha: "", ...c }));
+      if (data.length) setCotizaciones(data);
+    } catch {
+      /* sin backend: se conservan los datos de ejemplo */
+    }
   };
 
   const mostrarAlerta = (msg, tipo = "danger") => {
@@ -437,6 +152,7 @@ function Dashboard() {
 
   const cerrarSesion = () => {
     sessionStorage.removeItem("usuario");
+    sessionStorage.removeItem("token");
     navigate("/");
   };
 

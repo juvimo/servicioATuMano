@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000";
+import { BASE as BASE_URL } from "./config";
 
 export async function registrarUsuario(nombre, correo, password) {
   const res = await fetch(`${BASE_URL}/api/auth/registro`, {

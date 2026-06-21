@@ -1,9 +1,9 @@
 import os
 import json
-import base64
-from fastapi import APIRouter, Form, File, UploadFile, HTTPException
+from fastapi import APIRouter, Form, File, UploadFile
 from typing import List, Optional
-import anthropic
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -128,7 +128,37 @@ REGLAS DE COMPORTAMIENTO
 - Para preguntas de precio/servicio/proceso: SIEMPRE da cifras concretas en COP
 - Para sugerir opciones al usuario, termina con: ##OPCIONES:opcion1|opcion2|opcion3##
 - Si la pregunta NO es sobre limpieza o la empresa: di amablemente que solo puedes ayudar con Servicio a tu Mano y termina con ##FAQ##
-- NUNCA pongas ##FAQ## ni ##OPCIONES## en respuestas normales sobre precios o servicios"""
+- NUNCA pongas ##FAQ## ni ##OPCIONES## en respuestas normales sobre precios o servicios
+- Si analizas una foto y no puedes determinar el tamaño con certeza (p. ej. puestos del sofá, medida del colchón o del tapete), da un rango amplio y pregunta el dato que falta terminando con ##OPCIONES:opcion1|opcion2|opcion3## para precisar la cotización"""
+
+
+# ── Respuestas locales de respaldo (sin costo) si la IA no está disponible ──
+PRECIOS_RESPALDO = {
+    ("sofa", "sillon", "mueble", "poltrona", "puesto"): "Vapor de muebles/sofás: sillón $40.000–$80.000, sofá 2 puestos $65.000–$120.000, sofá 3 puestos $90.000–$160.000, esquinero $150.000–$260.000.",
+    ("colchon", "cama"): "Colchones a vapor: sencillo $50.000–$90.000, doble/queen $70.000–$130.000, king $90.000–$160.000.",
+    ("tapete", "alfombra"): "Alfombras y tapetes: hasta 2 m² $40.000–$70.000, 2–6 m² $70.000–$140.000, 6–12 m² $140.000–$240.000.",
+    ("carro", "auto", "vehiculo", "tapiceria"): "Tapicería de autos: hatchback $120.000–$200.000, sedán $150.000–$250.000, SUV $200.000–$350.000.",
+    ("bano", "baño", "sanitario", "ducha"): "Baños y desinfección: baño individual $45.000–$80.000, pack 2–3 baños $90.000–$200.000.",
+    ("casa", "apartamento", "apto", "residencial", "hogar"): "Limpieza residencial: apto <50 m² $180.000–$280.000, 50–80 m² $250.000–$380.000, casa 80–120 m² $350.000–$520.000.",
+    ("oficina", "local", "comercial", "restaurante"): "Limpieza comercial: locales $200.000–$600.000, oficinas $3.500–$6.000/m², restaurantes $300.000–$700.000.",
+    ("horario", "hora", "atienden", "abren"): "Atendemos lunes a sábado, 7:00 a.m.–6:00 p.m., a domicilio.",
+    ("zona", "donde", "ubicad", "cobertura", "domicilio"): "Cubrimos Mosquera, Madrid, Funza y municipios cercanos de Cundinamarca, a domicilio.",
+    ("agendar", "cita", "reservar", "contratar", "contacto", "telefono", "whatsapp"): "Para agendar llama o escribe a Juan Pablo 321 219 6255 o Sandra 312 527 6445, o usa el formulario de cotización en la web.",
+}
+
+
+def _respuesta_respaldo(mensaje: str, hay_imagenes: bool) -> str:
+    texto = (mensaje or "").lower()
+    encontrados = [resp for claves, resp in PRECIOS_RESPALDO.items() if any(k in texto for k in claves)]
+    if encontrados:
+        return " ".join(encontrados) + " Para un precio exacto solicita tu cotización o llama al 321 219 6255."
+    if hay_imagenes:
+        return ("Recibimos tu foto, pero el análisis automático no está disponible en este momento. "
+                "Cuéntanos qué es y su tamaño (p. ej. sofá de 3 puestos, colchón doble) y te damos un rango. "
+                "Para cotización exacta: 321 219 6255.")
+    return ("¡Hola! Somos Servicio a tu Mano, limpieza a vapor a domicilio. "
+            "Pregúntame por precios de sofás, colchones, tapetes, autos, baños o limpieza de casa/oficina, "
+            "o llama al 321 219 6255.")
 
 
 @router.post("/chatbot")
@@ -137,14 +167,8 @@ async def chatbot_endpoint(
     historial: str = Form("[]"),
     imagenes: Optional[List[UploadFile]] = File(None),
 ):
-    api_key = os.getenv("ANTHROPIC_API_KEY", "")
-    if not api_key or api_key.startswith("sk-ant-aqui") or api_key == "":
-        raise HTTPException(
-            status_code=503,
-            detail="Servicio de IA no configurado. Agrega ANTHROPIC_API_KEY en backend/.env"
-        )
-
-    client = anthropic.Anthropic(api_key=api_key)
+    api_key = os.getenv("GEMINI_API_KEY", "")
+    modelo = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
     # Parsear y validar historial de conversación
     try:
@@ -159,36 +183,46 @@ async def chatbot_endpoint(
     except Exception:
         hist = []
 
-    # Construir contenido del mensaje actual
-    content = []
+    # Leer imágenes (si las hay)
+    partes_imagen = []
+    valid_types = {"image/jpeg", "image/png", "image/gif", "image/webp"}
     if imagenes:
-        valid_types = {"image/jpeg", "image/png", "image/gif", "image/webp"}
         for img in imagenes[:3]:
             data = await img.read()
             media_type = img.content_type if img.content_type in valid_types else "image/jpeg"
-            b64 = base64.standard_b64encode(data).decode("utf-8")
-            content.append({
-                "type": "image",
-                "source": {"type": "base64", "media_type": media_type, "data": b64},
-            })
+            partes_imagen.append(types.Part.from_bytes(data=data, mime_type=media_type))
 
     texto = mensaje.strip()
     if not texto:
         texto = (
-            "Analiza estas imágenes. Describe las manchas y dame una estimación de precio."
+            "Analiza esta imagen: di qué es, su tamaño aproximado y un rango de precio. Si el tamaño no es claro, pregúntalo."
             if imagenes else "Hola"
         )
-    content.append({"type": "text", "text": texto})
 
-    # Armar lista de mensajes con historial + mensaje actual
-    messages = [{"role": m["role"], "content": m["content"]} for m in hist]
-    messages.append({"role": "user", "content": content})
+    # Sin API key configurada: respuesta local de respaldo (sin costo)
+    if not api_key or api_key.startswith("tu-") or api_key.strip() == "":
+        return {"respuesta": _respuesta_respaldo(texto, bool(imagenes))}
 
-    response = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=1024,
-        system=SYSTEM_PROMPT,
-        messages=messages,
-    )
+    # Construir contenido para Gemini (historial + mensaje actual)
+    contents = []
+    for m in hist:
+        rol = "model" if m["role"] == "assistant" else "user"
+        contents.append(types.Content(role=rol, parts=[types.Part.from_text(text=str(m["content"]))]))
+    contents.append(types.Content(role="user", parts=partes_imagen + [types.Part.from_text(text=texto)]))
 
-    return {"respuesta": response.content[0].text}
+    try:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model=modelo,
+            contents=contents,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                max_output_tokens=1024,
+                thinking_config=types.ThinkingConfig(thinking_budget=0),
+            ),
+        )
+        respuesta = (response.text or "").strip()
+        return {"respuesta": respuesta or _respuesta_respaldo(texto, bool(imagenes))}
+    except Exception as e:
+        print(f"[chatbot] Gemini no disponible: {e}")
+        return {"respuesta": _respuesta_respaldo(texto, bool(imagenes))}

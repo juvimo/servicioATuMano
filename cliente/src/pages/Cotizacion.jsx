@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { createServicio } from "../api/servicios";
+import { createCotizacion } from "../api/servicios";
 
 const SERVICIOS_LISTA = [
   { img: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&q=80", title: "Limpieza a Vapor",      desc: "Elimina suciedad y bacterias en profundidad." },
@@ -39,13 +39,15 @@ function Cotizacion() {
 
     setLoading(true);
     const payload = {
-      titulo: `Cotización – ${servicios.join(", ")}`,
-      descripcion: `Cliente: ${nombre} | Tel: ${telefono} | Email: ${correo}${info ? " | " + info : ""}`,
-      completada: false,
+      nombre,
+      telefono,
+      correo,
+      servicio: servicios.join(", "),
+      info,
     };
 
     try {
-      await createServicio(payload);
+      await createCotizacion(payload);
     } catch {
       console.warn("Backend no disponible, modo demo");
     } finally {

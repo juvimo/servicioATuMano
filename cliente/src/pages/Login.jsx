@@ -83,6 +83,7 @@ function Login() {
     try {
       const data = await loginUsuario(email, password);
       sessionStorage.setItem("usuario", JSON.stringify(data));
+      if (data.token) sessionStorage.setItem("token", data.token);
       setOk(true);
       setTimeout(() => {
         if (data.rol === "admin") navigate("/dashboard");
