@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from bson import ObjectId
 from models import Servicio, UpdateServicio, Cotizacion
 from database import (
@@ -6,6 +6,7 @@ from database import (
     create_servicio, update_servicio, delete_servicio,
     get_todas_cotizaciones, create_cotizacion
 )
+from security import solo_admin
 
 router = APIRouter()
 
@@ -16,7 +17,7 @@ async def listar_servicios():
     return await get_todos_servicios()
 
 @router.post("/api/servicios")
-async def crear_servicio(servicio: Servicio):
+async def crear_servicio(servicio: Servicio, _admin=Depends(solo_admin)):
     existente = await get_servicio_por_titulo(servicio.titulo)
     if existente:
         raise HTTPException(400, "Ya existe un servicio con ese título.")
@@ -35,7 +36,7 @@ async def obtener_servicio(id: str):
     raise HTTPException(404, f"Servicio {id} no encontrado")
 
 @router.put("/api/servicios/{id}", response_model=Servicio)
-async def actualizar_servicio(id: str, data: UpdateServicio):
+async def actualizar_servicio(id: str, data: UpdateServicio, _admin=Depends(solo_admin)):
     if not ObjectId.is_valid(id):
         raise HTTPException(404, "ID inválido")
     doc = await update_servicio(id, data)
@@ -44,7 +45,7 @@ async def actualizar_servicio(id: str, data: UpdateServicio):
     raise HTTPException(404, f"Servicio {id} no encontrado")
 
 @router.delete("/api/servicios/{id}")
-async def eliminar_servicio(id: str):
+async def eliminar_servicio(id: str, _admin=Depends(solo_admin)):
     if not ObjectId.is_valid(id):
         raise HTTPException(404, "ID inválido")
     await delete_servicio(id)
@@ -53,7 +54,7 @@ async def eliminar_servicio(id: str):
 # ─── COTIZACIONES ────────────────────────────────────
 
 @router.get("/api/cotizaciones")
-async def listar_cotizaciones():
+async def listar_cotizaciones(_admin=Depends(solo_admin)):
     return await get_todas_cotizaciones()
 
 @router.post("/api/cotizaciones")

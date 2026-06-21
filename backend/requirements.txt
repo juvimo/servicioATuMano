@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+motor
+pymongo
+bcrypt
+python-dotenv
+python-multipart
+pyjwt
+anthropic
+pydantic

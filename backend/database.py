@@ -1,11 +1,21 @@
-from motor.motor_asyncio import AsyncIOMotorClient
-from models import Servicio, UpdateServicio, Cotizacion
-from bson import ObjectId
+import os
 
-cliente = AsyncIOMotorClient("mongodb://localhost")
-database = cliente.servicioatumano        # nombre de la BD del proyecto
-col_servicios   = database.servicios      # colección de servicios
+from motor.motor_asyncio import AsyncIOMotorClient
+from bson import ObjectId
+from dotenv import load_dotenv
+
+from models import Servicio, UpdateServicio, Cotizacion, Usuario
+
+load_dotenv()
+
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost")
+DB_NAME = os.getenv("MONGO_DB", "servicioatumano")
+
+cliente = AsyncIOMotorClient(MONGO_URI)
+database = cliente[DB_NAME]                # nombre de la BD del proyecto
+col_servicios    = database.servicios     # colección de servicios
 col_cotizaciones = database.cotizaciones  # colección de cotizaciones
+col_usuarios     = database.usuarios      # colección de usuarios
 
 # ─────────────────────────────────────────
 #  SERVICIOS
@@ -62,10 +72,6 @@ async def create_cotizacion(data: dict):
     if created:
         created["_id"] = str(created["_id"])
     return created
-
-from models import Servicio, UpdateServicio, Cotizacion, Usuario  # agrega Usuario al import
-
-col_usuarios = database.usuarios  # nueva colección
 
 # ─────────────────────────────────────────
 #  USUARIOS
