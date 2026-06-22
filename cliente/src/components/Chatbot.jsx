@@ -72,6 +72,14 @@ export default function Chatbot() {
   const bottomRef   = useRef(null);
   const fileInputRef = useRef(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    function checkSize() { setIsMobile(window.innerWidth <= 480); }
+    checkSize();
+    window.addEventListener("resize", checkSize);
+    return () => window.removeEventListener("resize", checkSize);
+  }, []);
+
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, loading]);
@@ -186,7 +194,7 @@ export default function Chatbot() {
     setLoading(false);
   }
 
-  return (
+return (
     <>
       <style>{`
         @keyframes dot-pulse {
@@ -204,12 +212,15 @@ export default function Chatbot() {
         onClick={() => setOpen(v => !v)}
         title="Asistente virtual"
         style={{
-          position:"fixed", bottom:28, right:28, zIndex:9999,
+          position:"fixed",
+          bottom: isMobile ? 16 : 28,
+          right: isMobile ? 16 : 28,
+          zIndex:9999,
           width:56, height:56, borderRadius:"50%",
           background: open
-            ? "linear-gradient(135deg,#15803d,#166534)"
-            : "linear-gradient(135deg,#16a34a,#15803d)",
-          border:"none", boxShadow:"0 4px 20px rgba(22,163,74,.45)",
+            ? "linear-gradient(135deg,#0284c7,#075985)"
+            : "linear-gradient(135deg,#0ea5e9,#0284c7)",
+          border:"none", boxShadow:"0 4px 20px rgba(14,165,233,.45)",
           cursor:"pointer", display:"flex", alignItems:"center",
           justifyContent:"center", transition:"all .2s",
         }}
@@ -223,9 +234,9 @@ export default function Chatbot() {
         ) : (
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
             <path d="M4 6C4 4.9 4.9 4 6 4H26C27.1 4 28 4.9 28 6V20C28 21.1 27.1 22 26 22H10L4 28V6Z" fill="white" fillOpacity=".95"/>
-            <circle cx="16" cy="13" r="1.4" fill="#16a34a"/>
-            <circle cx="21" cy="13" r="1.4" fill="#16a34a"/>
-            <circle cx="11" cy="13" r="1.4" fill="#16a34a"/>
+            <circle cx="16" cy="13" r="1.4" fill="#0ea5e9"/>
+            <circle cx="21" cy="13" r="1.4" fill="#0ea5e9"/>
+            <circle cx="11" cy="13" r="1.4" fill="#0ea5e9"/>
           </svg>
         )}
       </button>
@@ -233,8 +244,15 @@ export default function Chatbot() {
       {/* ── Panel ── */}
       {open && (
         <div style={{
-          position:"fixed", bottom:96, right:28, zIndex:9998,
-          width:370, maxHeight:590, borderRadius:20,
+          position:"fixed",
+          bottom: isMobile ? 0 : 96,
+          right: isMobile ? 0 : 28,
+          left: isMobile ? 0 : "auto",
+          top: isMobile ? 0 : "auto",
+          width: isMobile ? "100%" : 370,
+          maxHeight: isMobile ? "100%" : "min(590px, calc(100vh - 120px))",
+          height: isMobile ? "100%" : "auto",
+          zIndex:9998, borderRadius: isMobile ? 0 : 20,
           boxShadow:"0 8px 48px rgba(0,0,0,.2)", display:"flex",
           flexDirection:"column", overflow:"hidden", background:"#fff",
           fontFamily:"'Inter','Segoe UI',sans-serif",
@@ -243,7 +261,7 @@ export default function Chatbot() {
 
           {/* Header */}
           <div style={{
-            background:"linear-gradient(135deg,#16a34a,#15803d)",
+            background:"linear-gradient(135deg,#0ea5e9,#0284c7)",
             padding:"14px 18px", display:"flex", alignItems:"center",
             gap:10, flexShrink:0,
           }}>
@@ -258,7 +276,7 @@ export default function Chatbot() {
                 Asistente IA · Servicio a tu Mano
               </div>
               <div style={{ color:"rgba(255,255,255,.8)", fontSize:11, display:"flex", alignItems:"center", gap:4, marginTop:2 }}>
-                <span style={{ width:6, height:6, background:"#4ade80", borderRadius:"50%", display:"inline-block" }}/>
+                <span style={{ width:6, height:6, background:"#38bdf8", borderRadius:"50%", display:"inline-block" }}/>
                 En línea · Cotizaciones · Análisis de manchas
               </div>
             </div>
@@ -279,7 +297,7 @@ export default function Chatbot() {
                 {msg.from === "user" && msg.imagePreviews?.length > 0 && (
                   <div style={{ display:"flex", justifyContent:"flex-end", gap:5, marginBottom: msg.text ? 5 : 0, flexWrap:"wrap" }}>
                     {msg.imagePreviews.map((src, i) => (
-                      <img key={i} src={src} alt="adjunto" style={{ width:90, height:90, objectFit:"cover", borderRadius:10, border:"2px solid #16a34a" }}/>
+                      <img key={i} src={src} alt="adjunto" style={{ width:90, height:90, objectFit:"cover", borderRadius:10, border:"2px solid #0ea5e9" }}/>
                     ))}
                   </div>
                 )}
@@ -289,7 +307,7 @@ export default function Chatbot() {
                     <div style={{
                       maxWidth:"88%", padding:"9px 13px",
                       borderRadius: msg.from === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                      background: msg.from === "user" ? "#16a34a" : "#fff",
+                      background: msg.from === "user" ? "#0ea5e9" : "#fff",
                       color: msg.from === "user" ? "#fff" : "#1e293b",
                       fontSize:13, lineHeight:1.6,
                       boxShadow: msg.from === "bot" ? "0 1px 4px rgba(0,0,0,.08)" : "none",
@@ -298,8 +316,8 @@ export default function Chatbot() {
                       {msg.isAI && msg.from === "bot" && (
                         <div style={{
                           marginTop:7, display:"inline-flex", alignItems:"center", gap:4,
-                          background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:20,
-                          padding:"2px 8px", fontSize:10, color:"#15803d", fontWeight:600,
+                          background:"#f0f9ff", border:"1px solid #bae6fd", borderRadius:20,
+                          padding:"2px 8px", fontSize:10, color:"#0284c7", fontWeight:600,
                         }}>✨ Claude IA</div>
                       )}
                     </div>
@@ -310,13 +328,13 @@ export default function Chatbot() {
                   <div style={{ marginTop:6, display:"flex", flexDirection:"column", gap:4 }}>
                     {msg.opciones.map(op => (
                       <button key={op} onClick={() => handleOptionClick(op)} style={{
-                        background:"#fff", border:"1.5px solid #bbf7d0",
+                        background:"#fff", border:"1.5px solid #bae6fd",
                         borderRadius:10, padding:"6px 11px", fontSize:12,
-                        color:"#15803d", cursor:"pointer", textAlign:"left",
+                        color:"#0284c7", cursor:"pointer", textAlign:"left",
                         fontWeight:500, transition:"all .15s",
                       }}
-                        onMouseEnter={e => { e.currentTarget.style.background="#dcfce7"; e.currentTarget.style.borderColor="#16a34a"; }}
-                        onMouseLeave={e => { e.currentTarget.style.background="#fff"; e.currentTarget.style.borderColor="#bbf7d0"; }}
+                        onMouseEnter={e => { e.currentTarget.style.background="#e0f2fe"; e.currentTarget.style.borderColor="#0ea5e9"; }}
+                        onMouseLeave={e => { e.currentTarget.style.background="#fff"; e.currentTarget.style.borderColor="#bae6fd"; }}
                       >{op}</button>
                     ))}
                   </div>
@@ -333,7 +351,7 @@ export default function Chatbot() {
                 }}>
                   {[0,1,2].map(i => (
                     <span key={i} style={{
-                      width:8, height:8, background:"#16a34a", borderRadius:"50%",
+                      width:8, height:8, background:"#0ea5e9", borderRadius:"50%",
                       display:"inline-block",
                       animation:`dot-pulse 1.4s ease-in-out ${i*.18}s infinite`,
                     }}/>
@@ -353,7 +371,7 @@ export default function Chatbot() {
             }}>
               {imagenes.map((img, idx) => (
                 <div key={idx} style={{ position:"relative" }}>
-                  <img src={img.preview} alt={img.name} style={{ width:54, height:54, objectFit:"cover", borderRadius:8, border:"2px solid #16a34a" }}/>
+                  <img src={img.preview} alt={img.name} style={{ width:54, height:54, objectFit:"cover", borderRadius:8, border:"2px solid #0ea5e9" }}/>
                   <button onClick={() => removeImage(idx)} style={{
                     position:"absolute", top:-6, right:-6, background:"#ef4444",
                     border:"none", borderRadius:"50%", width:18, height:18,
@@ -376,8 +394,8 @@ export default function Chatbot() {
               disabled={imagenes.length >= 3 || loading}
               title={imagenes.length >= 3 ? "Máximo 3 fotos" : "Adjuntar foto"}
               style={{
-                background: imagenes.length >= 3 || loading ? "#f1f5f9" : "#f0fdf4",
-                border:`1.5px solid ${imagenes.length >= 3 || loading ? "#e2e8f0" : "#16a34a"}`,
+                background: imagenes.length >= 3 || loading ? "#f1f5f9" : "#f0f9ff",
+                border:`1.5px solid ${imagenes.length >= 3 || loading ? "#e2e8f0" : "#0ea5e9"}`,
                 borderRadius:10, width:38, height:38,
                 cursor: imagenes.length >= 3 || loading ? "not-allowed" : "pointer",
                 display:"flex", alignItems:"center", justifyContent:"center",
@@ -395,14 +413,14 @@ export default function Chatbot() {
                 fontFamily:"inherit", color:"#1e293b",
                 background: loading ? "#f8fafc" : "#fff",
               }}
-              onFocus={e => (e.target.style.borderColor = "#16a34a")}
+              onFocus={e => (e.target.style.borderColor = "#0ea5e9")}
               onBlur={e  => (e.target.style.borderColor = "#e2e8f0")}
             />
 
             <button type="submit"
               disabled={loading || (!inputVal.trim() && imagenes.length === 0)}
               style={{
-                background: loading || (!inputVal.trim() && imagenes.length === 0) ? "#86efac" : "#16a34a",
+                background: loading || (!inputVal.trim() && imagenes.length === 0) ? "#7dd3fc" : "#0ea5e9",
                 border:"none", borderRadius:10, width:38, height:38,
                 display:"flex", alignItems:"center", justifyContent:"center",
                 cursor: loading || (!inputVal.trim() && imagenes.length === 0) ? "not-allowed" : "pointer",
