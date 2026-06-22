@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { BASE as API_URL } from "../api/config";
+import logoEmpresa from "../assets/logo.png";
 
 const SUGERENCIAS = [
   "💰 ¿Cuánto cuesta limpiar un sofá?",
@@ -267,10 +268,12 @@ return (
           }}>
             <div style={{
               width:38, height:38, borderRadius:"50%",
-              background:"rgba(255,255,255,.2)", display:"flex",
+              background:"#fff", display:"flex",
               alignItems:"center", justifyContent:"center",
-              flexShrink:0, fontSize:20,
-            }}>🧹</div>
+              flexShrink:0, overflow:"hidden",
+            }}>
+              <img src={logoEmpresa} alt="Logo" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+            </div>
             <div style={{ flex:1 }}>
               <div style={{ color:"#fff", fontWeight:700, fontSize:14, lineHeight:1.2 }}>
                 Asistente IA · Servicio a tu Mano
