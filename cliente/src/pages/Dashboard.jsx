@@ -8,7 +8,7 @@ import {
   DEMO_SERVICIOS, DEMO_COTIZACIONES, DEMO_CLIENTES, DEMO_GASTOS, DEMO_INGRESOS,
   CATEGORIAS_GASTO, CATEGORIAS_INGRESO, CATEGORIAS_CLIENTE_SERVICIO,
 } from "./dashboard/demoData";
-import { fmtCOP, exportCSV } from "./dashboard/helpers";
+import { fmtCOP, exportExcel } from "./dashboard/helpers";
 import { BadgeEstado, Modal, TablaBase } from "./dashboard/ui";
 import { CotizadorCostos } from "./dashboard/CotizadorCostos";
 
@@ -164,6 +164,16 @@ function Dashboard() {
   const utilidad      = totalIngresos - totalGastos;
   const completados   = servicios.filter(s => s.completada).length;
   const cotPendientes = cotizaciones.filter(c => c.estado === "Pendiente").length;
+
+  /* ── Cálculos semanales ── */
+  const hoyDate     = new Date();
+  const lunesActual = new Date(hoyDate);
+  lunesActual.setDate(hoyDate.getDate() - ((hoyDate.getDay() + 6) % 7));
+  lunesActual.setHours(0, 0, 0, 0);
+  const ingresosSemana = ingresos.filter(i => i.fecha && new Date(i.fecha + "T00:00:00") >= lunesActual).reduce((s, i) => s + Number(i.monto), 0);
+  const gastosSemana   = gastos.filter(g => g.fecha && new Date(g.fecha + "T00:00:00") >= lunesActual).reduce((s, g) => s + Number(g.monto), 0);
+  const utilidadSemana = ingresosSemana - gastosSemana;
+  const numSemana      = Math.ceil((hoyDate - new Date(hoyDate.getFullYear(), 0, 1)) / (7 * 86400000));
 
   const statCards = [
     { label: "Ingresos del Mes",     valor: fmtCOP(totalIngresos), icon: "💰", bg: "#dcfce7", color: "#15803d" },
@@ -325,66 +335,144 @@ function Dashboard() {
         ══════════════════════════════════ */}
         {seccion === "dashboard" && (
           <>
-            {/* ── Banner bienvenida con reloj ── */}
+            {/* ── Banner bienvenida con reloj digital ── */}
             <div style={{
-              background: "linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#0369a1 100%)",
-              borderRadius: 22, padding: "1.5rem 2rem", marginBottom: "1.5rem",
+              background: "linear-gradient(135deg,#0f172a 0%,#1a2f50 45%,#0c4a6e 80%,#0369a1 100%)",
+              borderRadius: 24, padding: "1.75rem 2rem", marginBottom: "1.5rem",
               display: "flex", justifyContent: "space-between", alignItems: "center",
-              boxShadow: "0 8px 32px rgba(15,23,42,.25)", flexWrap: "wrap", gap: "1rem",
+              boxShadow: "0 12px 48px rgba(3,105,161,.35)", flexWrap: "wrap", gap: "1.25rem",
+              position: "relative", overflow: "hidden",
             }}>
-              <div>
-                <p style={{ color:"rgba(255,255,255,.55)", fontSize:".78rem", fontWeight:600, margin:0, letterSpacing:".06em", textTransform:"uppercase" }}>Panel de Control</p>
-                <h4 style={{ color:"#fff", margin:"4px 0 2px", fontWeight:900, fontSize:"1.25rem" }}>Servicio a tu Mano 🧹</h4>
-                <p style={{ color:"rgba(255,255,255,.55)", fontSize:".8rem", margin:0 }}>
+              <div style={{ position:"absolute", top:-40, right:220, width:200, height:200, borderRadius:"50%", background:"rgba(56,189,248,.04)", pointerEvents:"none" }}/>
+              <div style={{ position:"absolute", bottom:-60, left:-20, width:180, height:180, borderRadius:"50%", background:"rgba(14,165,233,.06)", pointerEvents:"none" }}/>
+              <div style={{ position:"relative" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+                  <div style={{ width:8, height:8, borderRadius:"50%", background:"#4ade80", boxShadow:"0 0 0 4px rgba(74,222,128,.2)" }}/>
+                  <p style={{ color:"rgba(255,255,255,.5)", fontSize:".7rem", fontWeight:700, margin:0, letterSpacing:".1em", textTransform:"uppercase" }}>Panel Activo</p>
+                </div>
+                <h3 style={{ color:"#fff", margin:"0 0 5px", fontWeight:900, fontSize:"1.55rem", letterSpacing:"-.02em" }}>
+                  Hola, Administrador 👋
+                </h3>
+                <p style={{ color:"rgba(255,255,255,.45)", fontSize:".82rem", margin:0 }}>
                   {new Date().toLocaleDateString("es-CO", { weekday:"long", day:"numeric", month:"long", year:"numeric" })}
+                  <span style={{ margin:"0 8px", opacity:.35 }}>·</span>
+                  Semana <strong style={{ color:"rgba(255,255,255,.7)" }}>{numSemana}</strong> del año
                 </p>
               </div>
-              <div style={{ display:"flex", gap:"1.25rem", flexWrap:"wrap" }}>
-                <div style={{ textAlign:"center", background:"rgba(255,255,255,.08)", borderRadius:16, padding:"0.75rem 1.25rem", border:"1px solid rgba(255,255,255,.12)" }}>
-                  <div style={{ color:"#38bdf8", fontWeight:900, fontSize:"1.6rem", fontVariantNumeric:"tabular-nums", lineHeight:1 }}>{hora}</div>
-                  <div style={{ color:"rgba(255,255,255,.45)", fontSize:".7rem", marginTop:3 }}>Hora actual</div>
+              <div style={{ display:"flex", gap:"0.75rem", flexWrap:"wrap", alignItems:"stretch", position:"relative" }}>
+                <div style={{
+                  background:"rgba(0,0,0,.45)", borderRadius:20, padding:"1rem 1.75rem",
+                  border:"1px solid rgba(56,189,248,.25)", textAlign:"center", minWidth:175,
+                  backdropFilter:"blur(8px)", boxShadow:"inset 0 1px 0 rgba(255,255,255,.05)",
+                }}>
+                  <div style={{
+                    color:"#38bdf8", fontWeight:900, fontSize:"2.5rem",
+                    fontVariantNumeric:"tabular-nums", lineHeight:1,
+                    fontFamily:"'Courier New', monospace", letterSpacing:".06em",
+                    textShadow:"0 0 28px rgba(56,189,248,.7), 0 0 60px rgba(56,189,248,.3)",
+                  }}>{hora}</div>
+                  <div style={{ color:"rgba(255,255,255,.3)", fontSize:".65rem", marginTop:6, letterSpacing:".12em", textTransform:"uppercase" }}>Hora actual</div>
                 </div>
-                <div style={{ textAlign:"center", background:"rgba(255,255,255,.08)", borderRadius:16, padding:"0.75rem 1.25rem", border:"1px solid rgba(255,255,255,.12)" }}>
-                  <div style={{ color:"#4ade80", fontWeight:900, fontSize:"1.6rem", lineHeight:1 }}>{completados}</div>
-                  <div style={{ color:"rgba(255,255,255,.45)", fontSize:".7rem", marginTop:3 }}>Completados hoy</div>
-                </div>
-                <div style={{ textAlign:"center", background:"rgba(255,255,255,.08)", borderRadius:16, padding:"0.75rem 1.25rem", border:"1px solid rgba(255,255,255,.12)" }}>
-                  <div style={{ color:"#fbbf24", fontWeight:900, fontSize:"1.6rem", lineHeight:1 }}>{cotPendientes}</div>
-                  <div style={{ color:"rgba(255,255,255,.45)", fontSize:".7rem", marginTop:3 }}>Cot. pendientes</div>
+                <div style={{ display:"flex", flexDirection:"column", gap:"0.5rem", justifyContent:"center" }}>
+                  <div style={{ background:"rgba(74,222,128,.1)", border:"1px solid rgba(74,222,128,.2)", borderRadius:14, padding:"0.65rem 1.1rem", display:"flex", alignItems:"center", gap:10 }}>
+                    <span style={{ color:"#4ade80", fontWeight:900, fontSize:"1.5rem", minWidth:30, textAlign:"right", lineHeight:1 }}>{completados}</span>
+                    <span style={{ color:"rgba(255,255,255,.5)", fontSize:".7rem", lineHeight:1.4 }}>Servicios<br/>completados</span>
+                  </div>
+                  <div style={{ background:"rgba(251,191,36,.1)", border:"1px solid rgba(251,191,36,.2)", borderRadius:14, padding:"0.65rem 1.1rem", display:"flex", alignItems:"center", gap:10 }}>
+                    <span style={{ color:"#fbbf24", fontWeight:900, fontSize:"1.5rem", minWidth:30, textAlign:"right", lineHeight:1 }}>{cotPendientes}</span>
+                    <span style={{ color:"rgba(255,255,255,.5)", fontSize:".7rem", lineHeight:1.4 }}>Cotizaciones<br/>pendientes</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* ── KPI Cards con gradientes ── */}
+            {/* ── KPI Cards con gradiente, hover y comparativo semanal ── */}
             <div className="row g-3 mb-4">
               {[
-                { label:"Ingresos del Mes",        valor:fmtCOP(totalIngresos), icon:"💰", g:"linear-gradient(135deg,#16a34a,#15803d)", sh:"rgba(22,163,74,.3)"  },
-                { label:"Gastos del Mes",          valor:fmtCOP(totalGastos),   icon:"📉", g:"linear-gradient(135deg,#dc2626,#b91c1c)", sh:"rgba(220,38,38,.3)"  },
-                { label:"Utilidad Neta",           valor:(utilidad>=0?"+":"")+fmtCOP(utilidad), icon:"📊", g: utilidad>=0?"linear-gradient(135deg,#0ea5e9,#0369a1)":"linear-gradient(135deg,#f59e0b,#d97706)", sh:"rgba(14,165,233,.3)" },
-                { label:"Servicios Completados",   valor:completados,           icon:"✅", g:"linear-gradient(135deg,#7c3aed,#6d28d9)", sh:"rgba(124,58,237,.3)" },
-                { label:"Cotizaciones Pendientes", valor:cotPendientes,         icon:"📋", g:"linear-gradient(135deg,#f59e0b,#d97706)", sh:"rgba(245,158,11,.3)" },
-                { label:"Clientes Registrados",    valor:clientes.length,       icon:"👥", g:"linear-gradient(135deg,#0891b2,#0e7490)", sh:"rgba(8,145,178,.3)"  },
+                { label:"Ingresos del Mes",        valor:fmtCOP(totalIngresos), sub:fmtCOP(ingresosSemana)+" esta semana",                        icon:"💰", g:"linear-gradient(135deg,#065f46,#16a34a)", sh:"rgba(22,163,74,.4)",    trend:"↑", barPct:100 },
+                { label:"Gastos del Mes",          valor:fmtCOP(totalGastos),   sub:fmtCOP(gastosSemana)+" esta semana",                           icon:"📉", g:"linear-gradient(135deg,#7f1d1d,#dc2626)", sh:"rgba(220,38,38,.4)",   trend:"↑", barPct:totalIngresos>0?Math.min(100,Math.round((totalGastos/totalIngresos)*100)):60 },
+                { label:"Utilidad Neta",           valor:(utilidad>=0?"+":"")+fmtCOP(utilidad), sub:(utilidadSemana>=0?"+":"")+fmtCOP(utilidadSemana)+" semana", icon:utilidad>=0?"📈":"📉", g:utilidad>=0?"linear-gradient(135deg,#0c4a6e,#0ea5e9)":"linear-gradient(135deg,#78350f,#f59e0b)", sh:"rgba(14,165,233,.35)", trend:utilidad>=0?"↑":"↓", barPct:totalIngresos>0?Math.max(10,Math.min(100,Math.round((Math.abs(utilidad)/totalIngresos)*100))):50 },
+                { label:"Servicios Completados",   valor:completados,           sub:`de ${servicios.length} en total`,                             icon:"✅", g:"linear-gradient(135deg,#4c1d95,#7c3aed)", sh:"rgba(124,58,237,.4)",  trend:"", barPct:servicios.length>0?Math.round((completados/servicios.length)*100):0 },
+                { label:"Cotizaciones Pendientes", valor:cotPendientes,         sub:`${cotizaciones.length} recibidas en total`,                    icon:"📋", g:"linear-gradient(135deg,#78350f,#f59e0b)", sh:"rgba(245,158,11,.4)", trend:"", barPct:cotizaciones.length>0?Math.round((cotPendientes/cotizaciones.length)*100):0 },
+                { label:"Clientes Registrados",    valor:clientes.length,       sub:"en base de datos",                                            icon:"👥", g:"linear-gradient(135deg,#0e4b5a,#0891b2)", sh:"rgba(8,145,178,.4)",   trend:"", barPct:75 },
               ].map(c => (
                 <div className="col-sm-6 col-xl-4" key={c.label}>
-                  <div style={{
-                    background: c.g, borderRadius: 20, padding:"1.4rem 1.6rem",
-                    boxShadow:`0 8px 28px ${c.sh}`, position:"relative", overflow:"hidden",
-                    cursor:"default",
-                  }}>
-                    <div style={{ position:"absolute", top:-14, right:-14, width:80, height:80, borderRadius:"50%", background:"rgba(255,255,255,.08)" }} />
-                    <div style={{ position:"absolute", bottom:-24, right:18, width:60, height:60, borderRadius:"50%", background:"rgba(255,255,255,.05)" }} />
-                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", position:"relative" }}>
-                      <div>
-                        <p style={{ color:"rgba(255,255,255,.72)", fontSize:".72rem", fontWeight:700, margin:0, letterSpacing:".05em", textTransform:"uppercase" }}>{c.label}</p>
-                        <p style={{ color:"#fff", fontWeight:900, fontSize:"1.65rem", margin:"6px 0 0", lineHeight:1 }}>{c.valor}</p>
+                  <div
+                    style={{
+                      background: c.g, borderRadius: 22, padding:"1.5rem 1.75rem",
+                      boxShadow:`0 8px 30px ${c.sh}`, position:"relative", overflow:"hidden",
+                      transition:"transform .2s ease, box-shadow .2s ease",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform="translateY(-5px)"; e.currentTarget.style.boxShadow=`0 20px 48px ${c.sh}`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow=`0 8px 30px ${c.sh}`; }}
+                  >
+                    <div style={{ position:"absolute", top:-20, right:-20, width:100, height:100, borderRadius:"50%", background:"rgba(255,255,255,.07)", pointerEvents:"none" }}/>
+                    <div style={{ position:"absolute", bottom:-32, right:14, width:72, height:72, borderRadius:"50%", background:"rgba(255,255,255,.04)", pointerEvents:"none" }}/>
+                    <div style={{ position:"relative", display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                      <div style={{ flex:1, minWidth:0, paddingRight:12 }}>
+                        <p style={{ color:"rgba(255,255,255,.6)", fontSize:".7rem", fontWeight:700, margin:"0 0 8px", letterSpacing:".07em", textTransform:"uppercase" }}>{c.label}</p>
+                        <div style={{ display:"flex", alignItems:"baseline", gap:7 }}>
+                          <p style={{ color:"#fff", fontWeight:900, fontSize:"1.85rem", margin:0, lineHeight:1 }}>{c.valor}</p>
+                          {c.trend && <span style={{ color:"rgba(255,255,255,.75)", fontWeight:900, fontSize:"1rem" }}>{c.trend}</span>}
+                        </div>
+                        <p style={{ color:"rgba(255,255,255,.4)", fontSize:".72rem", margin:"7px 0 0", fontWeight:500 }}>{c.sub}</p>
                       </div>
-                      <div style={{ background:"rgba(255,255,255,.18)", borderRadius:14, width:50, height:50, display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.4rem", flexShrink:0 }}>
+                      <div style={{
+                        background:"rgba(255,255,255,.16)", borderRadius:16, width:54, height:54,
+                        display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.6rem", flexShrink:0,
+                        boxShadow:"0 4px 16px rgba(0,0,0,.2)",
+                      }}>
                         {c.icon}
                       </div>
+                    </div>
+                    <div style={{ marginTop:"1rem", background:"rgba(255,255,255,.1)", borderRadius:4, height:4, overflow:"hidden" }}>
+                      <div style={{ width:`${c.barPct}%`, background:"rgba(255,255,255,.5)", height:"100%", borderRadius:4, transition:"width 1s ease" }}/>
                     </div>
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* ── Resumen Semanal ── */}
+            <div className="dash-card mb-3">
+              <div className="dash-card-header">
+                <h5>📅 Resumen Semanal
+                  <span style={{ background:"#dbeafe", color:"#1d4ed8", borderRadius:8, padding:"2px 10px", fontSize:".75rem", fontWeight:700, marginLeft:8 }}>Sem. {numSemana}</span>
+                </h5>
+                <span style={{ fontSize:".78rem", color:"#94a3b8" }}>
+                  {lunesActual.toLocaleDateString("es-CO", { day:"2-digit", month:"short" })} — {new Date().toLocaleDateString("es-CO", { day:"2-digit", month:"short", year:"numeric" })}
+                </span>
+              </div>
+              <div className="dash-card-body">
+                <div className="row g-3">
+                  {[
+                    { label:"Ingresos Semana",   valor:fmtCOP(ingresosSemana),  pct:totalIngresos>0?Math.round((ingresosSemana/totalIngresos)*100):0,       bg:"#dcfce7", color:"#15803d", bar:"#16a34a", icon:"💰" },
+                    { label:"Gastos Semana",     valor:fmtCOP(gastosSemana),    pct:totalGastos>0?Math.round((gastosSemana/totalGastos)*100):0,               bg:"#fee2e2", color:"#b91c1c", bar:"#dc2626", icon:"📉" },
+                    { label:"Utilidad Semana",   valor:(utilidadSemana>=0?"+":"")+fmtCOP(utilidadSemana), pct:totalIngresos>0?Math.min(100,Math.abs(Math.round((utilidadSemana/totalIngresos)*100))):0, bg:utilidadSemana>=0?"#dcfce7":"#fee2e2", color:utilidadSemana>=0?"#15803d":"#b91c1c", bar:utilidadSemana>=0?"#16a34a":"#dc2626", icon:utilidadSemana>=0?"📈":"📉" },
+                    { label:"Servicios Activos", valor:servicios.filter(s=>!s.completada).length,         pct:servicios.length>0?Math.round((servicios.filter(s=>!s.completada).length/servicios.length)*100):0, bg:"#dbeafe", color:"#1d4ed8", bar:"#3b82f6", icon:"🔄" },
+                  ].map(item => (
+                    <div className="col-sm-6 col-xl-3" key={item.label}>
+                      <div style={{ background:"#f8fafc", borderRadius:18, padding:"1.1rem 1.25rem", border:"1.5px solid #f1f5f9" }}>
+                        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
+                          <div>
+                            <p style={{ margin:0, fontSize:".7rem", fontWeight:700, color:"#94a3b8", textTransform:"uppercase", letterSpacing:".05em" }}>{item.label}</p>
+                            <p style={{ margin:"6px 0 0", fontWeight:900, fontSize:"1.35rem", color:item.color, lineHeight:1 }}>
+                              {item.valor}
+                            </p>
+                          </div>
+                          <div style={{ background:item.bg, borderRadius:12, width:44, height:44, display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.3rem" }}>
+                            {item.icon}
+                          </div>
+                        </div>
+                        <div style={{ background:"#e2e8f0", borderRadius:6, height:6, overflow:"hidden" }}>
+                          <div style={{ width:`${item.pct}%`, background:item.bar, height:"100%", borderRadius:6, transition:"width .8s ease" }}/>
+                        </div>
+                        <p style={{ margin:"5px 0 0", fontSize:".7rem", color:"#94a3b8" }}>{item.pct}% del total mensual</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* ── Financiero + Actividad ── */}
@@ -598,7 +686,7 @@ function Dashboard() {
               datos={servicios}
               columnas={["Título", "Descripción", "Estado", "Acciones"]}
               busquedaKey="titulo"
-              onExport={() => exportCSV(servicios.map(s => ({ titulo:s.titulo, descripcion:s.descripcion, estado:s.completada?"Completado":"Pendiente" })), "servicios")}
+              onExport={() => exportExcel(servicios.map(s => ({ titulo:s.titulo, descripcion:s.descripcion, estado:s.completada?"Completado":"Pendiente" })), "servicios")}
               renderFila={s => {
                 const deCot = s.descripcion?.startsWith("📞") || s.titulo?.includes(" — ");
                 return (
@@ -640,7 +728,7 @@ function Dashboard() {
               datos={cotizaciones}
               columnas={["Cliente", "Teléfono", "Correo", "Servicio", "Info", "Fecha", "Estado", "Acciones"]}
               busquedaKey="nombre"
-              onExport={() => exportCSV(cotizaciones.map(c => ({ nombre:c.nombre,telefono:c.telefono,correo:c.correo,servicio:c.servicio,info:c.info,fecha:c.fecha,estado:c.estado })), "cotizaciones")}
+              onExport={() => exportExcel(cotizaciones.map(c => ({ nombre:c.nombre,telefono:c.telefono,correo:c.correo,servicio:c.servicio,info:c.info,fecha:c.fecha,estado:c.estado })), "cotizaciones")}
               onAdd={() => setModalCot({ nombre:"",telefono:"",correo:"",servicio:"",info:"",fecha:new Date().toISOString().slice(0,10),estado:"Pendiente" })}
               addLabel="Nueva Cotización"
               renderFila={c => (
@@ -683,7 +771,7 @@ function Dashboard() {
             datos={clientes}
             columnas={["Nombre", "Teléfono", "Correo", "Servicios", "Total Pagado", "Última Visita", "Acciones"]}
             busquedaKey="nombre"
-            onExport={() => exportCSV(clientes.map(c => ({ nombre:c.nombre,telefono:c.telefono,correo:c.correo,servicios:c.servicios,total:c.total,ultima:c.ultima })), "clientes")}
+            onExport={() => exportExcel(clientes.map(c => ({ nombre:c.nombre,telefono:c.telefono,correo:c.correo,servicios:c.servicios,total:c.total,ultima:c.ultima })), "clientes")}
             onAdd={() => { setFormCliente({ nombre:"",telefono:"",correo:"",servicios:0,total:"",ultima:"" }); setModalCliente(true); }}
             addLabel="Nuevo Cliente"
             renderFila={c => (
@@ -734,7 +822,7 @@ function Dashboard() {
               datos={gastos}
               columnas={["Concepto", "Categoría", "Monto", "Fecha", "Nota", "Acciones"]}
               busquedaKey="concepto"
-              onExport={() => exportCSV(gastos.map(g => ({ concepto:g.concepto,categoria:g.categoria,monto:g.monto,fecha:g.fecha,nota:g.nota })), "gastos")}
+              onExport={() => exportExcel(gastos.map(g => ({ concepto:g.concepto,categoria:g.categoria,monto:g.monto,fecha:g.fecha,nota:g.nota })), "gastos")}
               onAdd={() => { setFormGasto({ concepto:"",categoria:"Insumos",monto:"",fecha:new Date().toISOString().slice(0,10),nota:"" }); setModalGasto(true); }}
               addLabel="Registrar Gasto"
               renderFila={g => (
@@ -789,7 +877,7 @@ function Dashboard() {
               datos={ingresos}
               columnas={["Concepto", "Categoría", "Monto", "Fecha", "Nota", "Acciones"]}
               busquedaKey="concepto"
-              onExport={() => exportCSV(ingresos.map(i => ({ concepto:i.concepto,categoria:i.categoria,monto:i.monto,fecha:i.fecha,nota:i.nota })), "ingresos")}
+              onExport={() => exportExcel(ingresos.map(i => ({ concepto:i.concepto,categoria:i.categoria,monto:i.monto,fecha:i.fecha,nota:i.nota })), "ingresos")}
               onAdd={() => { setFormIngreso({ concepto:"",categoria:"Residencial",monto:"",fecha:new Date().toISOString().slice(0,10),nota:"" }); setModalIngreso(true); }}
               addLabel="Registrar Ingreso"
               renderFila={i => (
@@ -1028,12 +1116,12 @@ function Dashboard() {
         </div>
       )}
 
-      {/* ── Botón flotante cotizador ── */}
+      {/* ── Botón flotante cotizador (arriba del chatbot) ── */}
       <button
         onClick={() => setCalcOpen(p => !p)}
-        title="Cotizador de costos"
+        title="Cotizador de precios"
         style={{
-          position:"fixed", bottom:28, right:28, zIndex:9999,
+          position:"fixed", bottom:92, right:28, zIndex:9999,
           width:52, height:52, borderRadius:"50%", border:"none", cursor:"pointer",
           background: calcOpen ? "linear-gradient(135deg,#b45309,#92400e)" : "linear-gradient(135deg,#f59e0b,#d97706)",
           color:"#fff", fontSize:"1.3rem",
@@ -1045,7 +1133,7 @@ function Dashboard() {
 
       {calcOpen && (
         <div style={{
-          position:"fixed", bottom:90, right:28, zIndex:9998, width:400,
+          position:"fixed", bottom:156, right:28, zIndex:9998, width:400,
           borderRadius:18, boxShadow:"0 12px 48px rgba(0,0,0,.35)",
           overflow:"hidden", background:"#fff",
         }}>

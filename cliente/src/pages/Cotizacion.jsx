@@ -5,12 +5,12 @@ import Footer from "../components/Footer";
 import { createCotizacion } from "../api/servicios";
 
 const SERVICIOS_LISTA = [
-  { img: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&q=80", title: "Limpieza a Vapor",      desc: "Elimina suciedad y bacterias en profundidad." },
-  { img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",   title: "Limpieza de Muebles",  desc: "Sofás y tapizados en perfecto estado." },
-  { img: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80", title: "Limpieza de Tapicería", desc: "Manchas y olores eliminados." },
-  { img: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=600&q=80", title: "Limpieza de Colchones", desc: "Libre de ácaros y bacterias." },
-  { img: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=600&q=80", title: "Limpieza de Tapetes",  desc: "Lavado profundo y restauración." },
-  { img: "https://images.unsplash.com/photo-1758273238370-3bc08e399620?w=600&q=80", title: "Limpieza de Pisos",    desc: "Para todo tipo de superficies." },
+  { vid: "/videos/13.mp4", title: "Limpieza a Vapor",      desc: "Elimina suciedad y bacterias en profundidad." },
+  { vid: "/videos/9.mp4",  title: "Limpieza de Muebles",  desc: "Sofás y tapizados en perfecto estado." },
+  { vid: "/videos/12.mp4", title: "Limpieza de Tapicería", desc: "Manchas y olores eliminados." },
+  { vid: "/videos/10.mp4", title: "Limpieza de Colchones", desc: "Libre de ácaros y bacterias." },
+  { vid: "/videos/11.mp4", title: "Limpieza de Tapetes",   desc: "Lavado profundo y restauración." },
+  { vid: "/videos/15.mp4", title: "Limpieza de Pisos",     desc: "Para todo tipo de superficies." },
 ];
 
 function Cotizacion() {
@@ -89,7 +89,12 @@ function Cotizacion() {
                 >
                   {servicios.includes(s.title) && <div className="selected-badge">✓</div>}
                   <div className="cot-img-wrap">
-                    <img src={s.img} alt={s.title} className="cot-service-img" />
+                    <video
+                      src={s.vid}
+                      className="cot-service-img"
+                      autoPlay muted loop playsInline
+                      preload="metadata"
+                    />
                   </div>
                   <div className="cot-card-body">
                     <h6>{s.title}</h6>

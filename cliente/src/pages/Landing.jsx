@@ -310,19 +310,24 @@ function Landing() {
           </div>
           <div className="row g-4">
             {[
-              { img: IMG.residencial, gradient:"teal",   title:"Vapor de Muebles y Sofás",      desc:"Vapor a 180 °C elimina ácaros, manchas y bacterias en sofás, sillones y tapizados." },
-              { img: IMG.comercial,   gradient:"blue",   title:"Limpieza de Colchones",         desc:"Eliminamos el 99.9 % de ácaros, hongos y gérmenes. Secado en 3–5 horas." },
-              { img: IMG.profunda,    gradient:"violet", title:"Alfombras y Tapetes a Vapor",   desc:"Extracción profunda de polvo, manchas y bacterias. Colores restaurados." },
-              { img: IMG.postObra,    gradient:"gold",   title:"Tapicería de Automóviles",      desc:"Interior de vehículos libre de olores, manchas y bacterias. Asientos y moqueta." },
-              { img: IMG.residencial, gradient:"teal",   title:"Limpieza Residencial a Vapor",  desc:"Toda tu casa con vapor industrial. Sin químicos agresivos, sin residuos." },
-              { img: IMG.comercial,   gradient:"blue",   title:"Desinfección Comercial",        desc:"Restaurantes, hoteles y oficinas. Cumplimos normas sanitarias." },
-              { img: IMG.profunda,    gradient:"violet", title:"Limpieza Post-Obra",            desc:"Polvo de cemento, pintura y residuos eliminados. Tu espacio listo para habitar." },
-              { img: IMG.postObra,    gradient:"gold",   title:"Baños a Vapor Profundo",        desc:"Hongos, sarro y bacterias en juntas y azulejos. Resultado visible desde el primer día." },
+              { vid:"/videos/9.mp4",  gradient:"teal",   title:"Vapor de Muebles y Sofás",      desc:"Vapor a 180 °C elimina ácaros, manchas y bacterias en sofás, sillones y tapizados." },
+              { vid:"/videos/10.mp4", gradient:"blue",   title:"Limpieza de Colchones",         desc:"Eliminamos el 99.9 % de ácaros, hongos y gérmenes. Secado en 3–5 horas." },
+              { vid:"/videos/11.mp4", gradient:"violet", title:"Alfombras y Tapetes a Vapor",   desc:"Extracción profunda de polvo, manchas y bacterias. Colores restaurados." },
+              { vid:"/videos/12.mp4", gradient:"gold",   title:"Tapicería de Automóviles",      desc:"Interior de vehículos libre de olores, manchas y bacterias. Asientos y moqueta." },
+              { vid:"/videos/13.mp4", gradient:"teal",   title:"Limpieza Residencial a Vapor",  desc:"Toda tu casa con vapor industrial. Sin químicos agresivos, sin residuos." },
+              { vid:"/videos/14.mp4", gradient:"blue",   title:"Desinfección Comercial",        desc:"Restaurantes, hoteles y oficinas. Cumplimos normas sanitarias." },
+              { vid:"/videos/15.mp4", gradient:"violet", title:"Limpieza Post-Obra",            desc:"Polvo de cemento, pintura y residuos eliminados. Tu espacio listo para habitar." },
+              { vid:"/videos/16.mp4", gradient:"gold",   title:"Baños a Vapor Profundo",        desc:"Hongos, sarro y bacterias en juntas y azulejos. Resultado visible desde el primer día." },
             ].map(s => (
               <div className="col-sm-6 col-lg-3" key={s.title}>
                 <div className={`service-card service-card-${s.gradient}`}>
                   <div className="service-card-img-wrap">
-                    <img src={s.img} alt={s.title} className="service-card-img" />
+                    <video
+                      src={s.vid}
+                      className="service-card-img"
+                      autoPlay muted loop playsInline
+                      preload="metadata"
+                    />
                   </div>
                   <div className="service-card-body">
                     <h5>{s.title}</h5>
@@ -416,11 +421,6 @@ function Landing() {
               </div>
             ))}
           </div>
-          <div className="text-center">
-            <Link to="/cotizacion" className="btn-cta-solid">
-              Solicitar Cotización Ahora →
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -465,7 +465,6 @@ function Landing() {
                 eficiencia y satisfacción garantizada en cada visita.
               </p>
               <div className="footer-social">
-                {/* SVG social icons */}
                 <a href="#" title="Facebook" aria-label="Facebook">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>

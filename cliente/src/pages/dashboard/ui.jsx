@@ -52,8 +52,8 @@ export function TablaBase({ titulo, datos, columnas, onExport, onAdd, addLabel, 
             />
           </div>
           <button className="btn btn-sm" onClick={onExport}
-            style={{ borderRadius:10,border:"1.5px solid #e2e8f0",background:"#f8fafc",color:"#334155",display:"flex",alignItems:"center",gap:6,fontWeight:600,fontSize:".82rem" }}>
-            {Icon.excel} Exportar CSV
+            style={{ borderRadius:10,border:"1.5px solid #16a34a",background:"#f0fdf4",color:"#15803d",display:"flex",alignItems:"center",gap:6,fontWeight:700,fontSize:".82rem" }}>
+            {Icon.excel} Exportar Excel
           </button>
           {onAdd && (
             <button className="btn-green btn btn-sm" onClick={onAdd} style={{ borderRadius:10,display:"flex",alignItems:"center",gap:5,fontSize:".85rem" }}>
