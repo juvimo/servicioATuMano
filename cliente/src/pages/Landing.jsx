@@ -4,6 +4,7 @@ import logo  from "../assets/logo.png";
 import logo3 from "../assets/logo3.jpg";
 import { Link } from "react-router-dom";
 import CarruselAntesDepues from "../components/CarruselAntesDepues";
+import aspiradoraVapor from "../assets/aspiradora-vapor.png";
 
 /* ── SVG aspiradora robot ─── */
 const RobotVacuum = () => (
@@ -123,7 +124,13 @@ function Landing() {
             <div className="intro-trail" />
             <div className="intro-glow" />
             <div className="intro-vac">
-              <RobotVacuum />
+              <div className="vac-img-wrap">
+                <img src={aspiradoraVapor} alt="Aspiradora a vapor" className="vac-image" />
+                <div className="vac-steam vs1" />
+                <div className="vac-steam vs2" />
+                <div className="vac-steam vs3" />
+                <div className="vac-steam vs4" />
+              </div>
               <div className="intro-bubble ib1" />
               <div className="intro-bubble ib2" />
               <div className="intro-bubble ib3" />
@@ -162,7 +169,13 @@ function Landing() {
         {/* Aspiradora deslizante permanente en el hero */}
         <div className="hero-vac-slide" aria-hidden="true">
           <div className="hero-vac-runner">
-            <RobotVacuum />
+            <div className="vac-img-wrap">
+              <img src={aspiradoraVapor} alt="Aspiradora a vapor" className="vac-image" />
+              <div className="vac-steam vs1" />
+              <div className="vac-steam vs2" />
+              <div className="vac-steam vs3" />
+              <div className="vac-steam vs4" />
+            </div>
           </div>
         </div>
 
