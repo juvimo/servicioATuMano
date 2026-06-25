@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Landing         from './pages/Landing'
 import Login           from './pages/Login'
 import Dashboard       from './pages/Dashboard'
@@ -12,10 +12,14 @@ import VerificacionCodigo from './pages/VerificacionCodigo'
 import Chatbot    from './components/Chatbot'
 import ScrollToTop from './components/ScrollToTop'
 
+const HIDDEN_CHATBOT_ROUTES = ['/login', '/registro', '/verificar-codigo', '/dashboard']
 
-function App() {
+function AppContent() {
+  const { pathname } = useLocation()
+  const showChatbot = !HIDDEN_CHATBOT_ROUTES.some(r => pathname.startsWith(r))
+
   return (
-    <BrowserRouter>
+    <>
       <ScrollToTop />
       <Routes>
         <Route path="/"                  element={<Landing />} />
@@ -29,7 +33,15 @@ function App() {
         <Route path="/servicios"         element={<Servicios />} />
         <Route path="/servicios/:slug"   element={<ServicioDetalle />} />
       </Routes>
-      <Chatbot />
+      {showChatbot && <Chatbot />}
+    </>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   )
 }
