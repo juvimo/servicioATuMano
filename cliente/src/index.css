@@ -1025,7 +1025,8 @@ body {
 /* ══════════════════════════════════════════
    DASHBOARD — CONTENIDO
 ══════════════════════════════════════════ */
-.dash-content { background: var(--gray-bg); min-height: 100vh; flex: 1; padding: 1.75rem; overflow-x: hidden; }
+.dash-content { background: var(--gray-bg); min-height: 100vh; flex: 1; padding: 1.75rem; overflow-x: clip; }
+.dash-card-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .topbar {
   background: #fff; border: 1px solid var(--border); border-radius: 16px;
   padding: 1rem 1.5rem; margin-bottom: 1.75rem;
@@ -1589,4 +1590,45 @@ body {
   /* ── Imágenes fijas → responsivas ── */
   .why-img,
   .hero-img { max-width: 100%; height: auto; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE EXTRA — AJUSTES MÓVIL (≤576px)
+══════════════════════════════════════════ */
+@media (max-width: 575px) {
+
+  /* Stats bar: 2 col en xs (4 items son muy apretados en fila única) */
+  .stats-bar { padding: 1.75rem 0; }
+  .stats-bar .row > .col { flex: 0 0 auto; width: 50%; }
+  .stat-item h3 { font-size: 1.6rem; }
+  .stat-item p  { font-size: .78rem; }
+
+  /* Hero: botones en columna, más cómodo en pantallas pequeñas */
+  .hero-actions { flex-direction: column; align-items: stretch; gap: .75rem; }
+  .btn-hero-primary,
+  .btn-hero-ghost { width: 100%; justify-content: center; }
+  .hero-container { padding-top: 1.25rem; padding-bottom: 2.5rem; }
+  .hero-chips     { gap: .85rem; }
+  .hero-chip strong { font-size: 1.1rem; }
+  .hero-chip span   { font-size: .62rem; }
+
+  /* Page-hero (Nosotros, FAQ, Servicios) */
+  .page-hero { padding: 3.75rem 0 2.25rem; }
+
+  /* Why section: video no se desborda en xs */
+  .why-section .col-lg-5 > div { max-height: 240px !important; }
+
+  /* Footer cols a ancho completo en xs muy pequeño */
+  .footer .col-6 { flex: 0 0 auto; width: 100%; }
+}
+
+/* Contact val: no desborda en textos de teléfono largos */
+.contact-val { word-break: break-word; overflow-wrap: anywhere; }
+
+/* Mobile menu: sin scroll horizontal accidental */
+.mobile-menu { overflow-x: hidden; }
+
+/* Nosotros: espacio entre mission cards apiladas en tablet */
+@media (max-width: 768px) {
+  .mission-card + .mission-card { margin-top: 1.25rem; }
 }

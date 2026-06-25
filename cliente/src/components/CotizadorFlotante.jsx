@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const SERVICIOS_VAPOR = [
@@ -22,12 +22,20 @@ const SERVICIOS_VAPOR = [
 const fmt = n => "$" + Number(n).toLocaleString("es-CO");
 
 export default function CotizadorFlotante() {
-  const [open,    setOpen]    = useState(false);
-  const [items,   setItems]   = useState([]);
-  const [desc,    setDesc]    = useState(0);
-  const [iva,     setIva]     = useState(false);
-  const [copiado, setCopiado] = useState(false);
+  const [open,     setOpen]    = useState(false);
+  const [items,    setItems]   = useState([]);
+  const [desc,     setDesc]    = useState(0);
+  const [iva,      setIva]     = useState(false);
+  const [copiado,  setCopiado] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 576);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   if (location.pathname.startsWith("/dashboard")) return null;
 
@@ -77,7 +85,10 @@ export default function CotizadorFlotante() {
         onClick={() => setOpen(v => !v)}
         title="Calcular cotización"
         style={{
-          position: "fixed", bottom: 28, right: 96, zIndex: 9999,
+          position: "fixed",
+          bottom: isMobile ? 16 : 28,
+          right: isMobile ? 80 : 96,
+          zIndex: 9999,
           width: 56, height: 56, borderRadius: "50%", border: "none", cursor: "pointer",
           background: open
             ? "linear-gradient(135deg,#b45309,#92400e)"
@@ -100,8 +111,13 @@ export default function CotizadorFlotante() {
       {/* ── Panel ── */}
       {open && (
         <div style={{
-          position: "fixed", bottom: 96, right: 96, zIndex: 9998,
-          width: 370, borderRadius: 20,
+          position: "fixed",
+          bottom: isMobile ? 82 : 96,
+          right: isMobile ? 8 : 96,
+          zIndex: 9998,
+          width: isMobile ? "calc(100vw - 16px)" : 370,
+          maxWidth: 370,
+          borderRadius: 20,
           boxShadow: "0 10px 48px rgba(0,0,0,.28)",
           overflow: "hidden", background: "#fff",
           fontFamily: "'Inter','Segoe UI',sans-serif", fontSize: 13,
