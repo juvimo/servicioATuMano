@@ -82,12 +82,6 @@ export default function Chatbot() {
   }, []);
 
   useEffect(() => {
-    function handleOpenChatbot() { setOpen(true); }
-    window.addEventListener("openChatbot", handleOpenChatbot);
-    return () => window.removeEventListener("openChatbot", handleOpenChatbot);
-  }, []);
-
-  useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, loading]);
 
@@ -409,7 +403,7 @@ return (
                 cursor: imagenes.length >= 3 || loading ? "not-allowed" : "pointer",
                 display:"flex", alignItems:"center", justifyContent:"center",
                 flexShrink:0, fontSize:18, opacity: imagenes.length >= 3 || loading ? 0.5 : 1,
-              }}>📷</button>
+              }}>📸</button>
 
             <input
               value={inputVal}
