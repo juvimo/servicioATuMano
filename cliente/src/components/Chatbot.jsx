@@ -82,6 +82,12 @@ export default function Chatbot() {
   }, []);
 
   useEffect(() => {
+    function handleOpenChatbot() { setOpen(true); }
+    window.addEventListener("openChatbot", handleOpenChatbot);
+    return () => window.removeEventListener("openChatbot", handleOpenChatbot);
+  }, []);
+
+  useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, loading]);
 
