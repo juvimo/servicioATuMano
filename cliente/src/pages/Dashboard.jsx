@@ -356,23 +356,12 @@ function Dashboard() {
                 <p style={{ color:"rgba(255,255,255,.45)", fontSize:".82rem", margin:0 }}>
                   {new Date().toLocaleDateString("es-CO", { weekday:"long", day:"numeric", month:"long", year:"numeric" })}
                   <span style={{ margin:"0 8px", opacity:.35 }}>·</span>
+                  <span style={{ color:"rgba(255,255,255,.65)", fontVariantNumeric:"tabular-nums" }}>{hora}</span>
+                  <span style={{ margin:"0 8px", opacity:.35 }}>·</span>
                   Semana <strong style={{ color:"rgba(255,255,255,.7)" }}>{numSemana}</strong> del año
                 </p>
               </div>
               <div style={{ display:"flex", gap:"0.75rem", flexWrap:"wrap", alignItems:"stretch", position:"relative" }}>
-                <div style={{
-                  background:"rgba(0,0,0,.45)", borderRadius:20, padding:"1rem 1.75rem",
-                  border:"1px solid rgba(56,189,248,.25)", textAlign:"center", minWidth:175,
-                  backdropFilter:"blur(8px)", boxShadow:"inset 0 1px 0 rgba(255,255,255,.05)",
-                }}>
-                  <div style={{
-                    color:"#38bdf8", fontWeight:900, fontSize:"2.5rem",
-                    fontVariantNumeric:"tabular-nums", lineHeight:1,
-                    fontFamily:"'Courier New', monospace", letterSpacing:".06em",
-                    textShadow:"0 0 28px rgba(56,189,248,.7), 0 0 60px rgba(56,189,248,.3)",
-                  }}>{hora}</div>
-                  <div style={{ color:"rgba(255,255,255,.3)", fontSize:".65rem", marginTop:6, letterSpacing:".12em", textTransform:"uppercase" }}>Hora actual</div>
-                </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:"0.5rem", justifyContent:"center" }}>
                   <div style={{ background:"rgba(74,222,128,.1)", border:"1px solid rgba(74,222,128,.2)", borderRadius:14, padding:"0.65rem 1.1rem", display:"flex", alignItems:"center", gap:10 }}>
                     <span style={{ color:"#4ade80", fontWeight:900, fontSize:"1.5rem", minWidth:30, textAlign:"right", lineHeight:1 }}>{completados}</span>
