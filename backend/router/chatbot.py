@@ -228,5 +228,5 @@ async def chatbot_endpoint(
         except Exception as e:
             print(f"[chatbot] Gemini intento {intento + 1}/3 fallido: {e}")
             if intento < 2:
-                time.sleep(2)
+                time.sleep(1)
     return {"respuesta": _respuesta_respaldo(texto, bool(imagenes))}
