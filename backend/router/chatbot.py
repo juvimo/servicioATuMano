@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from fastapi import APIRouter, Form, File, UploadFile
 from typing import List, Optional
 from google import genai
@@ -210,19 +211,22 @@ async def chatbot_endpoint(
         contents.append(types.Content(role=rol, parts=[types.Part.from_text(text=str(m["content"]))]))
     contents.append(types.Content(role="user", parts=partes_imagen + [types.Part.from_text(text=texto)]))
 
-    try:
-        client = genai.Client(api_key=api_key)
-        response = client.models.generate_content(
-            model=modelo,
-            contents=contents,
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                max_output_tokens=1024,
-                thinking_config=types.ThinkingConfig(thinking_budget=0),
-            ),
-        )
-        respuesta = (response.text or "").strip()
-        return {"respuesta": respuesta or _respuesta_respaldo(texto, bool(imagenes))}
-    except Exception as e:
-        print(f"[chatbot] Gemini no disponible: {e}")
-        return {"respuesta": _respuesta_respaldo(texto, bool(imagenes))}
+    client = genai.Client(api_key=api_key)
+    for intento in range(3):
+        try:
+            response = client.models.generate_content(
+                model=modelo,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    max_output_tokens=1024,
+                    thinking_config=types.ThinkingConfig(thinking_budget=0),
+                ),
+            )
+            respuesta = (response.text or "").strip()
+            return {"respuesta": respuesta or _respuesta_respaldo(texto, bool(imagenes))}
+        except Exception as e:
+            print(f"[chatbot] Gemini intento {intento + 1}/3 fallido: {e}")
+            if intento < 2:
+                time.sleep(2)
+    return {"respuesta": _respuesta_respaldo(texto, bool(imagenes))}
