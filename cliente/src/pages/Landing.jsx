@@ -229,7 +229,7 @@ function Landing() {
                     </svg>
                   </div>
                   <div>
-                    <strong>Resultados inmediatos</strong>
+                    <strong>Garantización</strong>
                     <span>100% satisfacción</span>
                   </div>
                 </div>
