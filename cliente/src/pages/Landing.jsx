@@ -166,25 +166,6 @@ function Landing() {
           <div className="steam-drop sd7" /><div className="steam-drop sd8" />
         </div>
 
-        {/* Aspiradora deslizante permanente en el hero */}
-        <div className="hero-vac-slide" aria-hidden="true">
-          <div className="hero-vac-runner">
-            <div className="vac-img-wrap">
-              <img src={aspiradoraVapor} alt="Aspiradora a vapor" className="vac-image" />
-              <div className="vac-steam vs1" />
-              <div className="vac-steam vs2" />
-              <div className="vac-steam vs3" />
-              <div className="vac-steam vs4" />
-              <div className="vac-floor-steam">
-                <div className="vac-floor-puff vfp1" />
-                <div className="vac-floor-puff vfp2" />
-                <div className="vac-floor-puff vfp3" />
-                <div className="vac-floor-puff vfp4" />
-                <div className="vac-floor-puff vfp5" />
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div className="container hero-container">
           <div className="row align-items-center g-5">

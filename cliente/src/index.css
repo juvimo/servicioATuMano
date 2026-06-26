@@ -1271,29 +1271,6 @@ body {
   .login-mascot.covering .mascot-hand-r { top: 16px; }
 }
 
-/* ══════════════════════════════════════════
-   HERO — ASPIRADORA DESLIZANTE
-══════════════════════════════════════════ */
-.hero-vac-slide {
-  position: absolute;
-  bottom: 50px;
-  left: 0; right: 0;
-  height: 200px;
-  pointer-events: none;
-  z-index: 4;
-  overflow: hidden;
-}
-.hero-vac-runner {
-  position: absolute;
-  bottom: 4px;
-  left: 0;
-  animation: heroVacRun 20s linear infinite;
-  filter: drop-shadow(0 0 14px rgba(56,189,248,.65));
-}
-@keyframes heroVacRun {
-  0%   { transform: translateX(calc(100vw + 130px)); }
-  100% { transform: translateX(-130px); }
-}
 
 /* ══════════════════════════════════════════
    NAVBAR — LOGO RESPONSIVE (clase CSS)
@@ -1341,35 +1318,6 @@ body {
   100% { transform: translateY(-38px) scaleX(2.6); opacity: 0;   }
 }
 
-/* Burbujas/nubes desde el cabezal (suelo) de la aspiradora */
-.vac-floor-steam {
-  position: absolute;
-  bottom: 0;
-  left: 0; right: 0;
-  pointer-events: none;
-}
-.vac-floor-puff {
-  position: absolute;
-  bottom: 4px;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-    rgba(255,255,255,.9) 0%,
-    rgba(186,230,255,.72) 42%,
-    transparent 100%);
-  filter: blur(5px);
-  animation: vacFloorRise ease-out infinite;
-}
-.vfp1 { width: 20px; height: 20px; left:  8%; animation-duration: 1.8s; animation-delay:    0s; }
-.vfp2 { width: 13px; height: 13px; left: 26%; animation-duration: 2.2s; animation-delay:  .5s; }
-.vfp3 { width: 25px; height: 25px; left: 46%; animation-duration: 1.6s; animation-delay:  .9s; }
-.vfp4 { width: 10px; height: 10px; left: 63%; animation-duration: 2.0s; animation-delay:  .3s; }
-.vfp5 { width: 16px; height: 16px; left: 79%; animation-duration: 1.9s; animation-delay: 1.2s; }
-@keyframes vacFloorRise {
-  0%   { transform: translateY(0)     scale(1);   opacity: 0;   }
-  14%  { opacity: .85; }
-  65%  { opacity: .45; }
-  100% { transform: translateY(-50px) scale(2.6); opacity: 0;   }
-}
 
 /* ══════════════════════════════════════════
    RESPONSIVE — TABLET  ≤ 991px
@@ -1379,9 +1327,6 @@ body {
   .hero { min-height: auto; padding-bottom: 1rem; }
   .hero-container { padding-top: 1.5rem; padding-bottom: 3rem; }
   .hero-img { max-height: 360px; }
-
-  /* Ocultar aspiradora (no hay espacio horizontal útil) */
-  .hero-vac-slide { display: none; }
 
   /* Intro vacuum no bloqueante en tablet */
   .intro-vac-row { bottom: 14%; }
