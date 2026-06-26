@@ -208,7 +208,7 @@ return (
         }
       `}</style>
 
-      {/* ── Botón flotante ── */}
+      {/* ── Botón flotante — oculto en móvil cuando el panel está abierto ── */}
       <button
         onClick={() => setOpen(v => !v)}
         title="Asistente virtual"
@@ -222,7 +222,7 @@ return (
             ? "linear-gradient(135deg,#0284c7,#075985)"
             : "linear-gradient(135deg,#0ea5e9,#0284c7)",
           border:"none", boxShadow:"0 4px 20px rgba(14,165,233,.45)",
-          cursor:"pointer", display:"flex", alignItems:"center",
+          cursor:"pointer", display: isMobile && open ? "none" : "flex", alignItems:"center",
           justifyContent:"center", transition:"all .2s",
         }}
         onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; }}
@@ -251,8 +251,8 @@ return (
           left: isMobile ? 0 : "auto",
           top: isMobile ? 0 : "auto",
           width: isMobile ? "100%" : 370,
-          maxHeight: isMobile ? "100%" : "min(590px, calc(100vh - 120px))",
-          height: isMobile ? "100%" : "auto",
+          maxHeight: isMobile ? "100dvh" : "min(590px, calc(100vh - 120px))",
+          height: isMobile ? "100dvh" : "auto",
           zIndex:9998, borderRadius: isMobile ? 0 : 20,
           boxShadow:"0 8px 48px rgba(0,0,0,.2)", display:"flex",
           flexDirection:"column", overflow:"hidden", background:"#fff",
@@ -288,6 +288,14 @@ return (
               borderRadius:8, padding:"4px 9px", cursor:"pointer",
               color:"#fff", fontSize:11, fontWeight:600,
             }}>↺</button>
+            {isMobile && (
+              <button onClick={() => setOpen(false)} title="Cerrar" style={{
+                background:"rgba(255,255,255,.15)", border:"1px solid rgba(255,255,255,.25)",
+                borderRadius:8, width:34, height:34, cursor:"pointer",
+                color:"#fff", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center",
+                flexShrink:0, marginLeft:4,
+              }}>×</button>
+            )}
           </div>
 
           {/* Mensajes */}
@@ -332,7 +340,8 @@ return (
                     {msg.opciones.map(op => (
                       <button key={op} onClick={() => handleOptionClick(op)} style={{
                         background:"#fff", border:"1.5px solid #bae6fd",
-                        borderRadius:10, padding:"6px 11px", fontSize:12,
+                        borderRadius:10, padding: isMobile ? "10px 13px" : "6px 11px",
+                        fontSize: isMobile ? 14 : 12,
                         color:"#0284c7", cursor:"pointer", textAlign:"left",
                         fontWeight:500, transition:"all .15s",
                       }}
@@ -391,6 +400,7 @@ return (
           <form onSubmit={handleInput} style={{
             display:"flex", borderTop:"1px solid #e2e8f0", padding:"10px 12px",
             gap:7, background:"#fff", alignItems:"center", flexShrink:0,
+            paddingBottom: isMobile ? "calc(10px + env(safe-area-inset-bottom))" : "10px",
           }}>
             <input type="file" ref={fileInputRef} accept="image/*" multiple onChange={handleFileChange} style={{ display:"none" }}/>
             <button type="button" onClick={() => fileInputRef.current?.click()}
@@ -412,7 +422,7 @@ return (
               disabled={loading}
               style={{
                 flex:1, border:"1.5px solid #e2e8f0", borderRadius:10,
-                padding:"8px 12px", fontSize:13, outline:"none",
+                padding:"8px 12px", fontSize: isMobile ? 16 : 13, outline:"none",
                 fontFamily:"inherit", color:"#1e293b",
                 background: loading ? "#f8fafc" : "#fff",
               }}
