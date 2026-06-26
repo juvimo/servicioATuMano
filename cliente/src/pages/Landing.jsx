@@ -175,6 +175,13 @@ function Landing() {
               <div className="vac-steam vs2" />
               <div className="vac-steam vs3" />
               <div className="vac-steam vs4" />
+              <div className="vac-floor-steam">
+                <div className="vac-floor-puff vfp1" />
+                <div className="vac-floor-puff vfp2" />
+                <div className="vac-floor-puff vfp3" />
+                <div className="vac-floor-puff vfp4" />
+                <div className="vac-floor-puff vfp5" />
+              </div>
             </div>
           </div>
         </div>
