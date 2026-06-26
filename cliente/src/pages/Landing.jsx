@@ -229,8 +229,8 @@ function Landing() {
                     </svg>
                   </div>
                   <div>
-                    <strong>Resultados al instante</strong>
-                    <span>Garantía 100% satisfacción</span>
+                    <strong>Resultados inmediatos</strong>
+                    <span>100% satisfacción</span>
                   </div>
                 </div>
 
@@ -242,7 +242,7 @@ function Landing() {
                   </div>
                   <div>
                     <strong>4.9 / 5</strong>
-                    <span>Calificación promedio</span>
+                    <span>Servicios</span>
                   </div>
                 </div>
               </div>
