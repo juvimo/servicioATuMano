@@ -43,6 +43,7 @@ body {
   color: #1e293b;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* ══════════════════════════════════════════
@@ -492,7 +493,7 @@ body {
 }
 
 .hero-title {
-  font-size: clamp(2.6rem, 6.5vw, 4.75rem);
+  font-size: clamp(1.8rem, 5vw, 4rem);
   font-weight: 900; line-height: 1.04; color: #fff;
   letter-spacing: -.035em; margin-bottom: 1.5rem;
 }
@@ -1344,7 +1345,7 @@ body {
   .btn-hero-primary,
   .btn-hero-ghost { font-size: .88rem; padding: .7rem 1.35rem; border-radius: 12px; }
   .hero-chips    { gap: 1.1rem; }
-  .hero-badge    { font-size: .75rem; }
+  .hero-badge    { font-size: .75rem; white-space: normal; flex-wrap: wrap; }
   .hero-img      { max-height: 240px; }
 
   /* ── How ── */
@@ -1583,7 +1584,7 @@ body {
   .hero-actions { flex-direction: column; align-items: stretch; gap: .75rem; }
   .btn-hero-primary,
   .btn-hero-ghost { width: 100%; justify-content: center; }
-  .hero-container { padding-top: 1.25rem; padding-bottom: 2.5rem; }
+  .hero-container { padding-top: 1.25rem; padding-bottom: 2.5rem; padding-left: 1rem; padding-right: 1rem; }
   .hero-chips     { gap: .85rem; }
   .hero-chip strong { font-size: 1.1rem; }
   .hero-chip span   { font-size: .62rem; }
