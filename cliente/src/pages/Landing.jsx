@@ -229,8 +229,8 @@ function Landing() {
                     </svg>
                   </div>
                   <div>
-                    <strong>Tecnología a Vapor</strong>
-                    <span>100 % Sin Químicos</span>
+                    <strong>Resultados que se ven al instante</strong>
+                    <span>Garantía 100% satisfacción</span>
                   </div>
                 </div>
 
