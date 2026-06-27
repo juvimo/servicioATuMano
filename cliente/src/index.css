@@ -136,13 +136,6 @@ body {
   z-index: 9999;
   background: linear-gradient(150deg, #04080f 0%, #091628 50%, #0d2240 100%);
   overflow: hidden;
-  animation: introExit 0.65s cubic-bezier(.9,0,.1,1) forwards;
-  animation-delay: 2.0s;
-  animation-fill-mode: both;
-}
-@keyframes introExit {
-  0%   { clip-path: inset(0 0 0 0);    }
-  100% { clip-path: inset(0 0 0 100%); }
 }
 
 /* Texto de marca centrado */
