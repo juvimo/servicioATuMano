@@ -93,7 +93,7 @@ function Landing() {
   });
   useEffect(() => {
     if (!showIntro) return;
-    const t = setTimeout(() => setShowIntro(false), 3000);
+    const t = setTimeout(() => setShowIntro(false), 5000);
     return () => clearTimeout(t);
   }, [showIntro]);
 
