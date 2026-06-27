@@ -93,7 +93,7 @@ function Landing() {
   });
   useEffect(() => {
     if (!showIntro) return;
-    const t = setTimeout(() => setShowIntro(false), 2750);
+    const t = setTimeout(() => setShowIntro(false), 3100);
     return () => clearTimeout(t);
   }, [showIntro]);
 
@@ -113,29 +113,13 @@ function Landing() {
       {/* ══ INTRO ══ */}
       {showIntro && (
         <div className="intro-wrap">
-          <div className="intro-brand">
-            <img src={logo} className="intro-logo-img" alt="logo" />
-            <h2 className="intro-title">Servicio a tu Mano</h2>
-            <p className="intro-sub">Limpieza profesional a vapor</p>
-          </div>
-
-          {/* Aspiradora animada */}
-          <div className="intro-vac-row">
-            <div className="intro-trail" />
-            <div className="intro-glow" />
-            <div className="intro-vac">
-              <div className="vac-img-wrap">
-                <img src={aspiradoraVapor} alt="Aspiradora a vapor" className="vac-image" />
-                <div className="vac-steam vs1" />
-                <div className="vac-steam vs2" />
-                <div className="vac-steam vs3" />
-                <div className="vac-steam vs4" />
-              </div>
-              <div className="intro-bubble ib1" />
-              <div className="intro-bubble ib2" />
-              <div className="intro-bubble ib3" />
-            </div>
-          </div>
+          <video
+            src="/videos/principio.mp4"
+            autoPlay
+            muted
+            playsInline
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </div>
       )}
 
