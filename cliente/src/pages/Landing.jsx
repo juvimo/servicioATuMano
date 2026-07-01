@@ -221,13 +221,13 @@ function Landing() {
 
                 <div className="hero-badge-float hero-badge-float-2">
                   <div className="hbf-icon">
-                    <IconStar />
-                    <IconStar />
-                    <IconStar />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
                   </div>
                   <div>
-                    <strong>4.9 / 5</strong>
-                    <span>Servicios</span>
+                    <strong>Garantía</strong>
+                    <span>100% satisfacción</span>
                   </div>
                 </div>
               </div>

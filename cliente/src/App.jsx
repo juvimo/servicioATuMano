@@ -9,14 +9,15 @@ import Servicios       from './pages/Servicios'
 import ServicioDetalle from './pages/ServicioDetalle'
 import Registro           from './pages/Registro'
 import VerificacionCodigo from './pages/VerificacionCodigo'
-import Chatbot    from './components/Chatbot'
+import Chatbot         from './components/Chatbot'
+import WhatsAppButton  from './components/WhatsAppButton'
 import ScrollToTop from './components/ScrollToTop'
 
-const HIDDEN_CHATBOT_ROUTES = ['/login', '/registro', '/verificar-codigo', '/dashboard']
+const HIDDEN_FLOATING_ROUTES = ['/login', '/registro', '/verificar-codigo', '/dashboard']
 
 function AppContent() {
   const { pathname } = useLocation()
-  const showChatbot = !HIDDEN_CHATBOT_ROUTES.some(r => pathname.startsWith(r))
+  const showFloating = !HIDDEN_FLOATING_ROUTES.some(r => pathname.startsWith(r))
 
   return (
     <>
@@ -33,7 +34,8 @@ function AppContent() {
         <Route path="/servicios"         element={<Servicios />} />
         <Route path="/servicios/:slug"   element={<ServicioDetalle />} />
       </Routes>
-      {showChatbot && <Chatbot />}
+      {showFloating && <Chatbot />}
+      {showFloating && <WhatsAppButton />}
     </>
   )
 }
