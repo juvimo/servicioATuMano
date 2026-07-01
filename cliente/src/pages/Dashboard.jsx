@@ -22,6 +22,7 @@ function Dashboard() {
   const [demoMode,   setDemoMode]  = useState(false);
   const [alerta,     setAlerta]    = useState({ msg: "", tipo: "" });
   const [hora,       setHora]      = useState(() => new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   /* Servicios form */
   const [fTitulo,     setFTitulo]     = useState("");
@@ -260,7 +261,7 @@ function Dashboard() {
     <div style={{ display: "flex" }}>
 
       {/* ─── SIDEBAR ─── */}
-      <aside className="sidebar">
+      <aside className={`sidebar${sidebarOpen ? " sidebar--open" : ""}`}>
         <div className="sidebar-logo-area">
           <div className="d-flex align-items-center gap-2">
             <img src={logo} style={{ width: 32, borderRadius: 8 }} alt="logo" />
@@ -274,14 +275,14 @@ function Dashboard() {
         <div className="nav-section-label">Menú principal</div>
         <ul className="list-unstyled px-0 mb-0">
           {SECCIONES.map(s => (
-            <li key={s.id} className={`nav-item${seccion === s.id ? " active" : ""}`} onClick={() => setSeccion(s.id)}>
+            <li key={s.id} className={`nav-item${seccion === s.id ? " active" : ""}`} onClick={() => { setSeccion(s.id); setSidebarOpen(false); }}>
               {s.icon} {s.label}
             </li>
           ))}
         </ul>
 
         <div className="sidebar-footer">
-          <button className="logout" onClick={cerrarSesion}>{Icon.logout} Cerrar Sesión</button>
+          <button className="logout" onClick={() => { setSidebarOpen(false); cerrarSesion(); }}>{Icon.logout} Cerrar Sesión</button>
         </div>
       </aside>
 
@@ -290,15 +291,19 @@ function Dashboard() {
 
         {/* TOP BAR */}
         <div className="topbar">
-          <div>
-            <p className="topbar-title" style={{ margin: 0, textTransform: "capitalize" }}>{seccion}</p>
-            <p style={{ margin: 0, fontSize: ".75rem", color: "#94a3b8", fontVariantNumeric: "tabular-nums" }}>
-              {new Date().toLocaleDateString("es-CO", { weekday:"long", day:"2-digit", month:"long", year:"numeric" })} · {hora}
-            </p>
+          <div className="topbar-left">
+            <button className="dash-ham" onClick={() => setSidebarOpen(p => !p)} aria-label="Abrir menú">☰</button>
+            <div>
+              <p className="topbar-title" style={{ margin: 0, textTransform: "capitalize" }}>{seccion}</p>
+              <p style={{ margin: 0, fontSize: ".75rem", color: "#94a3b8", fontVariantNumeric: "tabular-nums" }}>
+                {new Date().toLocaleDateString("es-CO", { weekday:"long", day:"2-digit", month:"long", year:"numeric" })} · {hora}
+              </p>
+            </div>
           </div>
           <div className="d-flex align-items-center gap-3">
             <button
               onClick={() => setModalInforme(true)}
+              className="btn-excel-dash"
               style={{
                 display: "flex", alignItems: "center", gap: 7,
                 padding: "7px 16px", borderRadius: 10,
@@ -308,7 +313,7 @@ function Dashboard() {
                 cursor: "pointer", whiteSpace: "nowrap", boxShadow: "0 2px 10px rgba(14,165,233,.3)",
               }}
             >
-              {Icon.excel} Informe Excel
+              {Icon.excel} <span className="excel-label">Informe Excel</span>
             </button>
             <div className="topbar-user">
               <strong>Administrador</strong>
@@ -1105,6 +1110,11 @@ function Dashboard() {
         </div>
       )}
 
+      {/* Overlay cierra sidebar al tocar fuera */}
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* ── Botón flotante cotizador (arriba del chatbot) ── */}
       <button
         onClick={() => setCalcOpen(p => !p)}
@@ -1122,7 +1132,7 @@ function Dashboard() {
 
       {calcOpen && (
         <div style={{
-          position:"fixed", bottom:156, right:28, zIndex:9998, width:400,
+          position:"fixed", bottom:156, right:28, zIndex:9998, width:"min(400px, calc(100vw - 40px))",
           borderRadius:18, boxShadow:"0 12px 48px rgba(0,0,0,.35)",
           overflow:"hidden", background:"#fff",
         }}>
