@@ -12,6 +12,10 @@ const WA_ICON_SM = (
   </svg>
 );
 
+const MENSAJE = encodeURIComponent(
+  "Hola! Me gustaría solicitar una cotización para un servicio de limpieza a vapor. 🙌"
+);
+
 const NUMEROS = [
   { label: "Juan Pablo", num: "3212196255", display: "321 219 6255" },
   { label: "Sandra Milena", num: "3125276445", display: "312 527 6445" },
@@ -58,7 +62,7 @@ export default function WhatsAppButton() {
           {NUMEROS.map(({ label, num, display }) => (
             <a
               key={num}
-              href={`https://wa.me/57${num}`}
+              href={`https://wa.me/57${num}?text=${MENSAJE}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{
