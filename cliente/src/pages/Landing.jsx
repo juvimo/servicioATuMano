@@ -222,12 +222,12 @@ function Landing() {
                 <div className="hero-badge-float hero-badge-float-2">
                   <div className="hbf-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
                     </svg>
                   </div>
                   <div>
-                    <strong>Garantía</strong>
-                    <span>100% satisfacción</span>
+                    <strong>Sin químicos</strong>
+                    <span>Solo vapor puro</span>
                   </div>
                 </div>
               </div>
