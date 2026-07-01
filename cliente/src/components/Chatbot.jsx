@@ -70,8 +70,17 @@ export default function Chatbot() {
   const [inputVal, setInputVal] = useState("");
   const [imagenes, setImagenes] = useState([]);
   const [loading, setLoading]   = useState(false);
-  const bottomRef   = useRef(null);
+  const bottomRef    = useRef(null);
   const fileInputRef = useRef(null);
+
+  // ── Cámara ──────────────────────────────────────────
+  const videoRef     = useRef(null);
+  const canvasRef    = useRef(null);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const [showCamera,     setShowCamera]     = useState(false);
+  const [cameraStream,   setCameraStream]   = useState(null);
+  const [capturedPhoto,  setCapturedPhoto]  = useState(null);
+  // ────────────────────────────────────────────────────
 
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -84,6 +93,23 @@ export default function Chatbot() {
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, loading]);
+
+  // Conecta el stream al elemento <video> cuando ambos estén listos
+  useEffect(() => {
+    if (!showCamera || !cameraStream || !videoRef.current) return;
+    videoRef.current.srcObject = cameraStream;
+    videoRef.current.play().catch(() => {});
+  }, [showCamera, cameraStream]);
+
+  // Para la cámara cuando el panel se cierra
+  useEffect(() => {
+    if (!open && cameraStream) {
+      cameraStream.getTracks().forEach(t => t.stop());
+      setCameraStream(null);
+      setShowCamera(false);
+      setCapturedPhoto(null);
+    }
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function callAI(mensaje, imgs, hist) {
     const controller = new AbortController();
@@ -186,7 +212,55 @@ export default function Chatbot() {
     });
   }
 
+  // ── Funciones de cámara ─────────────────────────────
+
+  function stopCamera() {
+    cameraStream?.getTracks().forEach(t => t.stop());
+    setCameraStream(null);
+    setShowCamera(false);
+    setCapturedPhoto(null);
+  }
+
+  async function startCamera() {
+    setShowAttachMenu(false);
+    if (imagenes.length >= 3) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+        audio: false,
+      });
+      setCameraStream(stream);
+      setCapturedPhoto(null);
+      setShowCamera(true);
+    } catch {
+      // Sin cámara o sin permiso → caer en la galería normalmente
+      fileInputRef.current?.click();
+    }
+  }
+
+  function capturePhoto() {
+    const video  = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    canvas.width  = video.videoWidth  || 640;
+    canvas.height = video.videoHeight || 480;
+    canvas.getContext("2d").drawImage(video, 0, 0);
+    setCapturedPhoto(canvas.toDataURL("image/jpeg", 0.92));
+  }
+
+  async function usePhoto() {
+    if (!capturedPhoto) return;
+    const blob = await (await fetch(capturedPhoto)).blob();
+    const file = new File([blob], `camara-${Date.now()}.jpg`, { type: "image/jpeg" });
+    setImagenes(prev => [...prev, { file, preview: capturedPhoto, name: file.name }].slice(0, 3));
+    stopCamera();
+  }
+
+  // ────────────────────────────────────────────────────
+
   function resetChat() {
+    stopCamera();
+    setShowAttachMenu(false);
     imagenes.forEach(img => URL.revokeObjectURL(img.preview));
     setMessages([WELCOME]);
     setHistorial([]);
@@ -205,6 +279,10 @@ return (
         @keyframes chat-in {
           from { opacity:0; transform:translateY(18px) scale(.97); }
           to   { opacity:1; transform:translateY(0)    scale(1);   }
+        }
+        @keyframes attach-in {
+          from { opacity:0; transform:translateY(6px) scale(.96); }
+          to   { opacity:1; transform:translateY(0)   scale(1);   }
         }
       `}</style>
 
@@ -401,18 +479,84 @@ return (
             display:"flex", borderTop:"1px solid #e2e8f0", padding:"10px 12px",
             gap:7, background:"#fff", alignItems:"center", flexShrink:0,
             paddingBottom: isMobile ? "calc(10px + env(safe-area-inset-bottom))" : "10px",
+            position: "relative",
           }}>
+            {/* Canvas oculto para captura */}
+            <canvas ref={canvasRef} style={{ display:"none" }} />
+
+            {/* Input de archivo — sin cambios */}
             <input type="file" ref={fileInputRef} accept="image/*" multiple onChange={handleFileChange} style={{ display:"none" }}/>
-            <button type="button" onClick={() => fileInputRef.current?.click()}
+
+            {/* Overlay para cerrar el menú al hacer clic fuera */}
+            {showAttachMenu && (
+              <div
+                style={{ position:"fixed", inset:0, zIndex:9 }}
+                onClick={() => setShowAttachMenu(false)}
+              />
+            )}
+
+            {/* Menú de adjuntar */}
+            {showAttachMenu && (
+              <div style={{
+                position:"absolute", bottom:"calc(100% + 6px)", left:12,
+                background:"#fff", borderRadius:14,
+                boxShadow:"0 6px 28px rgba(0,0,0,.14)",
+                border:"1px solid #e2e8f0",
+                padding:8, display:"flex", flexDirection:"column", gap:5,
+                zIndex:10, minWidth:200,
+                animation:"attach-in .16s ease",
+              }}>
+                <p style={{
+                  margin:"0 0 4px 4px", fontSize:10, color:"#94a3b8",
+                  fontWeight:700, textTransform:"uppercase", letterSpacing:".06em",
+                }}>Agregar foto</p>
+
+                <button
+                  type="button"
+                  onClick={startCamera}
+                  style={{
+                    display:"flex", alignItems:"center", gap:10,
+                    padding:"9px 13px", borderRadius:10, border:"1.5px solid #e2e8f0",
+                    background:"#f0f9ff", color:"#0369a1", fontWeight:600,
+                    fontSize:13, cursor:"pointer", textAlign:"left", transition:"background .15s",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background="#e0f2fe"}
+                  onMouseLeave={e => e.currentTarget.style.background="#f0f9ff"}
+                >
+                  <span style={{ fontSize:18 }}>📷</span> Tomar foto
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setShowAttachMenu(false); fileInputRef.current?.click(); }}
+                  style={{
+                    display:"flex", alignItems:"center", gap:10,
+                    padding:"9px 13px", borderRadius:10, border:"1.5px solid #e2e8f0",
+                    background:"#f8fafc", color:"#475569", fontWeight:600,
+                    fontSize:13, cursor:"pointer", textAlign:"left", transition:"background .15s",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background="#f1f5f9"}
+                  onMouseLeave={e => e.currentTarget.style.background="#f8fafc"}
+                >
+                  <span style={{ fontSize:18 }}>🖼️</span> Subir desde galería
+                </button>
+              </div>
+            )}
+
+            {/* Botón de adjuntar — ahora abre el menú */}
+            <button
+              type="button"
+              onClick={() => setShowAttachMenu(v => !v)}
               disabled={imagenes.length >= 3 || loading}
               title={imagenes.length >= 3 ? "Máximo 3 fotos" : "Adjuntar foto"}
               style={{
-                background: imagenes.length >= 3 || loading ? "#f1f5f9" : "#f0f9ff",
-                border:`1.5px solid ${imagenes.length >= 3 || loading ? "#e2e8f0" : "#0ea5e9"}`,
+                background: imagenes.length >= 3 || loading ? "#f1f5f9" : (showAttachMenu ? "#e0f2fe" : "#f0f9ff"),
+                border:`1.5px solid ${imagenes.length >= 3 || loading ? "#e2e8f0" : (showAttachMenu ? "#0ea5e9" : "#0ea5e9")}`,
                 borderRadius:10, width:38, height:38,
                 cursor: imagenes.length >= 3 || loading ? "not-allowed" : "pointer",
                 display:"flex", alignItems:"center", justifyContent:"center",
                 flexShrink:0, fontSize:18, opacity: imagenes.length >= 3 || loading ? 0.5 : 1,
+                zIndex:11,
               }}>📸</button>
 
             <input
@@ -444,6 +588,110 @@ return (
               </svg>
             </button>
           </form>
+
+          {/* ── Modal de cámara — overlay dentro del panel ── */}
+          {showCamera && (
+            <div style={{
+              position:"absolute", inset:0,
+              background:"#000", zIndex:20,
+              display:"flex", flexDirection:"column",
+              borderRadius: isMobile ? 0 : 20,
+              overflow:"hidden",
+            }}>
+              {/* Barra superior */}
+              <div style={{
+                padding:"12px 16px",
+                display:"flex", alignItems:"center", justifyContent:"space-between",
+                background:"rgba(0,0,0,.75)", flexShrink:0,
+              }}>
+                <span style={{ color:"#fff", fontWeight:700, fontSize:14 }}>
+                  {capturedPhoto ? "Vista previa" : "📷 Cámara"}
+                </span>
+                <button
+                  onClick={stopCamera}
+                  style={{
+                    background:"rgba(255,255,255,.12)", border:"1px solid rgba(255,255,255,.2)",
+                    borderRadius:8, width:32, height:32, cursor:"pointer",
+                    color:"#fff", fontSize:18, display:"flex",
+                    alignItems:"center", justifyContent:"center",
+                  }}
+                >×</button>
+              </div>
+
+              {/* Preview: video en vivo o foto capturada */}
+              <div style={{
+                flex:1, display:"flex", alignItems:"center",
+                justifyContent:"center", overflow:"hidden", background:"#111",
+              }}>
+                {capturedPhoto ? (
+                  <img
+                    src={capturedPhoto}
+                    alt="Foto capturada"
+                    style={{ maxWidth:"100%", maxHeight:"100%", objectFit:"contain" }}
+                  />
+                ) : (
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    style={{ width:"100%", height:"100%", objectFit:"cover" }}
+                  />
+                )}
+              </div>
+
+              {/* Botones de acción */}
+              <div style={{
+                padding:"16px 20px",
+                display:"flex", gap:10, justifyContent:"center",
+                background:"rgba(0,0,0,.75)", flexShrink:0,
+                paddingBottom: isMobile ? "calc(16px + env(safe-area-inset-bottom))" : "16px",
+              }}>
+                {capturedPhoto ? (
+                  <>
+                    <button
+                      onClick={() => setCapturedPhoto(null)}
+                      style={{
+                        flex:1, padding:"11px 0", borderRadius:12,
+                        border:"1.5px solid rgba(255,255,255,.25)",
+                        background:"rgba(255,255,255,.1)", color:"#fff",
+                        fontWeight:600, fontSize:14, cursor:"pointer",
+                        display:"flex", alignItems:"center", justifyContent:"center", gap:6,
+                      }}
+                    >↺ Repetir</button>
+                    <button
+                      onClick={usePhoto}
+                      style={{
+                        flex:1, padding:"11px 0", borderRadius:12,
+                        border:"none", background:"#0ea5e9", color:"#fff",
+                        fontWeight:700, fontSize:14, cursor:"pointer",
+                        display:"flex", alignItems:"center", justifyContent:"center", gap:6,
+                      }}
+                    >✓ Usar foto</button>
+                  </>
+                ) : (
+                  <button
+                    onClick={capturePhoto}
+                    style={{
+                      width:64, height:64, borderRadius:"50%",
+                      border:"4px solid #fff", background:"rgba(255,255,255,.15)",
+                      cursor:"pointer", display:"flex",
+                      alignItems:"center", justifyContent:"center",
+                      transition:"background .15s",
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,.3)"}
+                    onMouseLeave={e => e.currentTarget.style.background="rgba(255,255,255,.15)"}
+                    title="Tomar foto"
+                  >
+                    <div style={{
+                      width:44, height:44, borderRadius:"50%", background:"#fff",
+                    }}/>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
         </div>
       )}
     </>
