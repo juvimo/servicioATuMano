@@ -1,15 +1,25 @@
 import os
+import io
 import json
-import time
+import asyncio
 from fastapi import APIRouter, Form, File, UploadFile
 from typing import List, Optional
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+from PIL import Image
 
 load_dotenv()
 
 router = APIRouter(prefix="/api", tags=["chatbot"])
+
+# ── Configuración de procesamiento de imágenes ──────────────────
+MAX_DIMENSION  = 1024   # px — lado mayor máximo antes de enviar a Gemini
+JPEG_QUALITY   = 85     # calidad JPEG de salida
+GEMINI_TIMEOUT = 15.0   # segundos antes de pasar al respaldo
+RETRY_DELAY    = 1.5    # segundos entre reintentos (texto e imagen)
+MAX_REINTENTOS = 3
+# ────────────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = """Eres el asistente virtual de "Servicio a tu Mano", empresa de limpieza profesional a vapor.
 Tu objetivo es orientar clientes, responder dudas, COTIZAR servicios con precios concretos y analizar manchas en fotos.
@@ -148,18 +158,48 @@ PRECIOS_RESPALDO = {
 }
 
 
+def _procesar_imagen(data: bytes, content_type: str | None) -> tuple[bytes, str]:
+    """
+    Redimensiona a MAX_DIMENSION en el lado mayor, convierte a JPEG y devuelve
+    (bytes_jpeg, "image/jpeg"). Acepta cualquier formato que Pillow reconozca
+    (jpg, png, webp, heic, bmp, tiff, avif…). Si Pillow falla, devuelve los
+    bytes originales con mime type seguro para no bloquear la llamada.
+    """
+    try:
+        img = Image.open(io.BytesIO(data))
+        # Normalizar modo para evitar errores al guardar como JPEG
+        if img.mode not in ("RGB",):
+            img = img.convert("RGB")
+        # Redimensionar solo si supera el límite
+        w, h = img.size
+        if max(w, h) > MAX_DIMENSION:
+            ratio = MAX_DIMENSION / max(w, h)
+            new_size = (max(1, int(w * ratio)), max(1, int(h * ratio)))
+            img = img.resize(new_size, Image.LANCZOS)
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=JPEG_QUALITY, optimize=True)
+        return buf.getvalue(), "image/jpeg"
+    except Exception as exc:
+        print(f"[chatbot] _procesar_imagen: {exc} — usando bytes originales")
+        return data, "image/jpeg"
+
+
 def _respuesta_respaldo(mensaje: str, hay_imagenes: bool) -> str:
     texto = (mensaje or "").lower()
     encontrados = [resp for claves, resp in PRECIOS_RESPALDO.items() if any(k in texto for k in claves)]
     if encontrados:
         return " ".join(encontrados) + " Para un precio exacto solicita tu cotización o llama al 321 219 6255."
     if hay_imagenes:
-        return ("Recibimos tu foto, pero el análisis automático no está disponible en este momento. "
-                "Cuéntanos qué es y su tamaño (p. ej. sofá de 3 puestos, colchón doble) y te damos un rango. "
-                "Para cotización exacta: 321 219 6255.")
-    return ("¡Hola! Somos Servicio a tu Mano, limpieza a vapor a domicilio. "
-            "Pregúntame por precios de sofás, colchones, tapetes, autos, baños o limpieza de casa/oficina, "
-            "o llama al 321 219 6255.")
+        return (
+            "No pude analizar la foto en este momento, pero cuéntame qué tipo de mueble es "
+            "y dónde está la mancha, y te ayudo igual."
+            "##OPCIONES:💰 Dame un rango de precio|📸 Enviar otra foto|📲 Hablar con un asesor##"
+        )
+    return (
+        "¡Hola! Somos Servicio a tu Mano, limpieza a vapor a domicilio. "
+        "Pregúntame por precios de sofás, colchones, tapetes, autos, baños o limpieza de casa/oficina, "
+        "o llama al 321 219 6255."
+    )
 
 
 @router.post("/chatbot")
@@ -169,9 +209,9 @@ async def chatbot_endpoint(
     imagenes: Optional[List[UploadFile]] = File(None),
 ):
     api_key = os.getenv("GEMINI_API_KEY", "")
-    modelo = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    modelo  = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
-    # Parsear y validar historial de conversación
+    # ── Parsear historial ────────────────────────────────────────
     try:
         hist = json.loads(historial) if historial and historial != "[]" else []
         hist = [
@@ -180,31 +220,32 @@ async def chatbot_endpoint(
             and m.get("role") in ("user", "assistant")
             and m.get("content")
         ]
-        hist = hist[-20:]  # máximo 10 intercambios
+        hist = hist[-20:]
     except Exception:
         hist = []
 
-    # Leer imágenes (si las hay)
+    # ── Leer y pre-procesar imágenes ─────────────────────────────
+    # Redimensiona, normaliza formato y convierte todo a JPEG antes de enviar
     partes_imagen = []
-    valid_types = {"image/jpeg", "image/png", "image/gif", "image/webp"}
+    hay_imagenes  = bool(imagenes)
     if imagenes:
         for img in imagenes[:3]:
-            data = await img.read()
-            media_type = img.content_type if img.content_type in valid_types else "image/jpeg"
-            partes_imagen.append(types.Part.from_bytes(data=data, mime_type=media_type))
+            raw  = await img.read()
+            data, mime = _procesar_imagen(raw, img.content_type)
+            partes_imagen.append(types.Part.from_bytes(data=data, mime_type=mime))
 
     texto = mensaje.strip()
     if not texto:
         texto = (
             "Analiza esta imagen: di qué es, su tamaño aproximado y un rango de precio. Si el tamaño no es claro, pregúntalo."
-            if imagenes else "Hola"
+            if hay_imagenes else "Hola"
         )
 
-    # Sin API key configurada: respuesta local de respaldo (sin costo)
+    # ── Sin API key: respaldo local inmediato ────────────────────
     if not api_key or api_key.startswith("tu-") or api_key.strip() == "":
-        return {"respuesta": _respuesta_respaldo(texto, bool(imagenes))}
+        return {"respuesta": _respuesta_respaldo(texto, hay_imagenes)}
 
-    # Construir contenido para Gemini (historial + mensaje actual)
+    # ── Construir contenido para Gemini ──────────────────────────
     contents = []
     for m in hist:
         rol = "model" if m["role"] == "assistant" else "user"
@@ -212,21 +253,38 @@ async def chatbot_endpoint(
     contents.append(types.Content(role="user", parts=partes_imagen + [types.Part.from_text(text=texto)]))
 
     client = genai.Client(api_key=api_key)
-    for intento in range(3):
+    config = types.GenerateContentConfig(
+        system_instruction=SYSTEM_PROMPT,
+        max_output_tokens=1024,
+        thinking_config=types.ThinkingConfig(thinking_budget=0),
+    )
+    loop = asyncio.get_running_loop()
+
+    # ── Reintentos con timeout ───────────────────────────────────
+    # - Timeout de 15 s por intento (aplica a texto e imagen por igual)
+    # - 3 reintentos con 1.5 s de pausa entre ellos
+    # - Si hay TimeoutError: salir del loop inmediatamente (no reintentar)
+    for intento in range(MAX_REINTENTOS):
         try:
-            response = client.models.generate_content(
-                model=modelo,
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_PROMPT,
-                    max_output_tokens=1024,
-                    thinking_config=types.ThinkingConfig(thinking_budget=0),
+            response = await asyncio.wait_for(
+                loop.run_in_executor(
+                    None,
+                    lambda: client.models.generate_content(
+                        model=modelo, contents=contents, config=config
+                    ),
                 ),
+                timeout=GEMINI_TIMEOUT,
             )
             respuesta = (response.text or "").strip()
-            return {"respuesta": respuesta or _respuesta_respaldo(texto, bool(imagenes))}
-        except Exception as e:
-            print(f"[chatbot] Gemini intento {intento + 1}/3 fallido: {e}")
-            if intento < 2:
-                time.sleep(1)
-    return {"respuesta": _respuesta_respaldo(texto, bool(imagenes))}
+            return {"respuesta": respuesta or _respuesta_respaldo(texto, hay_imagenes)}
+
+        except asyncio.TimeoutError:
+            print(f"[chatbot] Timeout ({GEMINI_TIMEOUT}s) en intento {intento + 1}/{MAX_REINTENTOS}")
+            break  # No tiene sentido reintentar si ya agotó el tiempo
+
+        except Exception as exc:
+            print(f"[chatbot] Gemini intento {intento + 1}/{MAX_REINTENTOS} fallido: {exc}")
+            if intento < MAX_REINTENTOS - 1:
+                await asyncio.sleep(RETRY_DELAY)
+
+    return {"respuesta": _respuesta_respaldo(texto, hay_imagenes)}
