@@ -83,12 +83,32 @@ export default function Chatbot() {
   // ────────────────────────────────────────────────────
 
   const [isMobile, setIsMobile] = useState(false);
+  // Altura real del viewport visible (se actualiza cuando el teclado virtual aparece)
+  const [viewH, setViewH] = useState(0);
+
   useEffect(() => {
     function checkSize() { setIsMobile(window.innerWidth <= 480); }
     checkSize();
     window.addEventListener("resize", checkSize);
     return () => window.removeEventListener("resize", checkSize);
   }, []);
+
+  // Sigue la altura visible para mantener el chat encima del teclado virtual
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv || !isMobile) return;
+    const onVp = () => {
+      setViewH(vv.height);
+      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 80);
+    };
+    onVp();
+    vv.addEventListener("resize", onVp);
+    vv.addEventListener("scroll", onVp);
+    return () => {
+      vv.removeEventListener("resize", onVp);
+      vv.removeEventListener("scroll", onVp);
+    };
+  }, [isMobile, open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -327,10 +347,12 @@ return (
           bottom: isMobile ? 0 : 96,
           right: isMobile ? 0 : 28,
           left: isMobile ? 0 : "auto",
-          top: isMobile ? 0 : "auto",
+          /* Cuando el teclado virtual aparece, viewH es menor que 100dvh:
+             anclamos desde abajo y la altura se ajusta automáticamente */
+          top: isMobile ? (viewH > 0 ? `calc(100dvh - ${viewH}px)` : 0) : "auto",
           width: isMobile ? "100%" : 370,
-          maxHeight: isMobile ? "100dvh" : "min(590px, calc(100vh - 120px))",
-          height: isMobile ? "100dvh" : "auto",
+          maxHeight: isMobile ? "none" : "min(590px, calc(100vh - 120px))",
+          height: isMobile ? (viewH > 0 ? `${viewH}px` : "100dvh") : "auto",
           zIndex:9998, borderRadius: isMobile ? 0 : 20,
           boxShadow:"0 8px 48px rgba(0,0,0,.2)", display:"flex",
           flexDirection:"column", overflow:"hidden", background:"#fff",
@@ -369,8 +391,8 @@ return (
             {isMobile && (
               <button onClick={() => setOpen(false)} title="Cerrar" style={{
                 background:"rgba(255,255,255,.15)", border:"1px solid rgba(255,255,255,.25)",
-                borderRadius:8, width:34, height:34, cursor:"pointer",
-                color:"#fff", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center",
+                borderRadius:8, width:44, height:44, cursor:"pointer",
+                color:"#fff", fontSize:22, display:"flex", alignItems:"center", justifyContent:"center",
                 flexShrink:0, marginLeft:4,
               }}>×</button>
             )}
@@ -551,11 +573,14 @@ return (
               title={imagenes.length >= 3 ? "Máximo 3 fotos" : "Adjuntar foto"}
               style={{
                 background: imagenes.length >= 3 || loading ? "#f1f5f9" : (showAttachMenu ? "#e0f2fe" : "#f0f9ff"),
-                border:`1.5px solid ${imagenes.length >= 3 || loading ? "#e2e8f0" : (showAttachMenu ? "#0ea5e9" : "#0ea5e9")}`,
-                borderRadius:10, width:38, height:38,
+                border:`1.5px solid ${imagenes.length >= 3 || loading ? "#e2e8f0" : "#0ea5e9"}`,
+                borderRadius:10,
+                width: isMobile ? 44 : 38, height: isMobile ? 44 : 38,
+                minWidth: isMobile ? 44 : 38,
                 cursor: imagenes.length >= 3 || loading ? "not-allowed" : "pointer",
                 display:"flex", alignItems:"center", justifyContent:"center",
-                flexShrink:0, fontSize:18, opacity: imagenes.length >= 3 || loading ? 0.5 : 1,
+                flexShrink:0, fontSize: isMobile ? 20 : 18,
+                opacity: imagenes.length >= 3 || loading ? 0.5 : 1,
                 zIndex:11,
               }}>📸</button>
 
@@ -570,15 +595,20 @@ return (
                 fontFamily:"inherit", color:"#1e293b",
                 background: loading ? "#f8fafc" : "#fff",
               }}
-              onFocus={e => (e.target.style.borderColor = "#0ea5e9")}
-              onBlur={e  => (e.target.style.borderColor = "#e2e8f0")}
+              onFocus={e => {
+                e.target.style.borderColor = "#0ea5e9";
+                setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 350);
+              }}
+              onBlur={e => (e.target.style.borderColor = "#e2e8f0")}
             />
 
             <button type="submit"
               disabled={loading || (!inputVal.trim() && imagenes.length === 0)}
               style={{
                 background: loading || (!inputVal.trim() && imagenes.length === 0) ? "#7dd3fc" : "#0ea5e9",
-                border:"none", borderRadius:10, width:38, height:38,
+                border:"none", borderRadius:10,
+                width: isMobile ? 44 : 38, height: isMobile ? 44 : 38,
+                minWidth: isMobile ? 44 : 38,
                 display:"flex", alignItems:"center", justifyContent:"center",
                 cursor: loading || (!inputVal.trim() && imagenes.length === 0) ? "not-allowed" : "pointer",
                 flexShrink:0, transition:"background .15s",
@@ -611,8 +641,8 @@ return (
                   onClick={stopCamera}
                   style={{
                     background:"rgba(255,255,255,.12)", border:"1px solid rgba(255,255,255,.2)",
-                    borderRadius:8, width:32, height:32, cursor:"pointer",
-                    color:"#fff", fontSize:18, display:"flex",
+                    borderRadius:8, width:44, height:44, cursor:"pointer",
+                    color:"#fff", fontSize:20, display:"flex",
                     alignItems:"center", justifyContent:"center",
                   }}
                 >×</button>

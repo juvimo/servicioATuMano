@@ -13,7 +13,7 @@ const WA_ICON_SM = (
 );
 
 const MENSAJE = encodeURIComponent(
-  "Hola! Me gustaría solicitar una cotización para un servicio de limpieza a vapor. 🙌"
+  "Hola! Me gustaría solicitar una cotización para un servicio de limpieza a vapor. "
 );
 
 const NUMEROS = [
@@ -44,7 +44,8 @@ export default function WhatsAppButton() {
           display: "flex",
           flexDirection: "column",
           gap: "8px",
-          minWidth: "230px",
+          minWidth: "220px",
+          maxWidth: "calc(100vw - 48px)",  /* no desborda en phones pequeños */
           border: "1px solid #e2e8f0",
           animation: "waPopIn .18s ease",
         }}>

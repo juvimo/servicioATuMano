@@ -1602,3 +1602,124 @@ body {
 @media (max-width: 768px) {
   .mission-card + .mission-card { margin-top: 1.25rem; }
 }
+
+/* ══════════════════════════════════════════
+   MEJORAS TÁCTILES Y RESPONSIVE — MÓVIL
+   Solo afectan ≤767px; escritorio sin cambios
+══════════════════════════════════════════ */
+
+/* 1 ── INPUTS: font-size 16px evita el zoom automático de iOS al enfocar */
+@media (max-width: 767px) {
+  .form-control,
+  .form-control:focus,
+  textarea.form-control,
+  select.form-control {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+  textarea.form-control {
+    min-height: 80px;
+  }
+}
+
+/* 2 ── COTIZACIÓN: campos apilados a ancho completo en phones */
+@media (max-width: 767px) {
+  .cot-page .col-md-6 {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+  /* Cards de servicio más espaciosas en 1 col */
+  .cot-img-wrap { height: 190px; }
+}
+
+/* 3 ── TARJETAS DE SERVICIO (Landing): 1 columna bajo 576px */
+@media (max-width: 575px) {
+  .services-section .row > div {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+  .service-card-img-wrap { height: 210px; }
+}
+
+/* 4 ── NAVEGACIÓN MÓVIL: touch targets cómodos */
+@media (max-width: 991px) {
+  /* Hamburger: mínimo 44×44 */
+  .navbar-hamburger {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 11px;
+  }
+
+  /* Links del menú expandido: mínimo 44px de alto */
+  .mobile-link {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .mobile-sub-link {
+    min-height: 40px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  /* CTA buttons del menú móvil */
+  .mobile-ctas .btn-nav-outline,
+  .mobile-ctas .btn-nav-solid {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* 5 ── BOTONES HERO / CTA: mínimo 44px para tacto cómodo */
+@media (max-width: 767px) {
+  .btn-hero-primary,
+  .btn-hero-ghost,
+  .btn-cta-white,
+  .btn-cta-outline-white {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* 6 ── SEPARACIÓN ENTRE OPCIONES DEL CHATBOT (ya inline, refuerzo por CSS) */
+@media (max-width: 480px) {
+  /* Garantiza que los option-chips del bot queden fáciles de tocar */
+  .chatbot-option-btn {
+    min-height: 44px;
+  }
+}
+
+/* 7 ── FORMULARIO DE COTIZACIÓN: safe-area en iPhones con notch */
+@media (max-width: 576px) {
+  .cot-page {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* 8 ── HERO VIDEO: sin overflow en pantallas estrechas */
+@media (max-width: 480px) {
+  .hero-img-wrap {
+    overflow: visible;
+    margin-top: 1.25rem;
+  }
+  .hero-img {
+    max-height: 220px;
+    border-radius: 16px;
+  }
+}
+
+/* 9 ── WHY SECTION: video centrado en móvil */
+@media (max-width: 575px) {
+  .why-section .col-lg-5 {
+    display: flex;
+    justify-content: center;
+  }
+  .why-section .col-lg-5 > div {
+    max-height: 260px !important;
+    width: 100%;
+  }
+}
