@@ -7,7 +7,13 @@ from typing import List, Optional
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
-from PIL import Image
+from PIL import Image, ImageOps
+
+try:
+    from pillow_heif import register_heif_opener
+    register_heif_opener()  # habilita Pillow para abrir HEIC/HEIF (fotos nativas de iPhone)
+except ImportError:
+    print("[chatbot] pillow-heif no instalado — fotos HEIC/HEIF de iPhone podrían fallar")
 
 load_dotenv()
 
@@ -16,9 +22,10 @@ router = APIRouter(prefix="/api", tags=["chatbot"])
 # ── Configuración de procesamiento de imágenes ──────────────────
 MAX_DIMENSION  = 1024   # px — lado mayor máximo antes de enviar a Gemini
 JPEG_QUALITY   = 85     # calidad JPEG de salida
-GEMINI_TIMEOUT = 15.0   # segundos antes de pasar al respaldo
-RETRY_DELAY    = 1.5    # segundos entre reintentos (texto e imagen)
-MAX_REINTENTOS = 3
+GEMINI_TIMEOUT = 8.0    # segundos antes de pasar al respaldo
+RETRY_DELAY    = 0.5    # segundos entre reintentos (texto e imagen)
+MAX_REINTENTOS = 2
+HISTORIAL_MAX  = 10     # turnos de historial enviados a Gemini
 # ────────────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = """Eres el asistente virtual de "Servicio a tu Mano", empresa de limpieza profesional a vapor.
@@ -167,6 +174,8 @@ def _procesar_imagen(data: bytes, content_type: str | None) -> tuple[bytes, str]
     """
     try:
         img = Image.open(io.BytesIO(data))
+        # Corrige la rotación según el tag EXIF (fotos de celular vienen "acostadas")
+        img = ImageOps.exif_transpose(img)
         # Normalizar modo para evitar errores al guardar como JPEG
         if img.mode not in ("RGB",):
             img = img.convert("RGB")
@@ -220,7 +229,7 @@ async def chatbot_endpoint(
             and m.get("role") in ("user", "assistant")
             and m.get("content")
         ]
-        hist = hist[-20:]
+        hist = hist[-HISTORIAL_MAX:]
     except Exception:
         hist = []
 
@@ -261,9 +270,10 @@ async def chatbot_endpoint(
     loop = asyncio.get_running_loop()
 
     # ── Reintentos con timeout ───────────────────────────────────
-    # - Timeout de 15 s por intento (aplica a texto e imagen por igual)
-    # - 3 reintentos con 1.5 s de pausa entre ellos
+    # - Timeout de 8 s por intento (aplica a texto e imagen por igual)
+    # - 1 reintento con 0.5 s de pausa
     # - Si hay TimeoutError: salir del loop inmediatamente (no reintentar)
+    # - Peor caso total: ~16.5 s antes de caer al respaldo local
     for intento in range(MAX_REINTENTOS):
         try:
             response = await asyncio.wait_for(

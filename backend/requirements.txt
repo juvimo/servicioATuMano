@@ -8,3 +8,4 @@ pyjwt
 google-genai
 pydantic
 Pillow
+pillow-heif

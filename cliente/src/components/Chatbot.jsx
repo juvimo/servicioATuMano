@@ -133,10 +133,10 @@ export default function Chatbot() {
 
   async function callAI(mensaje, imgs, hist) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
+    const timeout = setTimeout(() => controller.abort(), 20000);
     const formData = new FormData();
     formData.append("mensaje", mensaje || "");
-    formData.append("historial", JSON.stringify(hist.slice(-20)));
+    formData.append("historial", JSON.stringify(hist.slice(-10)));
     imgs.forEach(img => formData.append("imagenes", img.file));
     try {
       const res = await fetch(`${API_URL}/api/chatbot`, {
